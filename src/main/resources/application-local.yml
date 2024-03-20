@@ -10,14 +10,14 @@ spring:
       max-request-size: 10MB
 
   datasource:
-    url: jdbc:mysql://localhost:33060/promotionPage
+    url: jdbc:mysql://studio-eye-gold-rds-promotion.c3wm402we7do.ap-northeast-2.rds.amazonaws.com:3306/promotion_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: promotionPage
+    username: studioeye
+    password: HeapIsGold!!
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
