@@ -4,22 +4,53 @@ package com.example.promotionpage.domain.notification.application;
 import com.example.promotionpage.domain.notification.dao.NotificationRepository;
 import com.example.promotionpage.domain.notification.domain.Notification;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
+import com.example.promotionpage.global.common.response.ApiResponse;
+import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final Boolean READ = true;
+    private final Boolean UNREAD = false;
 
-    public void createNotification(CreateNotificationServiceRequestDto dto) {
-        Notification notification = dto.toEntity(false);
-        notificationRepository.save(notification);
+    public ApiResponse createNotification(CreateNotificationServiceRequestDto dto) {
+        Notification notification = dto.toEntity();
+        Notification savedNotification = notificationRepository.save(notification);
+        return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
+    }
+    public ApiResponse justCreateNotification() {
+        Notification notification = new CreateNotificationServiceRequestDto(UNREAD).toEntity();
+        Notification savedNotification = notificationRepository.save(notification);
+        return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
+    }
+
+    public ApiResponse retrieveAllNotification() {
+        List<Notification> notificationList = notificationRepository.findAll();
+        if(notificationList.isEmpty()) {
+            return ApiResponse.ok("알림이 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("알림 목록을 성공적으로 조회했습니다.", notificationList);
+    }
+
+    public ApiResponse updateNotification(Long notificationId) {
+        Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
+        if(optionalNotification.isEmpty()){
+            return ApiResponse.withError(ErrorCode.INVALID_NOTIFICATION_ID);
+        }
+        Notification notification = optionalNotification.get();
+        if(notification.getIsRead().equals(READ)) {
+            return ApiResponse.ok("이미 읽은 알림입니다.", notification);
+        }
+        notification.updateIsChecked(READ);
+        Notification updatedNotification = notificationRepository.save(notification);
+        return ApiResponse.ok("알림을 성공적으로 수정(읽음처리)했습니다.", updatedNotification);
     }
 
 //

@@ -32,7 +32,10 @@ public enum ErrorCode {
 	INVALID_PARTNER_INFORMATION_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 partner information 식별자입니다."),
 
 	// request
-	INVALID_REQUEST_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 request 식별자입니다.");
+	INVALID_REQUEST_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 request 식별자입니다."),
+
+	// notification
+	INVALID_NOTIFICATION_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 notification 식별자입니다.");
 
 	private final HttpStatus status;
 	private final String message;

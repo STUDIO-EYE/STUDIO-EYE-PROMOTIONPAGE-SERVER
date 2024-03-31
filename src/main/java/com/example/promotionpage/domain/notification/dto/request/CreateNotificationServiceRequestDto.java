@@ -3,9 +3,9 @@ package com.example.promotionpage.domain.notification.dto.request;
 import com.example.promotionpage.domain.notification.domain.Notification;
 
 public record CreateNotificationServiceRequestDto(
-        boolean isRead
+        Boolean isRead
 ) {
-    public Notification toEntity(boolean isRead) {
+    public Notification toEntity() {
         return Notification.builder()
                 .isRead(isRead)
                 .build();

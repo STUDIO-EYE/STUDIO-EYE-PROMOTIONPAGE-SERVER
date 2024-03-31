@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.promotionpage.domain.notification.application.NotificationService;
+import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +28,9 @@ public class RequestService {
 	private final RequestRepository requestRepository;
 	private final S3Adapter s3Adapter;
 
-	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws
-		IOException {
+	private final NotificationService notificationService;
 
+	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
 		List<String> fileUrlList = new LinkedList<>();
 		if(files != null){
 			for(var file : files){
@@ -44,6 +46,7 @@ public class RequestService {
 
 		Request request = dto.toEntity(fileUrlList);
 		Request savedRequest = requestRepository.save(request);
+		notificationService.justCreateNotification();
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedRequest);
 	}
 

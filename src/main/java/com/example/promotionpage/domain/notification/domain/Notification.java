@@ -17,13 +17,17 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(nullable = false)
-    private boolean isRead; // 읽었는지 여부
+    private Boolean isRead; // 읽었는지 여부
 
     @Builder
-    public Notification(boolean isRead) {
+    public Notification(Boolean isRead) {
+        this.isRead = isRead;
+    }
+
+    public void updateIsChecked(Boolean isRead) {
         this.isRead = isRead;
     }
 
