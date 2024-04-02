@@ -2,16 +2,12 @@ package com.example.promotionpage.domain.notification.api;
 
 import com.example.promotionpage.domain.notification.application.NotificationService;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationRequestDto;
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Tag(name = "알림 API", description = "알림 등록 / 조회")
 @RestController
@@ -29,8 +25,8 @@ public class NotificationController {
     }
     @Operation(summary = "알림 등록(initial; unread) API")
     @PostMapping("/notification/initial")
-    public ApiResponse createNotification(){
-        return notificationService.justCreateNotification();
+    public ApiResponse createNotification(Long requestId){
+        return notificationService.justCreateNotification(requestId);
     }
 
     @Operation(summary = "알림 전체 조회 API")

@@ -20,13 +20,13 @@ public class NotificationService {
     private final Boolean READ = true;
     private final Boolean UNREAD = false;
 
-    public ApiResponse createNotification(CreateNotificationServiceRequestDto dto) {
+    public ApiResponse createNotification(CreateNotificationServiceRequestDto dto) { // test용 알림 직접 등록
         Notification notification = dto.toEntity();
         Notification savedNotification = notificationRepository.save(notification);
         return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
     }
-    public ApiResponse justCreateNotification() {
-        Notification notification = new CreateNotificationServiceRequestDto(UNREAD).toEntity();
+    public ApiResponse justCreateNotification(Long requestId) { // 기본 알림 등록
+        Notification notification = new CreateNotificationServiceRequestDto(UNREAD, requestId).toEntity();
         Notification savedNotification = notificationRepository.save(notification);
         return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
     }

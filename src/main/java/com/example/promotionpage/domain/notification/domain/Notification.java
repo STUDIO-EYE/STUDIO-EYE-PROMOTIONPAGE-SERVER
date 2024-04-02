@@ -22,9 +22,14 @@ public class Notification {
     @Column(nullable = false)
     private Boolean isRead; // 읽었는지 여부
 
+    @Column(nullable = false)
+    private Long requestId; // 문의 ID
+
+
     @Builder
-    public Notification(Boolean isRead) {
+    public Notification(Boolean isRead, Long requestId) {
         this.isRead = isRead;
+        this.requestId = requestId;
     }
 
     public void updateIsChecked(Boolean isRead) {

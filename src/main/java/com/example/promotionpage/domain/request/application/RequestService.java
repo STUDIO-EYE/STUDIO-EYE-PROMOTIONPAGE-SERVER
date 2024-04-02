@@ -46,7 +46,8 @@ public class RequestService {
 
 		Request request = dto.toEntity(fileUrlList);
 		Request savedRequest = requestRepository.save(request);
-		notificationService.justCreateNotification();
+
+		notificationService.justCreateNotification(request.getId());	// 문의 등록 알림 보내기
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedRequest);
 	}
 
