@@ -34,38 +34,5 @@ public class Notification {
 
     public void updateIsChecked(Boolean isRead) {
         this.isRead = isRead;
-    }
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private String id;
-//
-////    @Embedded
-////    private NotificationContent content;
-//
-////    @Embedded
-////    private RelatedURL url;
-//
-////    @Column(nullable = false)
-//    private boolean isRead; // 읽었는지 여부
-//
-////    @Enumerated(EnumType.STRING)
-////    @Column(nullable = false)
-////    private NotificationType notificationType; // 알림 종류
-//
-//    @Builder
-//    public Notification(boolean isRead) {
-////        this.notificationType = notificationType;
-////        this.content = new NotificationContent(content);
-////        this.url = new RelatedURL(url);
-//        this.isRead = isRead;
-//    }
-//
-////    public String getContent() {
-////        return content.getContent();
-////    }
-//
-////    public String getUrl() {
-////        return url.getUrl();
-////    }
+   }
 }

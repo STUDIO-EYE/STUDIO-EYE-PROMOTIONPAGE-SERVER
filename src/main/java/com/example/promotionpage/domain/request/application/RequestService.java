@@ -32,11 +32,11 @@ public class RequestService {
 
 	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
 		List<String> fileUrlList = new LinkedList<>();
-		if(files != null){
-			for(var file : files){
+		if (files != null) {
+			for (var file : files) {
 				ApiResponse<String> updateFileResponse = s3Adapter.uploadFile(file);
 
-				if(updateFileResponse.getStatus().is5xxServerError()){
+				if (updateFileResponse.getStatus().is5xxServerError()) {
 					return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 				}
 				String fileUrl = updateFileResponse.getData();
@@ -47,7 +47,7 @@ public class RequestService {
 		Request request = dto.toEntity(fileUrlList);
 		Request savedRequest = requestRepository.save(request);
 
-		notificationService.justCreateNotification(request.getId());	// 문의 등록 알림 보내기
+		notificationService.subscribe(request.getId());    // 문의 등록 알림 보내기
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedRequest);
 	}
 
@@ -56,7 +56,6 @@ public class RequestService {
 		if (requestList.isEmpty()){
 			return ApiResponse.ok("의뢰가 존재하지 않습니다.");
 		}
-
 		return ApiResponse.ok("의뢰 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
