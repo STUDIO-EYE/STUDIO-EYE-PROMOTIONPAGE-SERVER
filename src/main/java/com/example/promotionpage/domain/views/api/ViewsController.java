@@ -24,8 +24,7 @@ public class ViewsController {
 
     @Operation(summary = "조회수 등록 API")
     @PostMapping("/views")
-    public ApiResponse createViews(@Valid @RequestBody CreateViewsRequestDto dto) throws
-            IOException {
+    public ApiResponse createViews(@Valid @RequestBody CreateViewsRequestDto dto) throws IOException {
         return viewsService.createViews(dto.toServiceViews());
     }
 
@@ -57,6 +56,13 @@ public class ViewsController {
     @GetMapping("/views/{year}/{month}")
     public ApiResponse retrieveViewsByYearMonth(@PathVariable Integer year, @PathVariable Integer month){
         return viewsService.retrieveViewsByYearMonth(year, month);
+    }
+
+    @Operation(summary = "기간(시작점(연도,월), 종료점(연도,월))으로 조회수 조회 API")
+    @GetMapping("/views/{startYear}/{startMonth}/{endYear}/{endMonth}")
+    public ApiResponse retrieveViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+                                             @PathVariable Integer endYear, @PathVariable Integer endMonth){
+        return viewsService.retrieveViewsByPeriod(startYear, startMonth, endYear, endMonth);
     }
 
     @Operation(summary = "id로 특정 월 조회수 1 상승 API")

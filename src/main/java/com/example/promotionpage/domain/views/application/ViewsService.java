@@ -25,6 +25,7 @@ public class ViewsService {
     private final Long num1 = 1L;
 
     public ApiResponse createViews(CreateViewsServiceDto dto) {
+        if(!checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         Optional<Views> optionalViews = viewsRepository.findByYearAndMonth(dto.year(), dto.month());
         if(optionalViews.isPresent()) {
             return ApiResponse.withError(ErrorCode.ALREADY_EXISTED_DATA);
@@ -33,25 +34,41 @@ public class ViewsService {
     }
 
     private ApiResponse justCreateViews(CreateViewsServiceDto dto) {
-        if(dto.month()<1 || dto.month()>12) {
-            return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
-        }
+        if(!checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         Views views = dto.toEntity();
         Views savedViews = viewsRepository.save(views);
         return ApiResponse.ok("조회 수 등록을 완료했습니다.", savedViews);
     }
 
-    public ApiResponse retrieveViewsById(Long viewsId) {
-        Optional<Views> optionalViews = viewsRepository.findById(viewsId);
-        if(optionalViews.isEmpty()){
-            return ApiResponse.ok("조회수가 존재하지 않습니다.");
-        }
-        Views views = optionalViews.get();
-        return ApiResponse.ok("조회수를 성공적으로 조회했습니다.", views);
-    }
-
     public ApiResponse retrieveAllViews() {
         List<Views> viewsList = viewsRepository.findAll();
+        if(viewsList.isEmpty()) {
+            return ApiResponse.ok("조회수가 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("조회수 목록을 성공적으로 조회했습니다.", viewsList);
+    }
+
+    public ApiResponse retrieveViewsByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+        // 월 형식 검사
+        if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
+        // 종료점이 시작점보다 앞에 있을 경우 제한 걸기
+        if(startYear>endYear || (startYear==endYear && startMonth>endMonth)) {
+            return ApiResponse.withError(ErrorCode.INVALID_PERIOD_FORMAT);
+        }
+        // 2~12달로 제한 걸기
+        Integer months = (endYear - startYear)*12+(endMonth-startMonth);
+        if(months < 2 || months > 12) {
+            return ApiResponse.withError(ErrorCode.INVALID_VIEWS_PERIOD);
+        }
+        List<Views> viewsList = viewsRepository.findByYearAndMonthBetween(startYear, startMonth, endYear, endMonth);
+        if(viewsList.isEmpty()) {
+            return ApiResponse.ok("조회수가 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("조회수 목록을 성공적으로 조회했습니다.", viewsList);
+    }
+
+    public ApiResponse retrieveViewsByYear(Integer year) {
+        List<Views> viewsList = viewsRepository.findByYear(year);
         if(viewsList.isEmpty()) {
             return ApiResponse.ok("조회수가 존재하지 않습니다.");
         }
@@ -67,12 +84,13 @@ public class ViewsService {
         return ApiResponse.ok("조회수를 성공적으로 조회했습니다.", views);
     }
 
-    public ApiResponse retrieveViewsByYear(Integer year) {
-        List<Views> viewsList = viewsRepository.findByYear(year);
-        if(viewsList.isEmpty()) {
+    public ApiResponse retrieveViewsById(Long viewsId) {
+        Optional<Views> optionalViews = viewsRepository.findById(viewsId);
+        if(optionalViews.isEmpty()){
             return ApiResponse.ok("조회수가 존재하지 않습니다.");
         }
-        return ApiResponse.ok("조회수 목록을 성공적으로 조회했습니다.", viewsList);
+        Views views = optionalViews.get();
+        return ApiResponse.ok("조회수를 성공적으로 조회했습니다.", views);
     }
 
     public ApiResponse updateViewsById(Long viewsId) {
@@ -107,7 +125,10 @@ public class ViewsService {
                 Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime())));
     }
 
-
-
+    private boolean checkMonth(int month) {
+        // 월 형식 검사
+        if(month<1 || month>12) return false;
+        return true;
+    }
 
 }
