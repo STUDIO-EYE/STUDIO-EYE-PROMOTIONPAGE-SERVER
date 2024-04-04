@@ -32,7 +32,14 @@ public enum ErrorCode {
 	INVALID_PARTNER_INFORMATION_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 partner information 식별자입니다."),
 
 	// request
-	INVALID_REQUEST_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 request 식별자입니다.");
+	INVALID_REQUEST_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 request 식별자입니다."),
+
+	// views
+	INVALID_VIEWS_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 views 식별자입니다."),
+	INVALID_VIEWS_MONTH(HttpStatus.BAD_REQUEST, "유효하지 않은 월 형식입니다."),
+	ALREADY_EXISTED_DATA(HttpStatus.BAD_REQUEST, "이미 존재하는 데이터입니다."),
+	INVALID_VIEWS_PERIOD(HttpStatus.BAD_REQUEST, "기간은 2~12달이어야 합니다."),
+	INVALID_PERIOD_FORMAT(HttpStatus.BAD_REQUEST, "종료점은 시작점보다 뒤에 있어야 합니다.");
 
 	private final HttpStatus status;
 	private final String message;
