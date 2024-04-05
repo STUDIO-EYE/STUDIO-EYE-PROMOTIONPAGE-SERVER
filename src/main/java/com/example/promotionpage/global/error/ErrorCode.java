@@ -46,7 +46,10 @@ public enum ErrorCode {
 	INVALID_NOTIFICATION_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 notification 식별자입니다."),
 
 	// sseEmitter
-	INVALID_SSE_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 sse 식별자입니다.");
+	INVALID_SSE_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 sse 식별자입니다."),
+
+	// FAQ
+	INVALID_FAQ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 views 식별자입니다.");
 
 	private final HttpStatus status;
 	private final String message;
