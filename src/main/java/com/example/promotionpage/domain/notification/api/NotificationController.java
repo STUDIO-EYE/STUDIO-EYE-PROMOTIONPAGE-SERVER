@@ -34,10 +34,10 @@ public class NotificationController {
         return notificationService.sendNotification(requestId);
     }
 
-    @Operation(summary = "알림 삭제 API")
-    @DeleteMapping("/notification/{notificationId}")
-    public ApiResponse deleteNotification(@PathVariable Long notificationId) throws IOException {
-        return notificationService.deleteNotification(notificationId);
+    @Operation(summary = "알림 전체 조회 API")
+    @GetMapping("/notification")
+    public ApiResponse retrieveAllNotification(){
+        return notificationService.retrieveAllNotification();
     }
 
     @Operation(summary = "알림 수정(읽음 처리) API")
@@ -45,6 +45,13 @@ public class NotificationController {
     public ApiResponse updateNotification(@PathVariable Long notificationId){
         return notificationService.updateNotification(notificationId);
     }
+
+    @Operation(summary = "알림 삭제 API")
+    @DeleteMapping("/notification/{notificationId}")
+    public ApiResponse deleteNotification(@PathVariable Long notificationId) throws IOException {
+        return notificationService.deleteNotification(notificationId);
+    }
+
 
 //    @Operation(summary = "알림 등록(직접 등록) API")
 //    @PostMapping("/notification")
@@ -57,11 +64,7 @@ public class NotificationController {
 //        return notificationService.justCreateNotification(requestId);
 //    }
 //
-//    @Operation(summary = "알림 전체 조회 API")
-//    @GetMapping("/notification")
-//    public ApiResponse retrieveAllNotification(){
-//        return notificationService.retrieveAllNotification();
-//    }
+
 //
 //    @Operation(summary = "알림 수정(읽음 처리) API")
 //    @PutMapping("/notification/{notificationId}")

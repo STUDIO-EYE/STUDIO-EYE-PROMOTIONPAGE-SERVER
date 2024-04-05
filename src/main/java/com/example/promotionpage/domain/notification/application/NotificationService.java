@@ -74,13 +74,21 @@ public class NotificationService {
         return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
     }
 
+    public ApiResponse retrieveAllNotification() {
+        List<Notification> notificationList = notificationRepository.findAll();
+        if(notificationList.isEmpty()) {
+            return ApiResponse.ok("알림이 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("알림 목록을 성공적으로 조회했습니다.", notificationList);
+    }
+
     public ApiResponse deleteNotification(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(
                 () -> new IllegalArgumentException("알림을 찾을 수 없습니다.")
         );
 
         notificationRepository.delete(notification);
-        return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", notification);
+        return ApiResponse.ok("알림을 성공적으로 삭제하였습니다.", notification);
     }
 
     public ApiResponse updateNotification(Long notificationId) {
