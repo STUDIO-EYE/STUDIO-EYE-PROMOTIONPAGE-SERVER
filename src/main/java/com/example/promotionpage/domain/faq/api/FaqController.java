@@ -49,8 +49,8 @@ public class FaqController {
     }
 
     @Operation(summary = "id로 FAQ 삭제 API")
-    @DeleteMapping("/faq")
-    public ApiResponse deleteFaq(@RequestBody Long id) {
+    @DeleteMapping("/faq/{id}")
+    public ApiResponse deleteFaq(@PathVariable Long id) {
         return faqService.deleteFaq(id);
     }
 
