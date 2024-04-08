@@ -5,7 +5,6 @@ import com.example.promotionpage.domain.notification.dao.EmitterRepository;
 import com.example.promotionpage.domain.notification.dao.NotificationRepository;
 import com.example.promotionpage.domain.notification.domain.Notification;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
-import com.example.promotionpage.domain.user.dto.GetUserResponseDto;
 import com.example.promotionpage.domain.user.service.UserServiceImpl;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -44,7 +43,7 @@ public class NotificationService {
                 SseEmitter emitter = createEmitter(userId);
                 System.out.println(emitter);
                 emitterRepository.save(userId, emitter);
-                sendNotification(requestId);
+                createNotification(requestId);
 
                 // Emitter가 완료될 때(모든 데이터가 성공적으로 전송되었을 때) Emitter를 삭제한다.
                 emitter.onCompletion(() -> emitterRepository.deleteById(userId));
@@ -56,7 +55,7 @@ public class NotificationService {
         }
     }
 
-    public ApiResponse sendNotification(Long requestId) {
+    public ApiResponse createNotification(Long requestId) {
         Notification notification = new CreateNotificationServiceRequestDto(UNREAD, requestId).toEntity();
         Notification savedNotification = notificationRepository.save(notification);
 
@@ -91,7 +90,7 @@ public class NotificationService {
         return ApiResponse.ok("알림을 성공적으로 삭제하였습니다.", notification);
     }
 
-    public ApiResponse updateNotification(Long notificationId) {
+    public ApiResponse checkNotification(Long notificationId) {
         Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
         if(optionalNotification.isEmpty()){
             return ApiResponse.withError(ErrorCode.INVALID_NOTIFICATION_ID);
@@ -100,9 +99,9 @@ public class NotificationService {
         if(notification.getIsRead().equals(READ)) {
             return ApiResponse.ok("이미 읽은 알림입니다.", notification);
         }
-        notification.updateIsChecked(READ);
-        Notification updatedNotification = notificationRepository.save(notification);
-        return ApiResponse.ok("알림을 성공적으로 수정(읽음처리)했습니다.", updatedNotification);
+        notification.updateIsRead(READ);
+        Notification checkedNotification = notificationRepository.save(notification);
+        return ApiResponse.ok("알림을 성공적으로 수정(읽음처리)했습니다.", checkedNotification);
     }
 
     private SseEmitter createEmitter(Long id) {

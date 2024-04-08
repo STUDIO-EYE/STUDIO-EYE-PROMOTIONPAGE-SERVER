@@ -1,19 +1,14 @@
 package com.example.promotionpage.domain.notification.api;
 
 import com.example.promotionpage.domain.notification.application.NotificationService;
-import com.example.promotionpage.domain.notification.dto.request.CreateNotificationRequestDto;
-import com.example.promotionpage.domain.user.service.UserServiceImpl;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,8 +25,8 @@ public class NotificationController {
     // 당장은 필요없는 api
     @Operation(summary = "알림 등록 API")
     @PostMapping("/notification/{requestId}")
-    public ApiResponse sendData(Long requestId) {
-        return notificationService.sendNotification(requestId);
+    public ApiResponse createNotification(Long requestId) {
+        return notificationService.createNotification(requestId);
     }
 
     @Operation(summary = "알림 전체 조회 API")
@@ -42,8 +37,8 @@ public class NotificationController {
 
     @Operation(summary = "알림 수정(읽음 처리) API")
     @PutMapping("/notification/{notificationId}")
-    public ApiResponse updateNotification(@PathVariable Long notificationId){
-        return notificationService.updateNotification(notificationId);
+    public ApiResponse checkNotification(@PathVariable Long notificationId){
+        return notificationService.checkNotification(notificationId);
     }
 
     @Operation(summary = "알림 삭제 API")

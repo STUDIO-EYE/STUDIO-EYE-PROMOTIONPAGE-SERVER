@@ -5,10 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.lang.reflect.Member;
 
 @Entity
 @Getter
@@ -32,7 +28,7 @@ public class Notification {
         this.requestId = requestId;
     }
 
-    public void updateIsChecked(Boolean isRead) {
+    public void updateIsRead(Boolean isRead) {
         this.isRead = isRead;
    }
 }
