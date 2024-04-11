@@ -4,6 +4,7 @@ public record UpdateFaqServiceRequestDto(
         Long id,
         String title,
         String content,
+        Boolean visibility
 ) {
 
 }

@@ -25,10 +25,14 @@ public class Faq {
     @NotNull
     private String content;
 
+    @NotNull
+    private Boolean visibility;
+
     @Builder
-    public Faq(String title, String content) {
+    public Faq(String title, String content, Boolean visibility) {
         this.title = title;
         this.content = content;
+        this.visibility = visibility;
     }
 
     public void updateTitle(String title) {
@@ -37,5 +41,9 @@ public class Faq {
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void updateVisibility(Boolean visibility) {
+        this.visibility = visibility;
     }
 }

@@ -9,16 +9,19 @@ import java.util.List;
 
 public record CreateFaqServiceRequestDto (
     String title,
-    String content
+    String content,
+    Boolean visibility
 ) {
-    public CreateFaqServiceRequestDto(String title, String content) {
+    public CreateFaqServiceRequestDto(String title, String content, Boolean visibility) {
         this.title = title;
         this.content = content;
+        this.visibility = visibility;
     }
     public Faq toEntity() {
         return Faq.builder()
                 .title(title)
                 .content(content)
+                .visibility(visibility)
                 .build();
     }
 }

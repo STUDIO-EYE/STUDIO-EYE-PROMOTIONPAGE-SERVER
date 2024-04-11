@@ -5,6 +5,7 @@ import com.example.promotionpage.domain.faq.dao.FaqTitles;
 import com.example.promotionpage.domain.faq.domain.Faq;
 import com.example.promotionpage.domain.faq.dto.request.CreateFaqServiceRequestDto;
 import com.example.promotionpage.domain.faq.dto.request.UpdateFaqRequestDto;
+import com.example.promotionpage.domain.faq.dto.request.UpdateFaqServiceRequestDto;
 import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -23,8 +24,8 @@ public class FaqService {
     private final FaqRepository faqRepository;
 
     public ApiResponse createFaq(CreateFaqServiceRequestDto dto){
-        if(dto.title().trim().isEmpty() || dto.content().trim().isEmpty()) {
-            return ApiResponse.withError(ErrorCode.INVALID_INPUT_VALUE);
+        if(dto.title().trim().isEmpty() || dto.content().trim().isEmpty() || dto.visibility() == null) {
+            return ApiResponse.withError(ErrorCode.FAQ_IS_EMPTY);
         }
         Faq faq = dto.toEntity();
         Faq savedFaq = faqRepository.save(faq);
@@ -60,6 +61,7 @@ public class FaqService {
     public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
         String title = dto.title().trim();
         String content = dto.content().trim();
+        Boolean visibility = dto.visibility();
         Optional<Faq> optionalFaq = faqRepository.findById(dto.id());
         if(optionalFaq.isEmpty()) {
             return ApiResponse.withError(ErrorCode.INVALID_FAQ_ID);
@@ -72,6 +74,8 @@ public class FaqService {
         if(!content.isEmpty()) {
             faq.updateContent(content);
         }
+        if(visibility != null) {
+            faq.updateVisibility(visibility);
         }
         Faq updatedFaq = faqRepository.save(faq);
         return ApiResponse.ok("FAQ를 성공적으로 수정하였습니다.", updatedFaq);
