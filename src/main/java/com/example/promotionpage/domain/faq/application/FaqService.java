@@ -1,12 +1,10 @@
 package com.example.promotionpage.domain.faq.application;
 
+import com.example.promotionpage.domain.faq.dao.FaqQuestions;
 import com.example.promotionpage.domain.faq.dao.FaqRepository;
-import com.example.promotionpage.domain.faq.dao.FaqTitles;
 import com.example.promotionpage.domain.faq.domain.Faq;
 import com.example.promotionpage.domain.faq.dto.request.CreateFaqServiceRequestDto;
-import com.example.promotionpage.domain.faq.dto.request.UpdateFaqRequestDto;
 import com.example.promotionpage.domain.faq.dto.request.UpdateFaqServiceRequestDto;
-import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,7 @@ public class FaqService {
     private final FaqRepository faqRepository;
 
     public ApiResponse createFaq(CreateFaqServiceRequestDto dto){
-        if(dto.title().trim().isEmpty() || dto.content().trim().isEmpty() || dto.visibility() == null) {
+        if(dto.question().trim().isEmpty() || dto.answer().trim().isEmpty() || dto.visibility() == null) {
             return ApiResponse.withError(ErrorCode.FAQ_IS_EMPTY);
         }
         Faq faq = dto.toEntity();
@@ -42,11 +40,11 @@ public class FaqService {
 
 
     public ApiResponse retrieveAllFaqTitle() {
-        List<FaqTitles> faqTitles = faqRepository.findAllTitles();
-        if(faqTitles.isEmpty()) {
+        List<FaqQuestions> faqQuestions = faqRepository.findAllQuestions();
+        if(faqQuestions.isEmpty()) {
             return ApiResponse.ok("FAQ가 존재하지 않습니다.");
         }
-        return ApiResponse.ok("FAQ 목록을 성공적으로 조회했습니다.", faqTitles);
+        return ApiResponse.ok("FAQ 목록을 성공적으로 조회했습니다.", faqQuestions);
     }
 
     public ApiResponse retrieveFaqById(Long id) {
@@ -59,8 +57,8 @@ public class FaqService {
     }
 
     public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
-        String title = dto.title().trim();
-        String content = dto.content().trim();
+        String question = dto.question().trim();
+        String answer = dto.answer().trim();
         Boolean visibility = dto.visibility();
         Optional<Faq> optionalFaq = faqRepository.findById(dto.id());
         if(optionalFaq.isEmpty()) {
@@ -68,11 +66,11 @@ public class FaqService {
         }
 
         Faq faq = optionalFaq.get();
-        if(!title.isEmpty()) {
-            faq.updateTitle(title);
+        if(!question.isEmpty()) {
+            faq.updateTitle(question);
         }
-        if(!content.isEmpty()) {
-            faq.updateContent(content);
+        if(!answer.isEmpty()) {
+            faq.updateContent(answer);
         }
         if(visibility != null) {
             faq.updateVisibility(visibility);

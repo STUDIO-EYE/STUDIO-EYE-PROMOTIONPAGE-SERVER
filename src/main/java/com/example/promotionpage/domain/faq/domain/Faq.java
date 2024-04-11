@@ -20,27 +20,27 @@ public class Faq {
     private Long id;
 
     @NotNull
-    private String title;
+    private String question;
 
     @NotNull
-    private String content;
+    private String answer;
 
     @NotNull
     private Boolean visibility;
 
     @Builder
-    public Faq(String title, String content, Boolean visibility) {
-        this.title = title;
-        this.content = content;
+    public Faq(String question, String answer, Boolean visibility) {
+        this.question = question;
+        this.answer = answer;
         this.visibility = visibility;
     }
 
-    public void updateTitle(String title) {
-        this.title = title;
+    public void updateTitle(String question) {
+        this.question = question;
     }
 
-    public void updateContent(String content) {
-        this.content = content;
+    public void updateContent(String answer) {
+        this.answer = answer;
     }
 
     public void updateVisibility(Boolean visibility) {

@@ -1,6 +1,6 @@
 package com.example.promotionpage.domain.faq.dao;
 
-public interface FaqTitles {
+public interface FaqQuestions {
     Long getId();
-    String getTitle();
+    String getQuestion();
 }
