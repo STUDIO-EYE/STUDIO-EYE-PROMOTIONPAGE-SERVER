@@ -15,7 +15,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
 	private static final String[] WHITE_LIST = {
-		"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/**", "/error/**", "/"
+		"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/**", "/error/**", "/", "/swagger", "/swagger/**"
 	};
 
 	@Bean

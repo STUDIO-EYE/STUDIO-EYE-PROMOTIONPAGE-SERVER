@@ -17,6 +17,14 @@ configurations {
     }
 }
 
+ext {
+    set('springCloudVersion', "2022.0.4")
+}
+
+jar {
+    enabled = false
+}
+
 repositories {
     mavenCentral()
 }
@@ -40,6 +48,15 @@ dependencies {
     // s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    runtimeOnly 'com.h2database:h2'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {

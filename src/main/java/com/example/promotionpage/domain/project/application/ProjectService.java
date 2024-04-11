@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.promotionpage.domain.views.application.ViewsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,7 @@ public class ProjectService {
 
 	private final ProjectRepository projectRepository;
 	private final S3Adapter s3Adapter;
+	private final ViewsService viewsService;
 
 	public ApiResponse createProject(CreateProjectServiceRequestDto dto , List<MultipartFile> files) {
 		List<String> imageUrlList = new LinkedList<>();
@@ -86,6 +88,9 @@ public class ProjectService {
 	}
 
 	public ApiResponse retrieveAllProject() {
+		// 조회수 증가
+		viewsService.updateThisMonthViews();
+
 		List<Project> projectList = projectRepository.findAll();
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
