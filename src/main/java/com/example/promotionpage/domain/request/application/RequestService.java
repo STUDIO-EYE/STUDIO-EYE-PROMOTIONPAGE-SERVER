@@ -1,9 +1,8 @@
 package com.example.promotionpage.domain.request.application;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import com.example.promotionpage.domain.notification.application.NotificationService;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
@@ -44,11 +43,15 @@ public class RequestService {
 			}
 		}
 
-		Request request = dto.toEntity(fileUrlList);
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+		Integer year = Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime()));
+		Integer month = Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()));
+
+		Request request = dto.toEntity(fileUrlList, year, month);
 		Request savedRequest = requestRepository.save(request);
 
 		notificationService.subscribe(request.getId());    // 문의 등록 알림 보내기
-		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedRequest);
+		return ApiResponse.ok("의뢰를 성공적으로 등록하였습니다.", savedRequest);
 	}
 
 	public ApiResponse retrieveAllRequest() {
@@ -66,7 +69,7 @@ public class RequestService {
 		}
 
 		Request request = optionalRequest.get();
-		return ApiResponse.ok("프로젝트를 성공적으로 조회했습니다.", request);
+		return ApiResponse.ok("의뢰를 성공적으로 조회했습니다.", request);
 	}
 
 	public ApiResponse deleteRequest(Long requestId) {

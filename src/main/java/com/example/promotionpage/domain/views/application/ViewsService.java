@@ -119,7 +119,6 @@ public class ViewsService {
 
     public ApiResponse updateThisMonthViews() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-        System.out.println(Long.parseLong(new SimpleDateFormat("yyyyMM").format(new Date().getTime())));
         return this.updateViewsByYearMonth(
                 Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime())),
                 Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime())));
