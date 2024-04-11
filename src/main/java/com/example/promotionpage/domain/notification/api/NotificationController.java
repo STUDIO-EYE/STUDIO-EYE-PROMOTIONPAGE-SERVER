@@ -20,50 +20,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NotificationController {
 
     private final NotificationService notificationService;
-    public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
-    // 당장은 필요없는 api
-    @Operation(summary = "알림 등록 API")
+    @Operation(summary = "알림 등록 (TEST) API")
     @PostMapping("/notification/{requestId}")
     public ApiResponse createNotification(Long requestId) {
-        return notificationService.createNotification(requestId);
+        return notificationService.subscribe(requestId);
     }
 
-    @Operation(summary = "알림 전체 조회 API")
+    @Operation(summary = "모든 알림 조회 API")
     @GetMapping("/notification")
     public ApiResponse retrieveAllNotification(){
         return notificationService.retrieveAllNotification();
     }
-
-    @Operation(summary = "알림 수정(읽음 처리) API")
-    @PutMapping("/notification/{notificationId}")
-    public ApiResponse checkNotification(@PathVariable Long notificationId){
-        return notificationService.checkNotification(notificationId);
-    }
-
-    @Operation(summary = "알림 삭제 API")
-    @DeleteMapping("/notification/{notificationId}")
-    public ApiResponse deleteNotification(@PathVariable Long notificationId) throws IOException {
-        return notificationService.deleteNotification(notificationId);
-    }
-
-
-//    @Operation(summary = "알림 등록(직접 등록) API")
-//    @PostMapping("/notification")
-//    public ApiResponse createNotification(@Valid @RequestBody CreateNotificationRequestDto dto){
-//        return notificationService.createNotification(dto.toServiceRequest());
-//    }
-//    @Operation(summary = "알림 등록(initial; unread) API")
-//    @PostMapping("/notification/initial")
-//    public ApiResponse createNotification(Long requestId){
-//        return notificationService.justCreateNotification(requestId);
-//    }
-//
-
-//
-//    @Operation(summary = "알림 수정(읽음 처리) API")
-//    @PutMapping("/notification/{notificationId}")
-//    public ApiResponse updateNotification(@PathVariable Long notificationId){
-//        return notificationService.updateNotification(notificationId);
-//    }
 }

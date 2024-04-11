@@ -53,7 +53,7 @@ public class RequestService {
 
 	public ApiResponse retrieveAllRequest() {
 		List<Request> requestList = requestRepository.findAll();
-		if (requestList.isEmpty()){
+		if (requestList.isEmpty()) {
 			return ApiResponse.ok("의뢰가 존재하지 않습니다.");
 		}
 		return ApiResponse.ok("의뢰 목록을 성공적으로 조회했습니다.", requestList);

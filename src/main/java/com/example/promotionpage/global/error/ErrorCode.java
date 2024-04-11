@@ -38,6 +38,10 @@ public enum ErrorCode {
 	USER_IS_EMPTY(HttpStatus.BAD_REQUEST, "User가 존재하지 않습니다."),
 	INVALID_NOTIFICATION_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 notification 식별자입니다."),
 
+	// user notification
+	INVALID_USER_NOTIFICATION_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 user 혹은 notification 식별자입니다."),
+	FAILED_USER_NOTIFICATION_DELETE(HttpStatus.INTERNAL_SERVER_ERROR, "알림 삭제에 실패하였습니다."),
+
 	// sseEmitter
 	INVALID_SSE_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 sse 식별자입니다.");
 

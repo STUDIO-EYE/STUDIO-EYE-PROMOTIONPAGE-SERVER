@@ -16,19 +16,11 @@ public class Notification {
     private Long id;
 
     @Column(nullable = false)
-    private Boolean isRead; // 읽었는지 여부
-
-    @Column(nullable = false)
     private Long requestId; // 문의 ID
 
 
     @Builder
-    public Notification(Boolean isRead, Long requestId) {
-        this.isRead = isRead;
+    public Notification(Long requestId) {
         this.requestId = requestId;
     }
-
-    public void updateIsRead(Boolean isRead) {
-        this.isRead = isRead;
-   }
 }

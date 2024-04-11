@@ -6,6 +6,10 @@ import com.example.promotionpage.domain.notification.dao.NotificationRepository;
 import com.example.promotionpage.domain.notification.domain.Notification;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
 import com.example.promotionpage.domain.user.service.UserServiceImpl;
+import com.example.promotionpage.domain.userNotification.application.UserNotificationService;
+import com.example.promotionpage.domain.userNotification.dao.UserNotificationRepository;
+import com.example.promotionpage.domain.userNotification.domain.UserNotification;
+import com.example.promotionpage.domain.userNotification.dto.request.CreateUserNotificationServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +26,9 @@ import java.util.Optional;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final UserServiceImpl userServiceImpl;
-    private final Boolean READ = true;
-    private final Boolean UNREAD = false;
-
     private final EmitterRepository emitterRepository;
+    private final UserServiceImpl userServiceImpl;
+    private final UserNotificationService userNotificationService;
 
     // 기본 타임아웃 설정
     private static final Long DEFAULT_TIMEOUT = 600L * 1000 * 60;
@@ -39,11 +41,12 @@ public class NotificationService {
             return ApiResponse.withError(ErrorCode.USER_IS_EMPTY);
         } else {
             System.out.println(userIds);
+            Notification notification = new CreateNotificationServiceRequestDto(requestId).toEntity();
             for (Long userId : userIds) {
                 SseEmitter emitter = createEmitter(userId);
                 System.out.println(emitter);
                 emitterRepository.save(userId, emitter);
-                createNotification(requestId);
+                createNotification(userId, notification);
 
                 // Emitter가 완료될 때(모든 데이터가 성공적으로 전송되었을 때) Emitter를 삭제한다.
                 emitter.onCompletion(() -> emitterRepository.deleteById(userId));
@@ -55,9 +58,12 @@ public class NotificationService {
         }
     }
 
-    public ApiResponse createNotification(Long requestId) {
-        Notification notification = new CreateNotificationServiceRequestDto(UNREAD, requestId).toEntity();
+    public ApiResponse createNotification(Long userId, Notification notification) {
+        // notification 저장
         Notification savedNotification = notificationRepository.save(notification);
+
+        // user_notification 저장
+        userNotificationService.createUserNotification(userId, savedNotification.getId());
 
         Collection<SseEmitter> emitters = emitterRepository.getAllEmitters();
         for (SseEmitter emitter : emitters) {
@@ -78,30 +84,7 @@ public class NotificationService {
         if(notificationList.isEmpty()) {
             return ApiResponse.ok("알림이 존재하지 않습니다.");
         }
-        return ApiResponse.ok("알림 목록을 성공적으로 조회했습니다.", notificationList);
-    }
-
-    public ApiResponse deleteNotification(Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId).orElseThrow(
-                () -> new IllegalArgumentException("알림을 찾을 수 없습니다.")
-        );
-
-        notificationRepository.delete(notification);
-        return ApiResponse.ok("알림을 성공적으로 삭제하였습니다.", notification);
-    }
-
-    public ApiResponse checkNotification(Long notificationId) {
-        Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
-        if(optionalNotification.isEmpty()){
-            return ApiResponse.withError(ErrorCode.INVALID_NOTIFICATION_ID);
-        }
-        Notification notification = optionalNotification.get();
-        if(notification.getIsRead().equals(READ)) {
-            return ApiResponse.ok("이미 읽은 알림입니다.", notification);
-        }
-        notification.updateIsRead(READ);
-        Notification checkedNotification = notificationRepository.save(notification);
-        return ApiResponse.ok("알림을 성공적으로 수정(읽음처리)했습니다.", checkedNotification);
+        return ApiResponse.ok("모든 알림 목록을 성공적으로 조회했습니다.", notificationList);
     }
 
     private SseEmitter createEmitter(Long id) {
