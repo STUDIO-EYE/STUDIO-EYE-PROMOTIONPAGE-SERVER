@@ -57,19 +57,22 @@ public class FaqService {
         return ApiResponse.ok("FAQ를 성공적으로 조회했습니다.", faq);
     }
 
-    public ApiResponse updateFaq(Long id, String title, String content) {
-        if(title.trim().isEmpty() || content.trim().isEmpty()) {
-            return ApiResponse.withError(ErrorCode.INVALID_INPUT_VALUE);
-        }
-        Optional<Faq> optionalFaq = faqRepository.findById(id);
+    public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
+        String title = dto.title().trim();
+        String content = dto.content().trim();
+        Optional<Faq> optionalFaq = faqRepository.findById(dto.id());
         if(optionalFaq.isEmpty()) {
             return ApiResponse.withError(ErrorCode.INVALID_FAQ_ID);
         }
 
         Faq faq = optionalFaq.get();
-        faq.updateTitle(title);
-        faq.updateContent(content);
-
+        if(!title.isEmpty()) {
+            faq.updateTitle(title);
+        }
+        if(!content.isEmpty()) {
+            faq.updateContent(content);
+        }
+        }
         Faq updatedFaq = faqRepository.save(faq);
         return ApiResponse.ok("FAQ를 성공적으로 수정하였습니다.", updatedFaq);
     }

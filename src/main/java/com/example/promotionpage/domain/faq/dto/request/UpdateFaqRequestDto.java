@@ -12,6 +12,10 @@ public record UpdateFaqRequestDto (
         String title,
         @Schema(description = "FAQ 내용, 빈 값/공백/null 을 허용하지 않습니다.")
         @NotBlank(message = "FAQ 내용은 필수 값입니다.")
-        String content
+        String content,
+        @Schema(description = "FAQ 공개여부, 빈 값/공백/null 을 허용하지 않습니다.")
+        @NotBlank(message = "FAQ 공개여부는 필수 값입니다.")
 ) {
+        public UpdateFaqServiceRequestDto toServiceRequest() {
+        }
 }
