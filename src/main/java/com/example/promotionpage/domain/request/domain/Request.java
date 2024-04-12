@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

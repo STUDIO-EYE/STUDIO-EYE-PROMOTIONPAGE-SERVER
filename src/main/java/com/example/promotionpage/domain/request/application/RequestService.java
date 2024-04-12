@@ -3,10 +3,15 @@ package com.example.promotionpage.domain.request.application;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.example.promotionpage.domain.email.service.EmailService;
 import com.example.promotionpage.domain.notification.application.NotificationService;
 
 import com.example.promotionpage.domain.request.dao.RequestCount;
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +34,18 @@ public class RequestService {
 	private final S3Adapter s3Adapter;
 
 	private final NotificationService notificationService;
+	private final EmailService emailService;
+
+	private static final String EMAIL_REGEX =
+			"^[a-zA-Z0-9_+&*-]+(?:\\." +
+					"[a-zA-Z0-9_+&*-]+)*@" +
+					"(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+					"A-Z]{2,7}$";
 
 	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
+		if(!isValidEmail(dto.email())) {
+			return ApiResponse.withError(ErrorCode.INVALID_EMAIL_FORMAT);
+		}
 		List<String> fileUrlList = new LinkedList<>();
 		if (files != null) {
 			for (var file : files) {
@@ -51,6 +66,16 @@ public class RequestService {
 		Request request = dto.toEntity(fileUrlList, year, month);
 		Request savedRequest = requestRepository.save(request);
 
+		String subject = "문의가 완료되었습니다."; // 이메일 제목
+		String text = "카테고리: " + savedRequest.getCategory() + "\n"
+				+ "의뢰인 이름: " + savedRequest.getClientName() + "\n"
+				+ "기관 혹은 기업: " + savedRequest.getOrganization() + "\n"
+				+ "연락처: " + savedRequest.getContact() + "\n"
+				+ "이메일 주소: " + savedRequest.getEmail() + "\n"
+				+ "직책: " + savedRequest.getPosition() + "\n"
+				+ "의뢰 내용: " + savedRequest.getDescription();
+
+		emailService.sendEmail(savedRequest.getEmail(), subject, text);
 		notificationService.subscribe(request.getId());    // 문의 등록 알림 보내기
 		return ApiResponse.ok("문의를 성공적으로 등록하였습니다.", savedRequest);
 	}
@@ -98,6 +123,27 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
 
+	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
+		Optional<Request> optionalRequest = requestRepository.findById(requestId);
+		if(optionalRequest.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
+		}
+		Request request = optionalRequest.get();
+
+		String subject = request.getClientName()+"님의 문의에 답변이 작성되었습니다."; // 이메일 제목
+		String text = "카테고리: " + request.getCategory() + "\n"
+				+ "의뢰인 이름: " + request.getClientName() + "\n"
+				+ "기관 혹은 기업: " + request.getOrganization() + "\n"
+				+ "연락처: " + request.getContact() + "\n"
+				+ "이메일 주소: " + request.getEmail() + "\n"
+				+ "직책: " + request.getPosition() + "\n"
+				+ "의뢰 내용: " + request.getDescription() + "\n\n"
+				+ "답변: " + dto.comment();
+
+		emailService.sendEmail(request.getEmail(), subject, text);
+
+		return ApiResponse.ok("답변을 성공적으로 작성했습니다.");
+	}
 
 	public ApiResponse deleteRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
@@ -116,4 +162,11 @@ public class RequestService {
 		if(month<1 || month>12) return false;
 		return true;
 	}
+
+	public static boolean isValidEmail(String email) {
+		Pattern pattern = Pattern.compile(EMAIL_REGEX);
+		Matcher matcher = pattern.matcher(email);
+		return matcher.matches();
+	}
+
 }
