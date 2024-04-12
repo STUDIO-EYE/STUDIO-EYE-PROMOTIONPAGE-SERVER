@@ -33,6 +33,8 @@ public enum ErrorCode {
 
 	// request
 	INVALID_REQUEST_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 request 식별자입니다."),
+	INVALID_REQUEST_MONTH(HttpStatus.BAD_REQUEST, "유효하지 않은 월 형식입니다."),
+	INVALID_REQUEST_PERIOD(HttpStatus.BAD_REQUEST, "기간은 2~12달이어야 합니다."),
 
 	// views
 	INVALID_VIEWS_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 views 식별자입니다."),
