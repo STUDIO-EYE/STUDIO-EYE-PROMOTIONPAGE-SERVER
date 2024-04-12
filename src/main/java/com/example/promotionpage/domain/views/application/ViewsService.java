@@ -52,7 +52,7 @@ public class ViewsService {
         // 월 형식 검사
         if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         // 종료점이 시작점보다 앞에 있을 경우 제한 걸기
-        if(startYear>endYear || (startYear==endYear && startMonth>endMonth)) {
+        if(startYear > endYear || (startYear == endYear && startMonth>endMonth)) {
             return ApiResponse.withError(ErrorCode.INVALID_PERIOD_FORMAT);
         }
         // 2~12달로 제한 걸기
@@ -119,7 +119,6 @@ public class ViewsService {
 
     public ApiResponse updateThisMonthViews() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-        System.out.println(Long.parseLong(new SimpleDateFormat("yyyyMM").format(new Date().getTime())));
         return this.updateViewsByYearMonth(
                 Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime())),
                 Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime())));

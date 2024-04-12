@@ -13,16 +13,18 @@ public record CreateRequestServiceDto(
 	 String position,
 	 String description
 ) {
-	public Request toEntity(List<String> fileUrlList) {
+	public Request toEntity(List<String> fileUrlList, Integer year, Integer month) {
 		return Request.builder()
-			.category(category)
-			.clientName(clientName)
-			.organization(organization)
-			.contact(contact)
-			.email(email)
-			.position(position)
-			.description(description)
-			.fileUrlList(fileUrlList)
-			.build();
+				.category(category)
+				.clientName(clientName)
+				.organization(organization)
+				.contact(contact)
+				.email(email)
+				.position(position)
+				.description(description)
+				.year(year)
+				.month(month)
+				.fileUrlList(fileUrlList)
+				.build();
 	}
 }

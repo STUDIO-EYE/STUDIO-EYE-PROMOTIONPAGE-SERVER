@@ -3,11 +3,7 @@ package com.example.promotionpage.domain.request.domain;
 import java.util.LinkedList;
 import java.util.List;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,13 +32,20 @@ public class Request {
 
 	private String description;
 
+	@Column(name = "year_value")
+	private Integer year;
+
+	@Column(name = "month_value")
+	private Integer month;
+
 	@ElementCollection
 	private List<String> fileUrlList = new LinkedList<>();
 
 	@Builder
 	public Request(String category, String clientName, String organization, String contact, String email,
-		String position,
-		List<String> fileUrlList, String description) {
+				   String position,
+				   List<String> fileUrlList, String description,
+				   Integer year, Integer month) {
 		this.category = category;
 		this.clientName = clientName;
 		this.organization = organization;
@@ -51,5 +54,7 @@ public class Request {
 		this.position = position;
 		this.fileUrlList = fileUrlList;
 		this.description = description;
+		this.year = year;
+		this.month = month;
 	}
 }
