@@ -33,6 +33,8 @@ public class Request {
 
 	private String description;
 
+	private String answer;
+
 	@Column(name = "year_value")
 	private Integer year;
 
@@ -45,7 +47,7 @@ public class Request {
 	@Builder
 	public Request(String category, String clientName, String organization, String contact, String email,
 				   String position,
-				   List<String> fileUrlList, String description,
+				   List<String> fileUrlList, String description, String answer,
 				   Integer year, Integer month) {
 		this.category = category;
 		this.clientName = clientName;
@@ -55,7 +57,12 @@ public class Request {
 		this.position = position;
 		this.fileUrlList = fileUrlList;
 		this.description = description;
+		this.answer = answer;
 		this.year = year;
 		this.month = month;
+	}
+
+	public void updateAnswer(String answer) {
+		this.answer = answer;
 	}
 }

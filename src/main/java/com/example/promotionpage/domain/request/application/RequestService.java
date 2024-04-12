@@ -63,7 +63,7 @@ public class RequestService {
 		Integer year = Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime()));
 		Integer month = Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()));
 
-		Request request = dto.toEntity(fileUrlList, year, month);
+		Request request = dto.toEntity(fileUrlList, "", year, month);
 		Request savedRequest = requestRepository.save(request);
 
 		String subject = "문의가 완료되었습니다."; // 이메일 제목
@@ -124,23 +124,29 @@ public class RequestService {
 	}
 
 	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
+		String answer = dto.answer().trim();
+
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
 		}
 		Request request = optionalRequest.get();
+		request.updateAnswer(answer);
+		Request updatedRequest = requestRepository.save(request);
+		
+		if(!answer.isEmpty()) {
+			String subject = updatedRequest.getClientName() + "님의 문의에 답변이 작성되었습니다."; // 이메일 제목
+			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
+					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
+					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
+					+ "연락처: " + updatedRequest.getContact() + "\n"
+					+ "이메일 주소: " + updatedRequest.getEmail() + "\n"
+					+ "직책: " + updatedRequest.getPosition() + "\n"
+					+ "의뢰 내용: " + updatedRequest.getDescription() + "\n\n"
+					+ "답변: " + updatedRequest.getAnswer();
 
-		String subject = request.getClientName()+"님의 문의에 답변이 작성되었습니다."; // 이메일 제목
-		String text = "카테고리: " + request.getCategory() + "\n"
-				+ "의뢰인 이름: " + request.getClientName() + "\n"
-				+ "기관 혹은 기업: " + request.getOrganization() + "\n"
-				+ "연락처: " + request.getContact() + "\n"
-				+ "이메일 주소: " + request.getEmail() + "\n"
-				+ "직책: " + request.getPosition() + "\n"
-				+ "의뢰 내용: " + request.getDescription() + "\n\n"
-				+ "답변: " + dto.comment();
-
-		emailService.sendEmail(request.getEmail(), subject, text);
+			emailService.sendEmail(updatedRequest.getEmail(), subject, text);
+		}
 
 		return ApiResponse.ok("답변을 성공적으로 작성했습니다.");
 	}
