@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface FaqRepository extends JpaRepository<Faq, Long> {
-    @Query("SELECT f.id AS id, f.title AS title FROM Faq f")
-    List<FaqTitles> findAllTitles();
+    @Query("SELECT f.id AS id, f.question AS question FROM Faq f")
+    List<FaqQuestions> findAllQuestions();
 }

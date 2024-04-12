@@ -1,11 +1,10 @@
 package com.example.promotionpage.domain.faq.application;
 
+import com.example.promotionpage.domain.faq.dao.FaqQuestions;
 import com.example.promotionpage.domain.faq.dao.FaqRepository;
-import com.example.promotionpage.domain.faq.dao.FaqTitles;
 import com.example.promotionpage.domain.faq.domain.Faq;
 import com.example.promotionpage.domain.faq.dto.request.CreateFaqServiceRequestDto;
-import com.example.promotionpage.domain.faq.dto.request.UpdateFaqRequestDto;
-import com.example.promotionpage.domain.views.domain.Views;
+import com.example.promotionpage.domain.faq.dto.request.UpdateFaqServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +22,8 @@ public class FaqService {
     private final FaqRepository faqRepository;
 
     public ApiResponse createFaq(CreateFaqServiceRequestDto dto){
-        if(dto.title().trim().isEmpty() || dto.content().trim().isEmpty()) {
-            return ApiResponse.withError(ErrorCode.INVALID_INPUT_VALUE);
+        if(dto.question().trim().isEmpty() || dto.answer().trim().isEmpty() || dto.visibility() == null) {
+            return ApiResponse.withError(ErrorCode.FAQ_IS_EMPTY);
         }
         Faq faq = dto.toEntity();
         Faq savedFaq = faqRepository.save(faq);
@@ -41,11 +40,11 @@ public class FaqService {
 
 
     public ApiResponse retrieveAllFaqTitle() {
-        List<FaqTitles> faqTitles = faqRepository.findAllTitles();
-        if(faqTitles.isEmpty()) {
+        List<FaqQuestions> faqQuestions = faqRepository.findAllQuestions();
+        if(faqQuestions.isEmpty()) {
             return ApiResponse.ok("FAQ가 존재하지 않습니다.");
         }
-        return ApiResponse.ok("FAQ 목록을 성공적으로 조회했습니다.", faqTitles);
+        return ApiResponse.ok("FAQ 목록을 성공적으로 조회했습니다.", faqQuestions);
     }
 
     public ApiResponse retrieveFaqById(Long id) {
@@ -57,19 +56,25 @@ public class FaqService {
         return ApiResponse.ok("FAQ를 성공적으로 조회했습니다.", faq);
     }
 
-    public ApiResponse updateFaq(Long id, String title, String content) {
-        if(title.trim().isEmpty() || content.trim().isEmpty()) {
-            return ApiResponse.withError(ErrorCode.INVALID_INPUT_VALUE);
-        }
-        Optional<Faq> optionalFaq = faqRepository.findById(id);
+    public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
+        String question = dto.question().trim();
+        String answer = dto.answer().trim();
+        Boolean visibility = dto.visibility();
+        Optional<Faq> optionalFaq = faqRepository.findById(dto.id());
         if(optionalFaq.isEmpty()) {
             return ApiResponse.withError(ErrorCode.INVALID_FAQ_ID);
         }
 
         Faq faq = optionalFaq.get();
-        faq.updateTitle(title);
-        faq.updateContent(content);
-
+        if(!question.isEmpty()) {
+            faq.updateTitle(question);
+        }
+        if(!answer.isEmpty()) {
+            faq.updateContent(answer);
+        }
+        if(visibility != null) {
+            faq.updateVisibility(visibility);
+        }
         Faq updatedFaq = faqRepository.save(faq);
         return ApiResponse.ok("FAQ를 성공적으로 수정하였습니다.", updatedFaq);
     }

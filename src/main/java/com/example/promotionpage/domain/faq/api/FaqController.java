@@ -45,7 +45,7 @@ public class FaqController {
     @Operation(summary = "FAQ 수정 API")
     @PutMapping("/faq")
     public ApiResponse updateFaq(@Valid @RequestBody UpdateFaqRequestDto dto) {
-        return faqService.updateFaq(dto.id(), dto.title(), dto.content());
+        return faqService.updateFaq(dto.toServiceRequest());
     }
 
     @Operation(summary = "id로 FAQ 삭제 API")
