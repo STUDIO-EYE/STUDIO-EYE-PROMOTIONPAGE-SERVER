@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.request.api;
 import java.io.IOException;
 import java.util.List;
 
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +60,12 @@ public class RequestController {
 	public ApiResponse retrieveRequestCountByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
 											@PathVariable Integer endYear, @PathVariable Integer endMonth) {
 		return requestService.retrieveRequestCountByPeriod(startYear, startMonth, endYear, endMonth);
+	}
+
+	@Operation(summary = "문의 답변 등록 API")
+	@PutMapping("/requests/{requestId}/comment")
+	public ApiResponse updateRequestComment(@PathVariable Long requestId, @Valid @RequestBody UpdateRequestCommentDto dto) {
+		return requestService.updateRequestComment(requestId, dto.toServiceRequest());
 	}
 
 }
