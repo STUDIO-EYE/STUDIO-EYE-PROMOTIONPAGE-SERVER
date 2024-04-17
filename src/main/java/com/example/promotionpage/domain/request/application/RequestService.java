@@ -42,6 +42,27 @@ public class RequestService {
 					"(?:[a-zA-Z0-9-]+\\.)+[a-z" +
 					"A-Z]{2,7}$";
 
+	private final Integer waitingState = 0;
+	private final Integer approvedState = 1;
+	private final Integer rejectedState = 2;
+	private final Integer completedState = 3;
+
+
+	private String convertState(Integer state) {
+		if(state == this.approvedState) {
+			return "승인";
+		}
+		if(state == this.completedState) {
+			return "처리 완료";
+		}
+		if(state == this.rejectedState) {
+			return "거절";
+		}
+		if(state == this.waitingState) {
+			return "대기중";
+		}
+		return "해당사항 없음";
+	}
 	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
 		if(!isValidEmail(dto.email())) {
 			return ApiResponse.withError(ErrorCode.INVALID_EMAIL_FORMAT);
@@ -63,8 +84,10 @@ public class RequestService {
 		Integer year = Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime()));
 		Integer month = Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()));
 
-		Request request = dto.toEntity(fileUrlList, "", year, month);
+		Request request = dto.toEntity(fileUrlList, "", year, month, waitingState);
 		Request savedRequest = requestRepository.save(request);
+
+		String state = convertState(savedRequest.getState());
 
 		String subject = "문의가 완료되었습니다."; // 이메일 제목
 		String text = "카테고리: " + savedRequest.getCategory() + "\n"
@@ -73,7 +96,8 @@ public class RequestService {
 				+ "연락처: " + savedRequest.getContact() + "\n"
 				+ "이메일 주소: " + savedRequest.getEmail() + "\n"
 				+ "직책: " + savedRequest.getPosition() + "\n"
-				+ "의뢰 내용: " + savedRequest.getDescription();
+				+ "의뢰 내용: " + savedRequest.getDescription() + "\n"
+				+ "의뢰 상태: " + state;
 
 		emailService.sendEmail(savedRequest.getEmail(), subject, text);
 		notificationService.subscribe(request.getId());    // 문의 등록 알림 보내기
@@ -121,6 +145,18 @@ public class RequestService {
 			return ApiResponse.ok("문의수가 존재하지 않습니다.");
 		}
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
+	}
+
+	public ApiResponse updateRequestState(Long requestId, UpdateRequestCommentServiceDto dto) {
+		Optional<Request> optionalRequest = requestRepository.findById(requestId);
+		if(optionalRequest.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
+		}
+		Request request = optionalRequest.get();
+		request.updateState(dto.answer());
+		Request updatedRequest = requestRepository.save(request);
+
+		return ApiResponse.ok("상태를 성공적으로 수정했습니다.");
 	}
 
 	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
