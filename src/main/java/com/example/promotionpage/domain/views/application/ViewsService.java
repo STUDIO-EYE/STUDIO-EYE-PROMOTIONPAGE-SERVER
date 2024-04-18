@@ -91,10 +91,6 @@ public class ViewsService {
                 }
             }
         }
-
-        if(viewsList.isEmpty()) {
-            return ApiResponse.ok("조회수가 존재하지 않습니다.");
-        }
         return ApiResponse.ok("조회수 목록을 성공적으로 조회했습니다.", viewsList);
     }
 
