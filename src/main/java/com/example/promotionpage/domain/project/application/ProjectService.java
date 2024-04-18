@@ -29,26 +29,25 @@ public class ProjectService {
 	private final S3Adapter s3Adapter;
 	private final ViewsService viewsService;
 
-	public ApiResponse createProject(CreateProjectServiceRequestDto dto , List<MultipartFile> files) {
+	public ApiResponse createProject(CreateProjectServiceRequestDto dto , MultipartFile mainImgFile, List<MultipartFile> files) {
+		String mainImg = getImgUrl(mainImgFile);
+		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+
 		List<String> imageUrlList = new LinkedList<>();
 		if(files != null){
 			for(var file : files){
-				ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
-
-				if(updateFileResponse.getStatus().is5xxServerError()){
-					return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-				}
-				String imageUrl = updateFileResponse.getData();
-				imageUrlList.add(imageUrl);
+				String imageUrl = getImgUrl(file);
+				if (imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+				else imageUrlList.add(imageUrl);
 			}
 		}
 
-		Project project = dto.toEntity(imageUrlList);
+		Project project = dto.toEntity(mainImg, imageUrlList);
 		Project savedProject = projectRepository.save(project);
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedProject);
 	}
 
-	public ApiResponse updateProject(UpdateProjectServiceRequestDto dto, List<MultipartFile> files) {
+	public ApiResponse updateProject(UpdateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -56,26 +55,37 @@ public class ProjectService {
 
 		Project project = optionalProject.get();
 
+		String mainImg = getImgUrl(mainImgFile);
+		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+
 		List<String> imageUrlList = new LinkedList<>();
 		if(files != null){
 			for(var file : files){
-				ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
-
-				if(updateFileResponse.getStatus().is5xxServerError()){
-					return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-				}
-				String imageUrl = updateFileResponse.getData();
-				imageUrlList.add(imageUrl);
+				String imageUrl = getImgUrl(file);
+				if (imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+				else imageUrlList.add(imageUrl);
 			}
 		}
 
 		imageUrlList.addAll(dto.existingImageUrlList());
-		Project updatedProject = project.update(dto, imageUrlList);
+		Project updatedProject = project.update(dto, mainImg, imageUrlList);
 
 		return ApiResponse.ok("프로젝트를 성공적으로 수정했습니다.", updatedProject);
 	}
 
-	public ApiResponse deleteNoticeBoard(Long projectId) {
+
+	private String getImgUrl(MultipartFile file) {
+		ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
+
+		if(updateFileResponse.getStatus().is5xxServerError()){
+
+			return "";
+		}
+		String imageUrl = updateFileResponse.getData();
+		return imageUrl;
+	}
+
+	public ApiResponse deleteProject(Long projectId) {
 		Optional<Project> optionalProject = projectRepository.findById(projectId);
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
