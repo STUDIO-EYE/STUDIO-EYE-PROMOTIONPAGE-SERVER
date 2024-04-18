@@ -61,6 +61,37 @@ public class ViewsService {
             return ApiResponse.withError(ErrorCode.INVALID_VIEWS_PERIOD);
         }
         List<Views> viewsList = viewsRepository.findByYearAndMonthBetween(startYear, startMonth, endYear, endMonth);
+
+        for (int year = startYear; year <= endYear; year++) {
+            int monthStart = (year == startYear) ? startMonth : 1;
+            int monthEnd = (year == endYear) ? endMonth : 12;
+
+            for (int month = monthStart; month <= monthEnd; month++) {
+                boolean found = false;
+
+                // 현재 조회할 연도와 월에 해당하는 인덱스 찾기
+                int index = 0;
+                for (Views view : viewsList) {
+                    // 이미 해당 연도와 월에 대한 데이터가 존재하는 경우
+                    if (view.getYear() == year && view.getMonth() == month) {
+                        found = true;
+                        break;
+                    }
+                    // 현재 연도보다 작은 경우 삽입 위치 찾기
+                    else if (view.getYear() < year || (view.getYear() == year && view.getMonth() < month)) {
+                        // 삽입 위치 계산
+                        index++;
+                    }
+                }
+
+                // 해당 연도와 월에 대한 데이터가 존재하지 않는 경우, 0으로 데이터 추가
+                if (!found) {
+                    // 데이터를 삽입한 후에는 인덱스를 증가시킴
+                    viewsList.add(index, new Views(year, month, 0L));
+                }
+            }
+        }
+
         if(viewsList.isEmpty()) {
             return ApiResponse.ok("조회수가 존재하지 않습니다.");
         }
