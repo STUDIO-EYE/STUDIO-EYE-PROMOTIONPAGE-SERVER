@@ -5,11 +5,7 @@ import java.util.List;
 
 import com.example.promotionpage.domain.project.dto.request.UpdateProjectServiceRequestDto;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,12 +36,14 @@ public class Project {
 
 	private Boolean isPosted;
 
+	private String mainImg;
+
 	@ElementCollection
 	private List<String> imageUrlList = new LinkedList<>();
 
 	@Builder
 	public Project(String department, String category, String name, String client, String date, String link,
-		String overView, List<String> imageUrlList) {
+		String overView, String mainImg, List<String> imageUrlList) {
 		this.department = department;
 		this.category = category;
 		this.name = name;
@@ -53,11 +51,12 @@ public class Project {
 		this.date = date;
 		this.link = link;
 		this.overView = overView;
+		this.mainImg = mainImg;
 		this.imageUrlList = imageUrlList;
 		this.isPosted = false;
 	}
 
-	public Project update(UpdateProjectServiceRequestDto dto, List<String> imageUrlList) {
+	public Project update(UpdateProjectServiceRequestDto dto, String mainImg, List<String> imageUrlList) {
 		this.department = dto.department();
 		this.category = dto.category();
 		this.name = dto.name();
@@ -65,6 +64,7 @@ public class Project {
 		this.date = dto.date();
 		this.link = dto.link();
 		this.overView = dto.overView();
+		this.mainImg = mainImg;
 		this.imageUrlList = imageUrlList;
 		return this;
 	}

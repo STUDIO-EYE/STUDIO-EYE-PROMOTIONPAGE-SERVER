@@ -36,20 +36,24 @@ public class ProjectController {
 
 	@Operation(summary = "프로젝트 등록 API")
 	@PostMapping("/projects")
-	public ApiResponse createProject(@Valid @RequestPart("request") CreateProjectRequestDto dto, @RequestPart(value = "files", required = false) List<MultipartFile> files){
-		return projectService.createProject(dto.toServiceRequest(), files);
+	public ApiResponse createProject(@Valid @RequestPart("request") CreateProjectRequestDto dto,
+									 @RequestPart(value = "file", required = false) MultipartFile mainImgFile,
+									 @RequestPart(value = "files", required = false) List<MultipartFile> files){
+		return projectService.createProject(dto.toServiceRequest(), mainImgFile, files);
 	}
 
 	@Operation(summary = "프로젝트 수정 API")
 	@PutMapping("/projects")
-	public ApiResponse updateProject(@Valid @RequestPart("request") UpdateProjectRequestDto dto, @RequestPart(value = "files", required = false) List<MultipartFile> files){
-		return projectService.updateProject(dto.toServiceRequest(), files);
+	public ApiResponse updateProject(@Valid @RequestPart("request") UpdateProjectRequestDto dto,
+									 @RequestPart(value = "file", required = false) MultipartFile mainImgFile,
+									 @RequestPart(value = "files", required = false) List<MultipartFile> files){
+		return projectService.updateProject(dto.toServiceRequest(), mainImgFile, files);
 	}
 
 	@Operation(summary = "프로젝트 삭제 API")
 	@DeleteMapping("/projects/{projectId}")
 	public ApiResponse deleteProject(@PathVariable Long projectId){
-		return projectService.deleteNoticeBoard(projectId);
+		return projectService.deleteProject(projectId);
 	}
 
 	@Operation(summary = "프로젝트 전체 조회 API")
