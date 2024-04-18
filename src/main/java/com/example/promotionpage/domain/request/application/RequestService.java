@@ -10,8 +10,10 @@ import com.example.promotionpage.domain.email.service.EmailService;
 import com.example.promotionpage.domain.notification.application.NotificationService;
 
 import com.example.promotionpage.domain.request.dao.RequestCount;
+import com.example.promotionpage.domain.request.dao.RequestCountImpl;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
+import com.example.promotionpage.domain.views.domain.Views;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,8 +119,34 @@ public class RequestService {
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_PERIOD);
 		}
 		List<RequestCount> requestCountList = requestRepository.findByYearAndMonthBetween(startYear, startMonth, endYear, endMonth);
-		if(requestCountList.isEmpty()) {
-			return ApiResponse.ok("문의수가 존재하지 않습니다.");
+		for (int year = startYear; year <= endYear; year++) {
+			int monthStart = (year == startYear) ? startMonth : 1;
+			int monthEnd = (year == endYear) ? endMonth : 12;
+
+			for (int month = monthStart; month <= monthEnd; month++) {
+				boolean found = false;
+
+				// 현재 조회할 연도와 월에 해당하는 인덱스 찾기
+				int index = 0;
+				for (RequestCount requestCount : requestCountList) {
+					// 이미 해당 연도와 월에 대한 데이터가 존재하는 경우
+					if (requestCount.getYear() == year && requestCount.getMonth() == month) {
+						found = true;
+						break;
+					}
+					// 현재 연도보다 작은 경우 삽입 위치 찾기
+					else if (requestCount.getYear() < year || (requestCount.getYear() == year && requestCount.getMonth() < month)) {
+						// 삽입 위치 계산
+						index++;
+					}
+				}
+
+				// 해당 연도와 월에 대한 데이터가 존재하지 않는 경우, 0으로 데이터 추가
+				if (!found) {
+					// 데이터를 삽입한 후에는 인덱스를 증가시킴
+					requestCountList.add(index, new RequestCountImpl(year, month, 0L));
+				}
+			}
 		}
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
