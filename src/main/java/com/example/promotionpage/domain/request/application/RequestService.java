@@ -10,15 +10,13 @@ import com.example.promotionpage.domain.email.service.EmailService;
 import com.example.promotionpage.domain.notification.application.NotificationService;
 
 import com.example.promotionpage.domain.request.dao.RequestCount;
-import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
-import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
+import com.example.promotionpage.domain.request.dto.request.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.promotionpage.domain.request.dao.RequestRepository;
 import com.example.promotionpage.domain.request.domain.Request;
-import com.example.promotionpage.domain.request.dto.request.CreateRequestServiceDto;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -147,20 +145,36 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
 
-	public ApiResponse updateRequestState(Long requestId, UpdateRequestCommentServiceDto dto) {
+	public ApiResponse updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
 		}
 		Request request = optionalRequest.get();
-		request.updateState(dto.answer());
+		request.updateState(dto.state());
 		Request updatedRequest = requestRepository.save(request);
+
+		if(dto.state() != null) {
+			String subject = updatedRequest.getClientName() + "님의 문의에 의뢰 상태가 변경되었습니다."; // 이메일 제목
+			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
+					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
+					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
+					+ "연락처: " + updatedRequest.getContact() + "\n"
+					+ "이메일 주소: " + updatedRequest.getEmail() + "\n"
+					+ "직책: " + updatedRequest.getPosition() + "\n"
+					+ "의뢰 내용: " + updatedRequest.getDescription() + "\n\n"
+					+ "답변: " + updatedRequest.getAnswer() + "\n"
+					+ "의뢰 상태: " + convertState(dto.state());
+
+			emailService.sendEmail(updatedRequest.getEmail(), subject, text);
+		}
 
 		return ApiResponse.ok("상태를 성공적으로 수정했습니다.");
 	}
 
 	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
 		String answer = dto.answer().trim();
+		Integer state = dto.state();
 
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
@@ -168,9 +182,12 @@ public class RequestService {
 		}
 		Request request = optionalRequest.get();
 		request.updateAnswer(answer);
+		if(state != null) {
+			request.updateState(state);
+		}
 		Request updatedRequest = requestRepository.save(request);
 		
-		if(!answer.isEmpty()) {
+		if(!answer.isEmpty() && state != null) {
 			String subject = updatedRequest.getClientName() + "님의 문의에 답변이 작성되었습니다."; // 이메일 제목
 			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
 					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
@@ -179,7 +196,8 @@ public class RequestService {
 					+ "이메일 주소: " + updatedRequest.getEmail() + "\n"
 					+ "직책: " + updatedRequest.getPosition() + "\n"
 					+ "의뢰 내용: " + updatedRequest.getDescription() + "\n\n"
-					+ "답변: " + updatedRequest.getAnswer();
+					+ "답변: " + updatedRequest.getAnswer() + "\n"
+					+ "의뢰 상태: " + convertState(state);
 
 			emailService.sendEmail(updatedRequest.getEmail(), subject, text);
 		}

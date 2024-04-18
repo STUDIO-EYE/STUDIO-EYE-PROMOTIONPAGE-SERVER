@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestStateDto;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,6 +67,12 @@ public class RequestController {
 	@PutMapping("/requests/{requestId}/comment")
 	public ApiResponse updateRequestComment(@PathVariable Long requestId, @Valid @RequestBody UpdateRequestCommentDto dto) {
 		return requestService.updateRequestComment(requestId, dto.toServiceRequest());
+	}
+
+	@Operation(summary = "문의 상태 변경 API")
+	@PutMapping("/requests/{requestId}/state")
+	public ApiResponse updateRequestComment(@PathVariable Long requestId, @Valid @RequestBody UpdateRequestStateDto dto) {
+		return requestService.updateRequestState(requestId, dto.toServiceRequest());
 	}
 
 }

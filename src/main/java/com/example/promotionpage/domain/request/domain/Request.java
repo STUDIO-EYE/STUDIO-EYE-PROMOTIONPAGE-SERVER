@@ -68,7 +68,7 @@ public class Request {
 	public void updateAnswer(String answer) {
 		this.answer = answer;
 	}
-	public void updateState(String state) {
-		this.answer = state;
+	public void updateState(Integer state) {
+		this.state = state;
 	}
 }
