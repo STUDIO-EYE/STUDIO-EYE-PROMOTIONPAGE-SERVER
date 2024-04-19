@@ -41,6 +41,8 @@ public class Request {
 	@Column(name = "month_value")
 	private Integer month;
 
+	private Integer state;
+
 	@ElementCollection
 	private List<String> fileUrlList = new LinkedList<>();
 
@@ -48,7 +50,7 @@ public class Request {
 	public Request(String category, String clientName, String organization, String contact, String email,
 				   String position,
 				   List<String> fileUrlList, String description, String answer,
-				   Integer year, Integer month) {
+				   Integer year, Integer month, Integer state) {
 		this.category = category;
 		this.clientName = clientName;
 		this.organization = organization;
@@ -60,9 +62,13 @@ public class Request {
 		this.answer = answer;
 		this.year = year;
 		this.month = month;
+		this.state = state;
 	}
 
 	public void updateAnswer(String answer) {
 		this.answer = answer;
+	}
+	public void updateState(Integer state) {
+		this.state = state;
 	}
 }

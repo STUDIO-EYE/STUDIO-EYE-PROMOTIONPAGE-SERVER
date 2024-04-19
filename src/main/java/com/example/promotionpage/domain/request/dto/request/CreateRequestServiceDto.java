@@ -13,7 +13,7 @@ public record CreateRequestServiceDto(
 	 String position,
 	 String description
 ) {
-	public Request toEntity(List<String> fileUrlList, String answer, Integer year, Integer month) {
+	public Request toEntity(List<String> fileUrlList, String answer, Integer year, Integer month, Integer state) {
 		return Request.builder()
 				.category(category)
 				.clientName(clientName)
@@ -26,6 +26,7 @@ public record CreateRequestServiceDto(
 				.year(year)
 				.month(month)
 				.fileUrlList(fileUrlList)
+				.state(state)
 				.build();
 	}
 }
