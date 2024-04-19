@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.promotionpage.domain.project.domain.ProjectImage;
 import com.example.promotionpage.domain.views.application.ViewsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,20 +30,32 @@ public class ProjectService {
 	private final S3Adapter s3Adapter;
 	private final ViewsService viewsService;
 
-	public ApiResponse createProject(CreateProjectServiceRequestDto dto , MultipartFile mainImgFile, List<MultipartFile> files) {
+	public ApiResponse createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
-		List<String> imageUrlList = new LinkedList<>();
-		if(files != null){
-			for(var file : files){
+		List<ProjectImage> projectImages = new LinkedList<>();
+		if (files != null) {
+			for (MultipartFile file : files) {
 				String imageUrl = getImgUrl(file);
 				if (imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-				else imageUrlList.add(imageUrl);
+
+				String fileName = file.getOriginalFilename(); // 원본 파일 이름 가져오기
+				ProjectImage projectImage = ProjectImage.builder()
+						.imageUrlList(imageUrl)
+						.fileName(fileName)
+						.build();
+				projectImages.add(projectImage);
 			}
 		}
 
-		Project project = dto.toEntity(mainImg, imageUrlList);
+		Project project = dto.toEntity(mainImg, projectImages);
+
+		// ProjectImage의 project 필드 설정
+		for (ProjectImage projectImage : projectImages) {
+			projectImage.setProject(project);
+		}
+
 		Project savedProject = projectRepository.save(project);
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedProject);
 	}
@@ -54,22 +67,40 @@ public class ProjectService {
 		}
 
 		Project project = optionalProject.get();
+		// 기존 이미지들 전체 삭제
+		List<ProjectImage> existingImages = project.getProjectImages();
+		// S3에서 기존 이미지들 삭제
+		for (ProjectImage image : existingImages) {
+			String fileName = image.getFileName();
+			// S3Adapter의 deleteFile 메소드를 호출하여 이미지를 삭제
+			s3Adapter.deleteFile(fileName);
+		}
+		project.getProjectImages().clear();
 
+		// 새로운 메인이미지 저장
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		project.setMainImg(mainImg);
 
-		List<String> imageUrlList = new LinkedList<>();
-		if(files != null){
-			for(var file : files){
+		// 기존 이미지 + 새로운 이미지들 저장
+		List<ProjectImage> projectImages = new LinkedList<>();
+		if (files != null) {
+			for (MultipartFile file : files) {
 				String imageUrl = getImgUrl(file);
 				if (imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-				else imageUrlList.add(imageUrl);
+
+				String fileName = file.getOriginalFilename(); // 원본 파일 이름 가져오기
+				ProjectImage projectImage = ProjectImage.builder()
+						.project(project)
+						.imageUrlList(imageUrl)
+						.fileName(fileName)
+						.build();
+				projectImages.add(projectImage);
 			}
+			project.getProjectImages().addAll(projectImages);
 		}
 
-		imageUrlList.addAll(dto.existingImageUrlList());
-		Project updatedProject = project.update(dto, mainImg, imageUrlList);
-
+		Project updatedProject = projectRepository.save(project);
 		return ApiResponse.ok("프로젝트를 성공적으로 수정했습니다.", updatedProject);
 	}
 
@@ -101,7 +132,7 @@ public class ProjectService {
 		// 조회수 증가
 		viewsService.updateThisMonthViews();
 
-		List<Project> projectList = projectRepository.findAll();
+		List<Project> projectList = projectRepository.findAllWithImages();
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
 		}

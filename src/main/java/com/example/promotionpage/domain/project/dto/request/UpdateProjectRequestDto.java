@@ -38,12 +38,10 @@ public record UpdateProjectRequestDto(
 
 	@Schema(description = "overView는 빈 값/공백/null 을 허용하지 않습니다.")
 	@NotBlank(message = "overView는 필수 값입니다.")
-	String overView,
-
-	List<String> existingImageUrlList
+	String overView
 
 ) {
 	public UpdateProjectServiceRequestDto toServiceRequest() {
-		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView, existingImageUrlList);
+		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView);
 	}
 }
