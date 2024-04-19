@@ -5,14 +5,13 @@ import java.util.List;
 
 import com.example.promotionpage.domain.project.dto.request.UpdateProjectServiceRequestDto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project {
 
@@ -38,12 +37,13 @@ public class Project {
 
 	private String mainImg;
 
-	@ElementCollection
-	private List<String> imageUrlList = new LinkedList<>();
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	private List<ProjectImage> projectImages = new LinkedList<>();
 
 	@Builder
 	public Project(String department, String category, String name, String client, String date, String link,
-		String overView, String mainImg, List<String> imageUrlList) {
+		String overView, String mainImg, List<ProjectImage> projectImages) {
 		this.department = department;
 		this.category = category;
 		this.name = name;
@@ -52,21 +52,8 @@ public class Project {
 		this.link = link;
 		this.overView = overView;
 		this.mainImg = mainImg;
-		this.imageUrlList = imageUrlList;
+		this.projectImages = projectImages;
 		this.isPosted = false;
-	}
-
-	public Project update(UpdateProjectServiceRequestDto dto, String mainImg, List<String> imageUrlList) {
-		this.department = dto.department();
-		this.category = dto.category();
-		this.name = dto.name();
-		this.client = dto.client();
-		this.date = dto.date();
-		this.link = dto.link();
-		this.overView = dto.overView();
-		this.mainImg = mainImg;
-		this.imageUrlList = imageUrlList;
-		return this;
 	}
 
 	public Project updatePostingStatus(Boolean isPosted) {
