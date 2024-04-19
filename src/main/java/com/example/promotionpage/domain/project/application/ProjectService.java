@@ -101,6 +101,13 @@ public class ProjectService {
 		}
 
 		Project updatedProject = projectRepository.save(project);
+		updatedProject.setDepartment(dto.department());
+		updatedProject.setCategory(dto.category());
+		updatedProject.setName(dto.name());
+		updatedProject.setClient(dto.client());
+		updatedProject.setDate(dto.date());
+		updatedProject.setLink(dto.link());
+		updatedProject.setOverView(dto.overView());
 		return ApiResponse.ok("프로젝트를 성공적으로 수정했습니다.", updatedProject);
 	}
 
