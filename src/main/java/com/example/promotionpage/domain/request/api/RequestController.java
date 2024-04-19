@@ -63,6 +63,18 @@ public class RequestController {
 		return requestService.retrieveRequestCountByPeriod(startYear, startMonth, endYear, endMonth);
 	}
 
+	@Operation(summary = "접수 대기 중인 문의 수 조회 API")
+	@GetMapping("/requests/waiting/count")
+	public ApiResponse retrieveWaitingRequestCount() {
+		return requestService.retrieveWaitingRequestCount();
+	}
+
+	@Operation(summary = "접수 대기 중인 문의 목록 조회 API")
+	@GetMapping("/requests/waiting")
+	public ApiResponse retrieveWaitingRequest() {
+		return requestService.retrieveWaitingRequest();
+	}
+
 	@Operation(summary = "문의 답변 등록 API")
 	@PutMapping("/requests/{requestId}/comment")
 	public ApiResponse updateRequestComment(@PathVariable Long requestId, @Valid @RequestBody UpdateRequestCommentDto dto) {

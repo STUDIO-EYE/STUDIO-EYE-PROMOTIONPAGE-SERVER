@@ -175,6 +175,20 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
 
+	public ApiResponse retrieveWaitingRequestCount() {
+		Long requestCount = requestRepository.countByState(this.waitingState);
+		return ApiResponse.ok("접수 대기 중인 문의 수를 성공적으로 조회했습니다.", requestCount);
+	}
+
+	public ApiResponse retrieveWaitingRequest() {
+		List<Request> requestList = requestRepository.findByState(this.waitingState);
+
+		if (requestList.isEmpty()){
+			return ApiResponse.ok("접수 대기 중인 문의가 존재하지 않습니다.");
+		}
+		return ApiResponse.ok("접수 대기 중인 문의 목록을 성공적으로 조회했습니다.", requestList);
+	}
+
 	public ApiResponse updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
@@ -258,5 +272,4 @@ public class RequestService {
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
 	}
-
 }

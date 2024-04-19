@@ -9,12 +9,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
-//    @Query("SELECT r.year AS year, r.month AS month, COUNT(r) AS requestCount " +
-//            "FROM Request r " +
-//            "WHERE (r.year = :startYear AND r.month >= :startMonth) " +
-//            "OR (r.year = :endYear AND r.month <= :endMonth) " +
-//            "OR (r.year > :startYear AND r.year < :endYear) " +
-//            "GROUP BY r.year, r.month")
+    List<Request> findByState(Integer state);
+    Long countByState(Integer state);
     @Query("SELECT r.year AS year, r.month AS month, COUNT(r) AS requestCount " +
             "FROM Request r " +
             "WHERE (r.year > :startYear OR (r.year = :startYear AND r.month >= :startMonth)) " +
