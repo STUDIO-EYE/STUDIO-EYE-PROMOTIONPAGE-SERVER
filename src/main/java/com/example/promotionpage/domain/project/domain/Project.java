@@ -56,7 +56,17 @@ public class Project {
 		this.isPosted = false;
 	}
 
-	public Project updatePostingStatus(Boolean isPosted) {
+	public Project update(UpdateProjectServiceRequestDto dto) {
+		this.department = dto.department();
+		this.category = dto.category();
+		this.name = dto.name();
+		this.client = dto.client();
+		this.date = dto.date();
+		this.link = dto.link();
+		this.overView = dto.overView();
+		return this;
+	}
+		public Project updatePostingStatus(Boolean isPosted) {
 		this.isPosted = isPosted;
 		return this;
 	}
