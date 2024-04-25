@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.promotionpage.domain.project.domain.ProjectImage;
+import com.example.promotionpage.domain.project.dto.request.UpdateProjectTypeDto;
 import com.example.promotionpage.domain.views.application.ViewsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,9 @@ public class ProjectService {
 	private final ProjectRepository projectRepository;
 	private final S3Adapter s3Adapter;
 	private final ViewsService viewsService;
+	private static final String TOP_PROJECT_TYPE = "top";
+	private static final String MAIN_PROJECT_TYPE = "main";
+	private static final String OTHERS_PROJECT_TYPE = "others";
 
 	public ApiResponse createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		String mainImg = getImgUrl(mainImgFile);
@@ -161,6 +165,31 @@ public class ProjectService {
 		Project updatedProject = project.updatePostingStatus(dto.isPosted());
 
 		return ApiResponse.ok("프로젝트 게시 여부를 성공적으로 변경하였습니다.", updatedProject);
+
+	}
+
+	public ApiResponse updateProjectType(UpdateProjectTypeDto dto) {
+		String projectType = dto.projectType();
+		switch (projectType) {
+			case TOP_PROJECT_TYPE:
+			case MAIN_PROJECT_TYPE:
+			case OTHERS_PROJECT_TYPE:
+				// 받아온 projectType String 값이 유효한 경우
+				Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
+				if(optionalProject.isEmpty()){
+					return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
+				}
+
+				Project project = optionalProject.get();
+				Project updatedProject = project.updateProjectType(dto.projectType());
+
+				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedProject);
+			default:
+				// 유효하지 않은 값일 경우
+				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
+		}
+
+
 
 	}
 }
