@@ -117,6 +117,20 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 조회했습니다.", responseBody);
     }
 
+    public ApiResponse retrieveAllClientLogoImgList() {
+        List<Client> clientList = clientRepository.findAll();
+        if (clientList.isEmpty()){
+            return ApiResponse.ok("클라이언트가 존재하지 않습니다.");
+        }
+
+        List<String> logoImgList = new ArrayList<>();
+        for (Client client : clientList) {
+            logoImgList.add(client.getLogoImg());
+        }
+
+        return ApiResponse.ok("클라이언트 로고 이미지 리스트를 성공적으로 조회했습니다.", logoImgList);
+    }
+
     private static Map<String, Object> getResponseBody(Client client) {
         // post와 get의 구조 통일
         LinkedHashMap<String, Object> responseBody = new LinkedHashMap<>();

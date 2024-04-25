@@ -61,5 +61,11 @@ public class ClientController {
         return clientService.retrieveClient(clientId);
     }
 
+    @Operation(summary = "클라이언트 로고 이미지 리스트 조회 API")
+    @GetMapping("/client/logoImgList")
+    public ApiResponse retrieveAllClientLogoImgList(){
+        return clientService.retrieveAllClientLogoImgList();
+    }
+
 
 }
