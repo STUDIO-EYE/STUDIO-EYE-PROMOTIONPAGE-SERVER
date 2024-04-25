@@ -27,6 +27,8 @@ public enum ErrorCode {
 	// project
 	INVALID_PROJECT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 project 식별자입니다."),
 	INVALID_PROJECT_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 project type입니다."),
+	TOP_PROJECT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "TOP PROJECT가 이미 존재합니다."),
+	MAIN_PROJECT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "MAIN PROJECT의 개수 제한을 초과했습니다."),
 
 	// partner information
 	INVALID_PARTNER_INFORMATION_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 partner information 식별자입니다."),

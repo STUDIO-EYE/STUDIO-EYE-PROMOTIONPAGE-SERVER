@@ -170,26 +170,31 @@ public class ProjectService {
 
 	public ApiResponse updateProjectType(UpdateProjectTypeDto dto) {
 		String projectType = dto.projectType();
+		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
+		if(optionalProject.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
+		}
+		Project project = optionalProject.get();
+
 		switch (projectType) {
+			// 받아온 projectType String 값이 유효한 경우
 			case TOP_PROJECT_TYPE:
-			case MAIN_PROJECT_TYPE:
-			case OTHERS_PROJECT_TYPE:
-				// 받아온 projectType String 값이 유효한 경우
-				Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
-				if(optionalProject.isEmpty()){
-					return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
+				List<Project> topProject = projectRepository.findByProjectType(projectType);
+				// TOP 프로젝트가 이미 존재하고, 전달된 프로젝트 id가 이미 존재하는 TOP 프로젝트 id와 다른 경우
+				if (!topProject.isEmpty() && !project.getId().equals(topProject.get(0).getId())) {
+					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
 				}
-
-				Project project = optionalProject.get();
+			case MAIN_PROJECT_TYPE:
+				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
+				// "main"인 프로젝트가 이미 5개 이상인 경우
+				if (mainProjects.size() >= 5) {
+					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
+				}
+			case OTHERS_PROJECT_TYPE:
 				Project updatedProject = project.updateProjectType(dto.projectType());
-
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedProject);
-			default:
-				// 유효하지 않은 값일 경우
+			default: // 유효하지 않은 값일 경우
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
-
-
-
 	}
 }
