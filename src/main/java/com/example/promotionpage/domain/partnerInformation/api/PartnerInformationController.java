@@ -33,8 +33,8 @@ public class PartnerInformationController {
 
 	@Operation(summary = "협력사 정보 등록 API")
 	@PostMapping("/partners")
-	public ApiResponse createPartnerInfo(@Valid @RequestPart("request") CreatePartnerInfoRequestDto dto, @RequestPart(value = "file", required = false) MultipartFile file){
-		return partnerInformationService.createPartnerInfo(dto.toServiceRequest(), file);
+	public ApiResponse createPartnerInfo(@Valid @RequestPart("partnerInfo") CreatePartnerInfoRequestDto dto, @RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
+		return partnerInformationService.createPartnerInfo(dto.toServiceRequest(), logoImg);
 	}
 
 	@Operation(summary = "협력사 정보 삭제 API")
@@ -54,5 +54,12 @@ public class PartnerInformationController {
 	public ApiResponse retrievePartnerInfo(@PathVariable Long partnerId){
 		return partnerInformationService.retrievePartnerInfo(partnerId);
 	}
+
+	@Operation(summary = "협력사 로고 이미지 리스트 조회 API")
+	@GetMapping("/partners/logoImgList")
+	public ApiResponse retrieveAllPartnerLogoImgList(){
+		return partnerInformationService.retrieveAllPartnerLogoImgList();
+	}
+
 
 }
