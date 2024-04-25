@@ -36,6 +36,13 @@ public class ClientController {
         return clientService.updateClient(dto.toServiceRequest(), logoImg);
     }
 
+    @Operation(summary = "클라이언트 로고 이미지 수정 API")
+    @PutMapping("/client/{clientId}/logoImg")
+    public ApiResponse updateClientLogoImg(@PathVariable Long clientId,
+                                    @RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
+        return clientService.updateClientLogoImg(clientId, logoImg);
+    }
+
     @Operation(summary = "클라이언트 삭제 API")
     @DeleteMapping("/client/{clientId}")
     public ApiResponse deleteClient(@PathVariable Long clientId){

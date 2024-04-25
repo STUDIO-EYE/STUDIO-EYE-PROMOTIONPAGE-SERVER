@@ -50,6 +50,22 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 수정했습니다.", updatedClient);
     }
 
+    public ApiResponse updateClientLogoImg(Long clientId, MultipartFile logoImg) {
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
+        if (optionalClient.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
+        }
+
+        Client client = optionalClient.get();
+
+        // 새로운 로고이미지 저장
+        String logoImgStr = getImgUrl(logoImg);
+        if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+        client.setLogoImg(logoImgStr);
+
+        Client updatedClient = clientRepository.save(client);
+        return ApiResponse.ok("클라이언트 로고 이미지를 성공적으로 수정했습니다.", updatedClient);
+    }
 
     private String getImgUrl(MultipartFile file) {
         ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
