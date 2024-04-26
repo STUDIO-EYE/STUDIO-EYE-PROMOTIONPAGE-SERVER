@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,11 +27,15 @@ public class Views {
 
 	private Long views;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdAt;
+
 	@Builder
-	public Views(Integer year, Integer month, Long views) {
+	public Views(Integer year, Integer month, Long views, Date createdAt) {
 		this.year = year;
 		this.month = month;
 		this.views = views;
+		this.createdAt = createdAt;
 	}
 
 	public void updateViews(Long views) {
