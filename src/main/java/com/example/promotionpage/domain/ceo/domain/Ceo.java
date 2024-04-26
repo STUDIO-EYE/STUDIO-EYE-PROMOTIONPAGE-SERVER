@@ -1,14 +1,14 @@
 package com.example.promotionpage.domain.ceo.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,13 +24,13 @@ public class Ceo {
     @NotNull
     private String introduction;
 
-    @NotNull
-    private String imageUrl;
+    @ElementCollection
+    private List<String> imageUrlList = new LinkedList<>();
 
     @Builder
-    public Ceo(String name, String introduction, String imageUrl) {
+    public Ceo(String name, String introduction, List<String> imageUrlList) {
         this.name = name;
         this.introduction = introduction;
-        this.imageUrl = imageUrl;
+        this.imageUrlList = imageUrlList;
     }
 }
