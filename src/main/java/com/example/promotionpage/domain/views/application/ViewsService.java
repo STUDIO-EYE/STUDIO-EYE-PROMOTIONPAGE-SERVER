@@ -35,7 +35,8 @@ public class ViewsService {
 
     private ApiResponse justCreateViews(CreateViewsServiceDto dto) {
         if(!checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
-        Views views = dto.toEntity();
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+        Views views = dto.toEntity(new Date());
         Views savedViews = viewsRepository.save(views);
         return ApiResponse.ok("조회 수 등록을 완료했습니다.", savedViews);
     }
@@ -87,7 +88,7 @@ public class ViewsService {
                 // 해당 연도와 월에 대한 데이터가 존재하지 않는 경우, 0으로 데이터 추가
                 if (!found) {
                     // 데이터를 삽입한 후에는 인덱스를 증가시킴
-                    viewsList.add(index, new Views(year, month, 0L));
+                    viewsList.add(index, new Views(year, month, 0L, new Date()));
                 }
             }
         }
