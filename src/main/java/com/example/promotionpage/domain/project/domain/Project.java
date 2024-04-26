@@ -14,6 +14,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project {
+	private static final String OTHERS_PROJECT_TYPE = "others";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +33,8 @@ public class Project {
 	private String link;
 
 	private String overView;
+
+	private String projectType;
 
 	private Boolean isPosted;
 
@@ -54,6 +57,7 @@ public class Project {
 		this.mainImg = mainImg;
 		this.projectImages = projectImages;
 		this.isPosted = false;
+		this.projectType = OTHERS_PROJECT_TYPE;
 	}
 
 	public Project update(UpdateProjectServiceRequestDto dto) {
@@ -66,8 +70,13 @@ public class Project {
 		this.overView = dto.overView();
 		return this;
 	}
-		public Project updatePostingStatus(Boolean isPosted) {
+	public Project updatePostingStatus(Boolean isPosted) {
 		this.isPosted = isPosted;
+		return this;
+	}
+
+	public Project updateProjectType(String projectType) {
+		this.projectType = projectType;
 		return this;
 	}
 }

@@ -91,7 +91,7 @@ public class RequestService {
 
 		String state = convertState(savedRequest.getState());
 
-		String subject = "문의가 완료되었습니다."; // 이메일 제목
+		String subject = "[studio-eye] 문의가 완료되었습니다."; // 이메일 제목
 		String text = "카테고리: " + savedRequest.getCategory() + "\n"
 				+ "의뢰인 이름: " + savedRequest.getClientName() + "\n"
 				+ "기관 혹은 기업: " + savedRequest.getOrganization() + "\n"
@@ -199,7 +199,7 @@ public class RequestService {
 		Request updatedRequest = requestRepository.save(request);
 
 		if(dto.state() != null) {
-			String subject = updatedRequest.getClientName() + "님의 문의에 의뢰 상태가 변경되었습니다."; // 이메일 제목
+			String subject = "[studio-eye] [" + convertState(dto.state()) + "]" + updatedRequest.getClientName() + "님의 문의에 의뢰 상태가 " + convertState(dto.state()) + "으로 변경되었습니다."; // 이메일 제목
 			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
 					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
 					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
@@ -232,7 +232,7 @@ public class RequestService {
 		Request updatedRequest = requestRepository.save(request);
 		
 		if(!answer.isEmpty() && state != null) {
-			String subject = updatedRequest.getClientName() + "님의 문의에 답변이 작성되었습니다."; // 이메일 제목
+			String subject = "[studio-eye] [" + convertState(state) + "]" + updatedRequest.getClientName() + "님의 문의에 답변이 작성되었습니다."; // 이메일 제목
 			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
 					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
 					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
