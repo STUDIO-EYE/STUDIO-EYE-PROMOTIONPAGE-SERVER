@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.project.api;
 
 import java.util.List;
 
+import com.example.promotionpage.domain.project.dto.request.UpdateProjectTypeDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,9 +70,15 @@ public class ProjectController {
 	}
 
 	@Operation(summary = "게시 여부 변경 API")
-	@PostMapping("/projects/is-posted")
+	@PutMapping("/projects/is-posted")
 	public ApiResponse updatePostingStatus(@Valid @RequestBody UpdatePostingStatusDto dto){
 		return projectService.updatePostingStatus(dto);
+	}
+
+	@Operation(summary = "프로젝트 타입 변경 API")
+	@PutMapping("/projects/project-type")
+	public ApiResponse updateProjectType(@Valid @RequestBody UpdateProjectTypeDto dto){
+		return projectService.updateProjectType(dto);
 	}
 
 }
