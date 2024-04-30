@@ -1,5 +1,6 @@
 package com.example.promotionpage.domain.request.dto.request;
 
+import java.util.Date;
 import java.util.List;
 
 import com.example.promotionpage.domain.request.domain.Request;
@@ -13,7 +14,7 @@ public record CreateRequestServiceDto(
 	 String position,
 	 String description
 ) {
-	public Request toEntity(List<String> fileUrlList, String answer, Integer year, Integer month, Integer state) {
+	public Request toEntity(List<String> fileUrlList, String answer, Integer year, Integer month, Integer state, Date date) {
 		return Request.builder()
 				.category(category)
 				.clientName(clientName)
@@ -27,6 +28,7 @@ public record CreateRequestServiceDto(
 				.month(month)
 				.fileUrlList(fileUrlList)
 				.state(state)
+				.createdAt(date)
 				.build();
 	}
 }

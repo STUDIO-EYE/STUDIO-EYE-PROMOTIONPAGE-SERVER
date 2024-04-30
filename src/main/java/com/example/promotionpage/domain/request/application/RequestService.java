@@ -86,7 +86,7 @@ public class RequestService {
 		Integer year = Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime()));
 		Integer month = Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()));
 
-		Request request = dto.toEntity(fileUrlList, "", year, month, waitingState);
+		Request request = dto.toEntity(fileUrlList, "", year, month, waitingState, new Date());
 		Request savedRequest = requestRepository.save(request);
 
 		String state = convertState(savedRequest.getState());

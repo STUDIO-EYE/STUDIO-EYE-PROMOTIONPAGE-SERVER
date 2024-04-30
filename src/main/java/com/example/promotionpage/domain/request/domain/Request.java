@@ -1,5 +1,6 @@
 package com.example.promotionpage.domain.request.domain;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,11 +47,14 @@ public class Request {
 	@ElementCollection
 	private List<String> fileUrlList = new LinkedList<>();
 
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdAt;
+
 	@Builder
 	public Request(String category, String clientName, String organization, String contact, String email,
 				   String position,
 				   List<String> fileUrlList, String description, String answer,
-				   Integer year, Integer month, Integer state) {
+				   Integer year, Integer month, Integer state, Date createdAt) {
 		this.category = category;
 		this.clientName = clientName;
 		this.organization = organization;
@@ -63,6 +67,7 @@ public class Request {
 		this.year = year;
 		this.month = month;
 		this.state = state;
+		this.createdAt = createdAt;
 	}
 
 	public void updateAnswer(String answer) {
