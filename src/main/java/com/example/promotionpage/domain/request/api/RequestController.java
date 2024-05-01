@@ -63,6 +63,13 @@ public class RequestController {
 		return requestService.retrieveRequestCountByPeriod(startYear, startMonth, endYear, endMonth);
 	}
 
+	@Operation(summary = "기간(시작점(연도, 월)~종료점(연도, 월))으로 카테고리별 문의 수 조회 API")
+	@GetMapping("/requests/category/{startYear}/{startMonth}/{endYear}/{endMonth}")
+	public ApiResponse retrieveCategoryRequestCountByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+													@PathVariable Integer endYear, @PathVariable Integer endMonth) {
+		return requestService.retrieveCategoryRequestCountByPeriod(startYear, startMonth, endYear, endMonth);
+	}
+
 	@Operation(summary = "접수 대기 중인 문의 수 조회 API")
 	@GetMapping("/requests/waiting/count")
 	public ApiResponse retrieveWaitingRequestCount() {
