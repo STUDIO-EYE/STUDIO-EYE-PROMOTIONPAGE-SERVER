@@ -9,6 +9,10 @@ public record CreateRequestDto(
 	 @NotBlank(message = "category는 필수 값입니다.")
 	 String category,
 
+	 @Schema(description = "프로젝트명, 빈 값/공백/null 을 허용하지 않습니다.")
+	 @NotBlank(message = "projectName는 필수 값입니다.")
+	 String projectName,
+
 	 @Schema(description = "의뢰인 이름, 빈 값/공백/null 을 허용하지 않습니다.")
 	 @NotBlank(message = "clientName은 필수 값입니다.")
 	 String clientName,
@@ -35,6 +39,6 @@ public record CreateRequestDto(
 	 String description
 ) {
 	public CreateRequestServiceDto toServiceRequest() {
-		return new CreateRequestServiceDto(category, clientName, organization, contact, email, position, description);
+		return new CreateRequestServiceDto(category, projectName, clientName, organization, contact, email, position, description);
 	}
 }

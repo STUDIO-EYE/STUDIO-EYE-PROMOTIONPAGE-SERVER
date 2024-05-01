@@ -20,6 +20,8 @@ public class Request {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	private String projectName;
+
 	private String category;
 
 	private String clientName;
@@ -51,11 +53,12 @@ public class Request {
 	private Date createdAt;
 
 	@Builder
-	public Request(String category, String clientName, String organization, String contact, String email,
+	public Request(String category, String projectName, String clientName, String organization, String contact, String email,
 				   String position,
 				   List<String> fileUrlList, String description, String answer,
 				   Integer year, Integer month, Integer state, Date createdAt) {
 		this.category = category;
+		this.projectName = projectName;
 		this.clientName = clientName;
 		this.organization = organization;
 		this.contact = contact;
