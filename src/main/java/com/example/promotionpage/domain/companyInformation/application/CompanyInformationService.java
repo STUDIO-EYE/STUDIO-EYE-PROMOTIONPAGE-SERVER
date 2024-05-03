@@ -31,7 +31,9 @@ public class CompanyInformationService {
     public ApiResponse createCompanyInformation(CreateCompanyInformationServiceRequestDto dto,
                                                 MultipartFile logoImage,
                                                 MultipartFile sloganImage) throws IOException {
+        String logoImageFileName = null;
         String logoImageUrl = null;
+        String sloganImageFileName = null;
         String sloganImageUrl = null;
         if(logoImage != null && sloganImage != null) {
             ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
@@ -41,9 +43,11 @@ public class CompanyInformationService {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
             }
             logoImageUrl = updateLogoFileResponse.getData();
+            logoImageFileName = logoImage.getOriginalFilename();
             sloganImageUrl = updateSloganFileResponse.getData();
+            sloganImageFileName = sloganImage.getOriginalFilename();
         }
-        CompanyInformation companyInformation = dto.toEntity(logoImageUrl, sloganImageUrl);
+        CompanyInformation companyInformation = dto.toEntity(logoImageFileName, logoImageUrl, sloganImageFileName, sloganImageUrl);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("회사 정보를 성공적으로 등록하였습니다.", savedCompanyInformation);
     }

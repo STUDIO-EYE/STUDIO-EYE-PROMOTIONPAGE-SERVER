@@ -22,6 +22,9 @@ public class CompanyInformation {
     private String address;
 
     @NotNull
+    private String logoImageFileName;
+
+    @NotNull
     private String logoImageUrl;
 
     @NotNull
@@ -34,18 +37,29 @@ public class CompanyInformation {
     private String introduction;
 
     @NotNull
+    private String sloganImageFileName;
+
+    @NotNull
     private String sloganImageUrl;
 
     @ElementCollection
     private Map<String, String> detailInformation;
 
     @Builder
-    public CompanyInformation(String address, String logoImageUrl, String phone, String fax, String introduction, String sloganImageUrl, Map<String, String> detailInformation) {
+    public CompanyInformation(String address,
+                              String logoImageFileName, String logoImageUrl,
+                              String phone,
+                              String fax,
+                              String introduction,
+                              String sloganImageFileName, String sloganImageUrl,
+                              Map<String, String> detailInformation) {
         this.address = address;
+        this.logoImageFileName = logoImageFileName;
         this.logoImageUrl = logoImageUrl;
         this.phone = phone;
         this.fax = fax;
         this.introduction = introduction;
+        this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
         this.detailInformation = detailInformation;
     }

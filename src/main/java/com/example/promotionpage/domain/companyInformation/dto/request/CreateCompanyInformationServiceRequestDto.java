@@ -11,13 +11,16 @@ public record CreateCompanyInformationServiceRequestDto(
         String introduction,
         Map<String, String> detailInformation
 ) {
-    public CompanyInformation toEntity(String logoImageUrl, String sloganImageUrl) {
+    public CompanyInformation toEntity(String logoImageFileName, String logoImageUrl,
+                                       String sloganImageFileName, String sloganImageUrl) {
         return CompanyInformation.builder()
                 .address(address)
                 .phone(phone)
                 .fax(fax)
                 .introduction(introduction)
+                .logoImageFileName(logoImageFileName)
                 .logoImageUrl(logoImageUrl)
+                .sloganImageFileName(sloganImageFileName)
                 .sloganImageUrl(sloganImageUrl)
                 .detailInformation(detailInformation)
                 .build();
