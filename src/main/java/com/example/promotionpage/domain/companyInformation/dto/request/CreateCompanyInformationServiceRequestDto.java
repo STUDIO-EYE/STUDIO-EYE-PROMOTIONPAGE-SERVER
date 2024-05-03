@@ -25,4 +25,8 @@ public record CreateCompanyInformationServiceRequestDto(
                 .detailInformation(detailInformation)
                 .build();
     }
+
+    public UpdateAllCompanyInformationServiceRequestDto toUpdateServiceRequest() {
+        return new UpdateAllCompanyInformationServiceRequestDto(address, phone, fax, introduction, detailInformation);
+    }
 }
