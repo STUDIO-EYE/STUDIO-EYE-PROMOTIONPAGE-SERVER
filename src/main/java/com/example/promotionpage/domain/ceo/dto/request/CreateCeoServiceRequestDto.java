@@ -16,4 +16,7 @@ public record CreateCeoServiceRequestDto(
                 .imageUrl(imageUrl)
                 .build();
     }
+    public UpdateCeoServiceRequestDto toUpdateServiceRequest() {
+        return new UpdateCeoServiceRequestDto(name, introduction);
+    }
 }

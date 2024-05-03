@@ -29,6 +29,10 @@ public class CeoService {
     private final S3Adapter s3Adapter;
 
     public ApiResponse createCeoInformation(CreateCeoServiceRequestDto dto, MultipartFile file) {
+        List<Ceo> ceoList = ceoRepository.findAll();
+        if(ceoList.size() > 0) {
+            return updateCeoInformation(dto.toUpdateServiceRequest(), file);
+        }
         String imageUrl = null;
         if (file != null) {
             ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
@@ -76,4 +80,13 @@ public class CeoService {
     }
 
 
+    public ApiResponse deleteCeoInformation() {
+        List<Ceo> ceoList = ceoRepository.findAll();
+        if(ceoList.isEmpty()) {
+            ApiResponse.withError(ErrorCode.CEO_IS_EMPTY);
+        }
+        Ceo ceo = ceoList.get(0);
+        ceoRepository.delete(ceo);
+        return ApiResponse.ok("CEO 정보를 성공적으로 삭제했습니다.");
+    }
 }

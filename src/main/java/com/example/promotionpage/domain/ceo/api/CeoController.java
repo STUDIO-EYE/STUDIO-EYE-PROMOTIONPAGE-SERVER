@@ -42,4 +42,10 @@ public class CeoController {
                                             @RequestPart(value = "file", required = false) MultipartFile file) {
         return ceoService.updateCeoInformation(dto.toServiceRequest(), file);
     }
+
+    @Operation(summary = "CEO 전체 정보 삭제 API")
+    @DeleteMapping("/ceo")
+    public ApiResponse deleteCeoInformation() {
+        return ceoService.deleteCeoInformation();
+    }
 }
