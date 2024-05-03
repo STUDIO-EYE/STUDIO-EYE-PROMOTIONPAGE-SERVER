@@ -1,14 +1,12 @@
 package com.example.promotionpage.domain.ceo.domain;
 
+import com.example.promotionpage.domain.ceo.dto.request.UpdateCeoServiceRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -24,13 +22,24 @@ public class Ceo {
     @NotNull
     private String introduction;
 
-    @ElementCollection
-    private List<String> imageUrlList = new LinkedList<>();
+    @NotNull
+    private String imageFileName;
+
+    @NotNull
+    private String imageUrl;
 
     @Builder
-    public Ceo(String name, String introduction, List<String> imageUrlList) {
+    public Ceo(String name, String introduction, String imageFileName, String imageUrl) {
         this.name = name;
         this.introduction = introduction;
-        this.imageUrlList = imageUrlList;
+        this.imageFileName = imageFileName;
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateCeoInformation(UpdateCeoServiceRequestDto dto, String imageFileName, String imageUrl) {
+        this.name = dto.name();
+        this.introduction = dto.introduction();
+        this.imageFileName = imageFileName;
+        this.imageUrl = imageUrl;
     }
 }
