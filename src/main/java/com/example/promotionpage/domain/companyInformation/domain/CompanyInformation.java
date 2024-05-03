@@ -1,5 +1,9 @@
 package com.example.promotionpage.domain.companyInformation.domain;
 
+import com.example.promotionpage.domain.companyInformation.dto.request.UpdateAllCompanyInformationServiceRequestDto;
+import com.example.promotionpage.domain.companyInformation.dto.request.UpdateCompanyBasicInformationServiceRequestDto;
+import com.example.promotionpage.domain.companyInformation.dto.request.UpdateCompanyDetailInformationServiceRequestDto;
+import com.example.promotionpage.domain.companyInformation.dto.request.UpdateCompanyIntroductionInformationServiceRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -62,5 +66,59 @@ public class CompanyInformation {
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
         this.detailInformation = detailInformation;
+    }
+
+    public void deleteLogoImage() {
+        this.logoImageFileName = null;
+        this.logoImageUrl = null;
+    }
+
+    public void deleteCompanyBasicInformation() {
+        this.address = null;
+        this.phone = null;
+        this.fax = null;
+    }
+
+    public void deleteCompanyDetailInformation() {
+        this.detailInformation = null;
+    }
+
+    public void deleteCompanyIntroductionInformation() {
+        this.introduction = null;
+        this.sloganImageFileName = null;
+        this.sloganImageUrl = null;
+    }
+
+    public void updateCompanyLogo(String logoImageFileName, String logoImageUrl) {
+        this.logoImageFileName = logoImageFileName;
+        this.logoImageUrl = logoImageUrl;
+    }
+
+    public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+        this.address = dto.address();
+        this.logoImageFileName = logoImageFileName;
+        this.logoImageUrl = logoImageUrl;
+        this.phone = dto.phone();
+        this.fax = dto.fax();
+        this.introduction = dto.introduction();
+        this.sloganImageFileName = sloganImageFileName;
+        this.sloganImageUrl = sloganImageUrl;
+        this.detailInformation = dto.detailInformation();
+    }
+
+    public void updateCompanyBasicInformation(UpdateCompanyBasicInformationServiceRequestDto dto) {
+        this.address = dto.address();
+        this.phone = dto.phone();
+        this.fax = dto.fax();
+    }
+
+    public void updateCompanyDetailInformation(UpdateCompanyDetailInformationServiceRequestDto dto) {
+        this.detailInformation = dto.detailInformation();
+    }
+
+    public void updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto, String sloganImageFileName, String sloganImageUrl) {
+        this.introduction = dto.introduction();
+        this.sloganImageFileName = sloganImageFileName;
+        this.sloganImageUrl = sloganImageUrl;
     }
 }

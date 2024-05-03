@@ -62,13 +62,13 @@ public class CompanyInformationController {
     @PutMapping("/company/information")
     public ApiResponse updateAllCompanyInformation(@Valid @RequestPart("request") UpdateAllCompanyInformationRequestDto dto,
                                                    @RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
-                                                   @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) {
+                                                   @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.updateAllCompanyInformation(dto.toServiceRequest(), logoImageUrl, sloganImageUrl);
     }
 
     @Operation(summary = "회사 로고 이미지 수정 API")
     @PutMapping("/company/logo")
-    public ApiResponse updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl) {
+    public ApiResponse updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl) throws IOException {
         return companyInformationService.updateCompanyLogoImage(logoImageUrl);
     }
 
@@ -81,7 +81,7 @@ public class CompanyInformationController {
     @Operation(summary = "회사 소개 정보(소개 문구, 로고 이미지 수정 API")
     @PutMapping("/company/introduction")
     public ApiResponse updateCompanyIntroductionInformation(@Valid @RequestPart("request") UpdateCompanyIntroductionInformationRequestDto dto,
-                                                            @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) {
+                                                            @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.updateCompanyIntroductionInformation(dto.toServiceRequest(), sloganImageUrl);
     }
 
@@ -99,8 +99,8 @@ public class CompanyInformationController {
 
     @Operation(summary = "회사 로고 이미지 삭제 API")
     @DeleteMapping("/company/logo")
-    public ApiResponse deleteCampanyLogoImage() {
-        return companyInformationService.deleteCampanyLogoImage();
+    public ApiResponse deleteCompanyLogoImage() {
+        return companyInformationService.deleteCompanyLogoImage();
     }
 
     @Operation(summary = "회사 기본 정보(주소, 유선번호, 팩스번호) 삭제 API")
