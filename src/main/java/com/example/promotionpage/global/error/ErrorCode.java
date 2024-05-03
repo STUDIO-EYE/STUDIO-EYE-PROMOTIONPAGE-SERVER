@@ -65,7 +65,10 @@ public enum ErrorCode {
 
 	// CompanyInformation
 	INVALID_COMPANYINFORMATION_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 company information 식별자입니다."),
-	COMPANYINFORMATION_IS_EMPTY(HttpStatus.BAD_REQUEST, "CompanyInformation가 존재하지 않습니다.");
+	COMPANYINFORMATION_IS_EMPTY(HttpStatus.BAD_REQUEST, "CompanyInformation가 존재하지 않습니다."),
+
+	// Ceo
+	CEO_IS_EMPTY(HttpStatus.BAD_REQUEST, "CEO 정보가 존재하지 않습니다.");
 
 	private final HttpStatus status;
 	private final String message;
