@@ -62,7 +62,7 @@ public class CeoService {
         List<Ceo> ceoList = ceoRepository.findAll();
         if(!ceoList.isEmpty()) {
             String ceoImageFileName = ceoList.get(0).getImageFileName();
-            s3Adapter.deleteFile(ceoImageFileName);
+            if(ceoImageFileName != null) s3Adapter.deleteFile(ceoImageFileName);
         }
         if(file != null) {
             ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);

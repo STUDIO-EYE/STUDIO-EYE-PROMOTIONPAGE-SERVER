@@ -54,7 +54,6 @@ public class CompanyInformationService {
             sloganImageUrl = updateSloganFileResponse.getData();
             sloganImageFileName = sloganImage.getOriginalFilename();
         }
-        System.out.println(logoImageFileName+", "+logoImageUrl+" / "+sloganImageFileName+", "+sloganImageUrl);
         CompanyInformation companyInformation = dto.toEntity(logoImageFileName, logoImageUrl, sloganImageFileName, sloganImageUrl);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("회사 정보를 성공적으로 등록하였습니다.", savedCompanyInformation);
@@ -112,22 +111,18 @@ public class CompanyInformationService {
     public ApiResponse updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto,
                                                    MultipartFile logoImage,
                                                    MultipartFile sloganImage) throws IOException {
-        System.out.println("updateAllCompanyInformation");
         String logoImageFileName = null;
         String logoImageUrl = null;
         String sloganImageFileName = null;
         String sloganImageUrl = null;
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
-        System.out.println("updateAllCompanyInformation1");
         if (!companyInformations.isEmpty()) {
             String logoFileName = companyInformations.get(0).getLogoImageFileName();
             if(logoFileName != null) s3Adapter.deleteFile(logoFileName);
             String sloganFileName = companyInformations.get(0).getSloganImageFileName();
             if(sloganFileName != null) s3Adapter.deleteFile(sloganFileName);
         }
-        System.out.println("updateAllCompanyInformation2");
         if(logoImage != null) {
-            System.out.println("inside if updateAllCompanyInformation2");
             ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
             if (updateLogoFileResponse.getStatus().is5xxServerError()) {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
@@ -135,9 +130,7 @@ public class CompanyInformationService {
             logoImageUrl = updateLogoFileResponse.getData();
             logoImageFileName = logoImage.getOriginalFilename();
         }
-        System.out.println("updateAllCompanyInformation3");
         if(sloganImage != null) {
-            System.out.println("inside if updateAllCompanyInformation3");
             ApiResponse<String> updateSloganFileResponse = s3Adapter.uploadFile(sloganImage);
 
             if (updateSloganFileResponse.getStatus().is5xxServerError()) {
@@ -146,7 +139,6 @@ public class CompanyInformationService {
             sloganImageUrl = updateSloganFileResponse.getData();
             sloganImageFileName = sloganImage.getOriginalFilename();
         }
-        System.out.println(logoImageFileName+", "+logoImageUrl+" / "+sloganImageFileName+", "+sloganImageUrl);
         CompanyInformation companyInformation = companyInformations.get(0);
         companyInformation.updateAllCompanyInformation(dto, logoImageFileName, logoImageUrl, sloganImageFileName, sloganImageUrl);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
