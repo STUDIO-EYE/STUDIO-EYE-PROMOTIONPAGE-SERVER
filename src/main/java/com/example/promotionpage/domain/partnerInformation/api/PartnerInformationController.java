@@ -37,19 +37,6 @@ public class PartnerInformationController {
 		return partnerInformationService.createPartnerInfo(dto.toServiceRequest(), logoImg);
 	}
 
-	@Operation(summary = "협력사 정보 삭제 API")
-	@DeleteMapping("/partners/{partnerId}")
-	public ApiResponse deletePartnerInfo(@PathVariable Long partnerId){
-		return partnerInformationService.deletePartnerInfo(partnerId);
-	}
-
-	@Operation(summary = "클라이언트 로고 이미지 수정 API")
-	@PutMapping("/partners/{partnerId}/logoImg")
-	public ApiResponse updatePartnerLogoImg(@PathVariable Long partnerId,
-										   @RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
-		return partnerInformationService.updatePartnerLogoImg(partnerId, logoImg);
-	}
-
 	@Operation(summary = "협력사 목록 전체 조회 API")
 	@GetMapping("/partners")
 	public ApiResponse retrieveAllPartnerInfo(){
@@ -68,5 +55,16 @@ public class PartnerInformationController {
 		return partnerInformationService.retrieveAllPartnerLogoImgList();
 	}
 
+	@Operation(summary = "클라이언트 로고 이미지 수정 API")
+	@PutMapping("/partners/{partnerId}/logoImg")
+	public ApiResponse updatePartnerLogoImg(@PathVariable Long partnerId,
+											@RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
+		return partnerInformationService.updatePartnerLogoImg(partnerId, logoImg);
+	}
 
+	@Operation(summary = "협력사 정보 삭제 API")
+	@DeleteMapping("/partners/{partnerId}")
+	public ApiResponse deletePartnerInfo(@PathVariable Long partnerId){
+		return partnerInformationService.deletePartnerInfo(partnerId);
+	}
 }
