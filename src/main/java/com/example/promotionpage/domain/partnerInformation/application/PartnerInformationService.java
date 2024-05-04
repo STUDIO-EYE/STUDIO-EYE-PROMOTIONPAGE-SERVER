@@ -2,6 +2,8 @@ package com.example.promotionpage.domain.partnerInformation.application;
 
 import java.util.*;
 
+import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
+import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoServiceRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -137,4 +139,28 @@ public class PartnerInformationService {
 		return responseBody;
 	}
 
+	public ApiResponse updatePartnerInfo(UpdatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
+		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(dto.id());
+		if(optionalPartnerInformation.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
+		}
+		PartnerInformation partnerInformation = optionalPartnerInformation.get();
+
+		String logoImgStr = null;
+		if(!logoImg.isEmpty()) logoImgStr = getImgUrl(logoImg);
+		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+
+		if(!logoImgStr.equals(partnerInformation.getLogoImageUrl())) {
+			ApiResponse<String> deleteFileResponse = s3Adapter.deleteFile(partnerInformation.getLogoImageUrl().split("/")[3]);
+			if(deleteFileResponse.getStatus().is5xxServerError()){
+				return ApiResponse.withError(ErrorCode.ERROR_S3_DELETE_OBJECT);
+			}
+			partnerInformation.setLogoImageUrl(logoImgStr);
+		}
+		partnerInformation.setIs_main(dto.is_main());
+		partnerInformation.setLink(dto.link());
+
+		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
+		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
+	}
 }

@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.partnerInformation.api;
 
 import java.util.List;
 
+import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,8 @@ public class PartnerInformationController {
 
 	@Operation(summary = "협력사 정보 등록 API")
 	@PostMapping("/partners")
-	public ApiResponse createPartnerInfo(@Valid @RequestPart("partnerInfo") CreatePartnerInfoRequestDto dto, @RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
+	public ApiResponse createPartnerInfo(@Valid @RequestPart("partnerInfo") CreatePartnerInfoRequestDto dto,
+										 @RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
 		return partnerInformationService.createPartnerInfo(dto.toServiceRequest(), logoImg);
 	}
 
@@ -55,7 +57,14 @@ public class PartnerInformationController {
 		return partnerInformationService.retrieveAllPartnerLogoImgList();
 	}
 
-	@Operation(summary = "클라이언트 로고 이미지 수정 API")
+	@Operation(summary = "협력사 전체 수정 API")
+	@PutMapping("/partners")
+	public ApiResponse updatePartnerInfo(@Valid @RequestPart("partnerInfo") UpdatePartnerInfoRequestDto dto,
+											@RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
+		return partnerInformationService.updatePartnerInfo(dto.toServiceRequest(), logoImg);
+	}
+
+	@Operation(summary = "협력사 로고 이미지 수정 API")
 	@PutMapping("/partners/{partnerId}/logoImg")
 	public ApiResponse updatePartnerLogoImg(@PathVariable Long partnerId,
 											@RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
