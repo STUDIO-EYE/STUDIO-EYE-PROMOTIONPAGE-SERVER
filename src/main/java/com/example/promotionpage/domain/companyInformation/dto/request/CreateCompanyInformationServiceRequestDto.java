@@ -5,6 +5,8 @@ import com.example.promotionpage.domain.companyInformation.domain.CompanyInforma
 import java.util.Map;
 
 public record CreateCompanyInformationServiceRequestDto(
+        String mainOverview,
+        String commitment,
         String address,
         String phone,
         String fax,
@@ -14,6 +16,8 @@ public record CreateCompanyInformationServiceRequestDto(
     public CompanyInformation toEntity(String logoImageFileName, String logoImageUrl,
                                        String sloganImageFileName, String sloganImageUrl) {
         return CompanyInformation.builder()
+                .mainOverview(mainOverview)
+                .commitment(commitment)
                 .address(address)
                 .phone(phone)
                 .fax(fax)
@@ -27,6 +31,6 @@ public record CreateCompanyInformationServiceRequestDto(
     }
 
     public UpdateAllCompanyInformationServiceRequestDto toUpdateServiceRequest() {
-        return new UpdateAllCompanyInformationServiceRequestDto(address, phone, fax, introduction, detailInformation);
+        return new UpdateAllCompanyInformationServiceRequestDto(mainOverview, commitment, address, phone, fax, introduction, detailInformation);
     }
 }

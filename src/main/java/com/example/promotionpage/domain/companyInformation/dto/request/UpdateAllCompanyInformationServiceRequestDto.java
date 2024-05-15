@@ -5,6 +5,8 @@ import com.example.promotionpage.domain.companyInformation.domain.CompanyInforma
 import java.util.Map;
 
 public record UpdateAllCompanyInformationServiceRequestDto(
+        String mainOverview,
+        String commitment,
         String address,
         String phone,
         String fax,

@@ -23,6 +23,12 @@ public class CompanyInformation {
     private Long id;
 
     @NotNull
+    private String mainOverview;
+
+    @NotNull
+    private String commitment;
+
+    @NotNull
     private String address;
 
     @NotNull
@@ -50,13 +56,16 @@ public class CompanyInformation {
     private Map<String, String> detailInformation;
 
     @Builder
-    public CompanyInformation(String address,
+    public CompanyInformation(String mainOverview, String commitment,
+                              String address,
                               String logoImageFileName, String logoImageUrl,
                               String phone,
                               String fax,
                               String introduction,
                               String sloganImageFileName, String sloganImageUrl,
                               Map<String, String> detailInformation) {
+        this.mainOverview = mainOverview;
+        this.commitment = commitment;
         this.address = address;
         this.logoImageFileName = logoImageFileName;
         this.logoImageUrl = logoImageUrl;
@@ -95,6 +104,8 @@ public class CompanyInformation {
     }
 
     public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+        this.mainOverview = dto.mainOverview();
+        this.commitment = dto.commitment();
         this.address = dto.address();
         this.logoImageFileName = logoImageFileName;
         this.logoImageUrl = logoImageUrl;
