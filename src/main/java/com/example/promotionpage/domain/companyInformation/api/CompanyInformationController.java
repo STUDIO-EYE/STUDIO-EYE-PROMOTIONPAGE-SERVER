@@ -65,6 +65,11 @@ public class CompanyInformationController {
                                                    @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.updateAllCompanyInformation(dto.toServiceRequest(), logoImageUrl, sloganImageUrl);
     }
+    @Operation(summary = "회사 전체 텍스트 정보(이미지 제외) 수정 API")
+    @PutMapping("/company/information/modify")
+    public ApiResponse updateAllCompanyInformation(@Valid @RequestPart("request") UpdateAllCompanyInformationRequestDto dto) throws IOException {
+        return companyInformationService.updateAllCompanyTextInformation(dto.toServiceRequest());
+    }
 
     @Operation(summary = "회사 로고 이미지 수정 API")
     @PutMapping("/company/logo")

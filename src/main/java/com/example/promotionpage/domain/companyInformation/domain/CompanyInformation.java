@@ -117,6 +117,16 @@ public class CompanyInformation {
         this.detailInformation = dto.detailInformation();
     }
 
+    public void updateAllCompanyTextInformation(UpdateAllCompanyInformationServiceRequestDto dto) {
+        this.mainOverview = dto.mainOverview();
+        this.commitment = dto.commitment();
+        this.address = dto.address();
+        this.phone = dto.phone();
+        this.fax = dto.fax();
+        this.introduction = dto.introduction();
+        this.detailInformation = dto.detailInformation();
+    }
+
     public void updateCompanyBasicInformation(UpdateCompanyBasicInformationServiceRequestDto dto) {
         this.address = dto.address();
         this.phone = dto.phone();
