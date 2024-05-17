@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "FAQ API", description = "FAQ 등록 / 수정 / 삭제 / 조회")
 @RestController
 @RequestMapping("/api")
@@ -54,5 +56,9 @@ public class FaqController {
         return faqService.deleteFaq(id);
     }
 
-
+    @Operation(summary = "id로 FAQ 복수 삭제 API")
+    @DeleteMapping("/faq")
+    public ApiResponse deleteFaqs(@RequestBody List<Long> ids) {
+        return faqService.deleteFaqs(ids);
+    }
 }

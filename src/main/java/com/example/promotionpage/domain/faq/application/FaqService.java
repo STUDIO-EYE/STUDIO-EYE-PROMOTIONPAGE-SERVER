@@ -88,4 +88,16 @@ public class FaqService {
         faqRepository.delete(faq);
         return ApiResponse.ok("FAQ를 성공적으로 삭제했습니다.");
     }
+    public ApiResponse deleteFaqs(List<Long> ids) {
+        for(Long id : ids) {
+            System.out.println("아이디가 이거라고"+id);
+            Optional<Faq> optionalFaq = faqRepository.findById(id);
+            if (optionalFaq.isEmpty()) {
+                return ApiResponse.withError(ErrorCode.INVALID_FAQ_ID);
+            }
+            Faq faq = optionalFaq.get();
+            faqRepository.delete(faq);
+        }
+        return ApiResponse.ok("FAQ를 성공적으로 삭제했습니다.");
+    }
 }
