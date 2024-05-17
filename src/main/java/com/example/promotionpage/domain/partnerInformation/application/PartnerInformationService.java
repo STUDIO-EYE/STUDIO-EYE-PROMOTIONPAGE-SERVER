@@ -163,4 +163,18 @@ public class PartnerInformationService {
 		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
 		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
 	}
+
+	public ApiResponse updatePartnerInfoText(UpdatePartnerInfoServiceRequestDto dto) {
+		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(dto.id());
+		if(optionalPartnerInformation.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
+		}
+		PartnerInformation partnerInformation = optionalPartnerInformation.get();
+
+		partnerInformation.setIs_main(dto.is_main());
+		partnerInformation.setLink(dto.link());
+
+		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
+		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
+	}
 }

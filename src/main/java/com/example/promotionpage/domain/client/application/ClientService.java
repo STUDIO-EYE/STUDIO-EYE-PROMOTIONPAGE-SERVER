@@ -40,13 +40,27 @@ public class ClientService {
 
         Client client = optionalClient.get();
 
-        // 새로운 로고이미지 저장
-        String logoImgStr = getImgUrl(logoImg);
-        if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-        client.setLogoImg(logoImgStr);
+        if(!logoImg.isEmpty()) {
+            // 새로운 로고이미지 저장
+            String logoImgStr = getImgUrl(logoImg);
+            if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            client.setLogoImg(logoImgStr);
+        }
 
         Client updatedClient = clientRepository.save(client);
         updatedClient.update(dto);
+        return ApiResponse.ok("클라이언트를 성공적으로 수정했습니다.", updatedClient);
+    }
+
+    public ApiResponse updateClientText(UpdateClientServiceRequestDto dto) {
+        Optional<Client> optionalClient = clientRepository.findById(dto.clientId());
+        if(optionalClient.isEmpty()){
+            return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
+        }
+
+        Client client = optionalClient.get();
+        client.update(dto);
+        Client updatedClient = clientRepository.save(client);
         return ApiResponse.ok("클라이언트를 성공적으로 수정했습니다.", updatedClient);
     }
 

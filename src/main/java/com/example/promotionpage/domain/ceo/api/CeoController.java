@@ -43,6 +43,18 @@ public class CeoController {
         return ceoService.updateCeoInformation(dto.toServiceRequest(), file);
     }
 
+    @Operation(summary = "CEO 텍스트(이미지 제외) 정보 수정 API")
+    @PutMapping("/ceo/modify")
+    public ApiResponse updateCeoTextInformation(@Valid @RequestPart("request") UpdateCeoRequestDto dto) {
+        return ceoService.updateCeoTextInformation(dto.toServiceRequest());
+    }
+
+    @Operation(summary = "CEO 텍스트(이미지 제외) 정보 수정 API")
+    @PutMapping("/ceo/image")
+    public ApiResponse updateCeoImageInformation(@RequestPart(value = "file", required = false) MultipartFile file) {
+        return ceoService.updateCeoImageInformation(file);
+    }
+
     @Operation(summary = "CEO 전체 정보 삭제 API")
     @DeleteMapping("/ceo")
     public ApiResponse deleteCeoInformation() {

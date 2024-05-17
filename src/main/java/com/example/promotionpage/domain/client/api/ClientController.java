@@ -35,6 +35,11 @@ public class ClientController {
                                     @RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
         return clientService.updateClient(dto.toServiceRequest(), logoImg);
     }
+    @Operation(summary = "클라이언트 텍스트(이미지 제외) 수정 API")
+    @PutMapping("/client/modify")
+    public ApiResponse updateClientText(@Valid @RequestPart("clientInfo") UpdateClientRequestDto dto){
+        return clientService.updateClientText(dto.toServiceRequest());
+    }
 
     @Operation(summary = "클라이언트 로고 이미지 수정 API")
     @PutMapping("/client/{clientId}/logoImg")
