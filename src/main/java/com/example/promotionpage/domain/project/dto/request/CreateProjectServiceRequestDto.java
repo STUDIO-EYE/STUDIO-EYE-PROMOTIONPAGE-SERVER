@@ -14,7 +14,7 @@ public record CreateProjectServiceRequestDto(
 	String link,
 	String overView
 ) {
-	public Project toEntity(String mainImg, List<ProjectImage> projectImages) {
+	public Project toEntity(String mainImg, List<ProjectImage> projectImages, long count) {
 		return Project.builder()
 			.department(department)
 			.category(category)
@@ -25,6 +25,7 @@ public record CreateProjectServiceRequestDto(
 			.overView(overView)
 			.mainImg(mainImg)
 			.projectImages(projectImages)
+				.sequence((int) (count + 1))
 			.build();
 	}
 }

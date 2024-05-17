@@ -5,17 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.promotionpage.domain.project.domain.ProjectImage;
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectTypeDto;
+import com.example.promotionpage.domain.project.dto.request.*;
 import com.example.promotionpage.domain.views.application.ViewsService;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.promotionpage.domain.project.dao.ProjectRepository;
 import com.example.promotionpage.domain.project.domain.Project;
-import com.example.promotionpage.domain.project.dto.request.CreateProjectServiceRequestDto;
-import com.example.promotionpage.domain.project.dto.request.UpdatePostingStatusDto;
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectServiceRequestDto;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -52,8 +50,8 @@ public class ProjectService {
 				projectImages.add(projectImage);
 			}
 		}
-
-		Project project = dto.toEntity(mainImg, projectImages);
+		long count = projectRepository.count();
+		Project project = dto.toEntity(mainImg, projectImages, count);
 
 		// ProjectImage의 project 필드 설정
 		for (ProjectImage projectImage : projectImages) {
@@ -109,6 +107,20 @@ public class ProjectService {
 		return ApiResponse.ok("프로젝트를 성공적으로 수정했습니다.", updatedProject);
 	}
 
+	// 프로젝트 순서 변경
+	public ApiResponse changeSequenceProject(List<ChangeSequenceProjectReq> changeSequenceProjectReqList) {
+
+		for (ChangeSequenceProjectReq changeSequenceProjectReq : changeSequenceProjectReqList) {
+			Optional<Project> findProject = projectRepository.findById(changeSequenceProjectReq.getProjectId());
+			if (findProject.isEmpty())
+				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
+			Project project = findProject.get();
+			project.updateSequence(changeSequenceProjectReq.getSequence());
+		}
+
+		return ApiResponse.ok("프로젝트의 순서를 성공적으로 수정하였습니다.");
+
+	}
 
 	private String getImgUrl(MultipartFile file) {
 		ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
@@ -128,7 +140,13 @@ public class ProjectService {
 		}
 
 		Project project = optionalProject.get();
+		Integer sequence = project.getSequence();
 		projectRepository.delete(project);
+
+		List<Project> findBySequenceGreaterThan = projectRepository.findAllBySequenceGreaterThan(sequence);
+		for (Project findProject : findBySequenceGreaterThan) {
+			findProject.updateSequence(findProject.getSequence() - 1);
+		}
 
 		return ApiResponse.ok("프로젝트를 성공적으로 삭제했습니다.");
 	}
@@ -136,8 +154,7 @@ public class ProjectService {
 	public ApiResponse retrieveAllProject() {
 		// 조회수 증가
 		viewsService.updateThisMonthViews();
-
-		List<Project> projectList = projectRepository.findAllWithImages();
+		List<Project> projectList = projectRepository.findAllWithImagesAndOrderBySequenceAsc();
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
 		}
@@ -197,4 +214,6 @@ public class ProjectService {
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 	}
+
+
 }
