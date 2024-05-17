@@ -63,6 +63,11 @@ public class PartnerInformationController {
 											@RequestPart(value = "logoImg", required = false) MultipartFile logoImg){
 		return partnerInformationService.updatePartnerInfo(dto.toServiceRequest(), logoImg);
 	}
+	@Operation(summary = "협력사 텍스트(이미지 제외) 수정 API")
+	@PutMapping("/partners/modify")
+	public ApiResponse updatePartnerInfoText(@Valid @RequestPart("partnerInfo") UpdatePartnerInfoRequestDto dto){
+		return partnerInformationService.updatePartnerInfoText(dto.toServiceRequest());
+	}
 
 	@Operation(summary = "협력사 로고 이미지 수정 API")
 	@PutMapping("/partners/{partnerId}/logoImg")
