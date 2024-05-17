@@ -79,6 +79,41 @@ public class CeoService {
         return ApiResponse.ok("CEO 정보를 성공적으로 수정했습니다.", savedCeo);
     }
 
+    public ApiResponse updateCeoTextInformation(UpdateCeoServiceRequestDto dto) {
+        List<Ceo> ceoList = ceoRepository.findAll();
+        if(!ceoList.isEmpty()) {
+            String ceoImageFileName = ceoList.get(0).getImageFileName();
+            if(ceoImageFileName != null) s3Adapter.deleteFile(ceoImageFileName);
+        }
+        Ceo ceo = ceoList.get(0);
+        ceo.updateCeoTextInformation(dto);
+        Ceo savedCeo = ceoRepository.save(ceo);
+        return ApiResponse.ok("CEO 텍스트 정보를 성공적으로 수정했습니다.", savedCeo);
+    }
+
+    public ApiResponse updateCeoImageInformation(MultipartFile file) {
+        String imageUrl = null;
+        String fileName = null;
+        List<Ceo> ceoList = ceoRepository.findAll();
+        if(!ceoList.isEmpty()) {
+            String ceoImageFileName = ceoList.get(0).getImageFileName();
+            if(ceoImageFileName != null) s3Adapter.deleteFile(ceoImageFileName);
+        }
+        if(file != null) {
+            ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
+            if (updateFileResponse.getStatus().is5xxServerError()) {
+                return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            }
+            imageUrl = updateFileResponse.getData();
+            if(imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            fileName = file.getOriginalFilename();
+        }
+        Ceo ceo = ceoList.get(0);
+        ceo.updateCeoImageInformation(fileName, imageUrl);
+        Ceo savedCeo = ceoRepository.save(ceo);
+        return ApiResponse.ok("CEO 이미지 정보를 성공적으로 수정했습니다.", savedCeo);
+    }
+
 
     public ApiResponse deleteCeoInformation() {
         List<Ceo> ceoList = ceoRepository.findAll();

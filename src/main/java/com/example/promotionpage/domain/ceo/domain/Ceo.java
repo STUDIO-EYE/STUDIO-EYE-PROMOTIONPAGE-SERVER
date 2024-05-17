@@ -42,4 +42,14 @@ public class Ceo {
         this.imageFileName = imageFileName;
         this.imageUrl = imageUrl;
     }
+    public void updateCeoTextInformation(UpdateCeoServiceRequestDto dto) {
+        this.name = dto.name();
+        this.introduction = dto.introduction();
+    }
+
+    public void updateCeoImageInformation(String imageFileName, String imageUrl) {
+        this.imageFileName = imageFileName;
+        this.imageUrl = imageUrl;
+    }
+
 }
