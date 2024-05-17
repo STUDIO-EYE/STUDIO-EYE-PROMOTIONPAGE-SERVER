@@ -2,7 +2,7 @@ package com.example.promotionpage.domain.project.api;
 
 import java.util.List;
 
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectTypeDto;
+import com.example.promotionpage.domain.project.dto.request.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.promotionpage.domain.project.application.ProjectService;
-import com.example.promotionpage.domain.project.dto.request.CreateProjectRequestDto;
-import com.example.promotionpage.domain.project.dto.request.UpdatePostingStatusDto;
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +46,12 @@ public class ProjectController {
 									 @RequestPart(value = "file", required = false) MultipartFile mainImgFile,
 									 @RequestPart(value = "files", required = false) List<MultipartFile> files){
 		return projectService.updateProject(dto.toServiceRequest(), mainImgFile, files);
+	}
+
+	@Operation(summary = "프로젝트 순서 변경 API")
+	@PutMapping("/projects/sequence")
+	public ApiResponse changeSequenceProject(@RequestBody List<ChangeSequenceProjectReq> changeSequenceProjectReqList){
+		return projectService.changeSequenceProject(changeSequenceProjectReqList);
 	}
 
 	@Operation(summary = "프로젝트 삭제 API")

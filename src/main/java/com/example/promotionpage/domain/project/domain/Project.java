@@ -40,13 +40,15 @@ public class Project {
 
 	private String mainImg;
 
+	private Integer sequence;
+
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<ProjectImage> projectImages = new LinkedList<>();
 
 	@Builder
 	public Project(String department, String category, String name, String client, String date, String link,
-		String overView, String mainImg, List<ProjectImage> projectImages) {
+		String overView, String mainImg, List<ProjectImage> projectImages, Integer sequence) {
 		this.department = department;
 		this.category = category;
 		this.name = name;
@@ -58,6 +60,7 @@ public class Project {
 		this.projectImages = projectImages;
 		this.isPosted = false;
 		this.projectType = OTHERS_PROJECT_TYPE;
+		this.sequence = sequence;
 	}
 
 	public Project update(UpdateProjectServiceRequestDto dto) {
@@ -70,6 +73,11 @@ public class Project {
 		this.overView = dto.overView();
 		return this;
 	}
+
+	public void updateSequence(Integer sequence) {
+		this.sequence = sequence;
+	}
+
 	public Project updatePostingStatus(Boolean isPosted) {
 		this.isPosted = isPosted;
 		return this;
