@@ -153,7 +153,7 @@ public class ProjectService {
 
 	public ApiResponse retrieveAllProject() {
 		// 조회수 증가
-		viewsService.updateThisMonthViews();
+//		viewsService.updateThisMonthViews();
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderBySequenceAsc();
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
