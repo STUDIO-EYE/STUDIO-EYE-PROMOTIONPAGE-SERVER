@@ -8,6 +8,7 @@ public record UpdateAllCompanyInformationServiceRequestDto(
         String mainOverview,
         String commitment,
         String address,
+        String addressEnglish,
         String phone,
         String fax,
         String introduction,
