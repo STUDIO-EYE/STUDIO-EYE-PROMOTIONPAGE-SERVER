@@ -16,6 +16,10 @@ public record UpdateAllCompanyInformationRequestDto(
         @NotBlank(message = "회사 주소는 필수 값입니다.")
         String address,
 
+        @Schema(description = "영문 회사 주소, 빈 값/공백/null 을 허용하지 않습니다.")
+        @NotBlank(message = "영문 회사 주소는 필수 값입니다.")
+        String addressEnglish,
+
         @Schema(description = "회사 전화번호, 빈 값/공백/null 을 허용하지 않습니다.")
         @NotBlank(message = "회사 전화번호 필수 값입니다.")
         String phone,
@@ -32,6 +36,6 @@ public record UpdateAllCompanyInformationRequestDto(
 
 ) {
     public UpdateAllCompanyInformationServiceRequestDto toServiceRequest() {
-        return new UpdateAllCompanyInformationServiceRequestDto(mainOverview, commitment, address, phone, fax, introduction, detailInformation);
+        return new UpdateAllCompanyInformationServiceRequestDto(mainOverview, commitment, address, addressEnglish, phone, fax, introduction, detailInformation);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.promotionpage.domain.project.dto.request;
 
+import java.util.List;
+
 public record UpdateProjectServiceRequestDto(
 	Long projectId,
 	String department,
@@ -8,7 +10,8 @@ public record UpdateProjectServiceRequestDto(
 	String client,
 	String date,
 	String link,
-	String overView
+	String overView,
+	List<Long> deletedImagesId
 
 ) {
 }
