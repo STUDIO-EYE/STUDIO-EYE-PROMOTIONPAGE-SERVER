@@ -48,10 +48,16 @@ public class ProjectController {
 		return projectService.updateProject(dto.toServiceRequest(), mainImgFile, files);
 	}
 
-	@Operation(summary = "프로젝트 순서 변경 API")
+	@Operation(summary = "Artwork Page 프로젝트 순서 변경 API")
 	@PutMapping("/projects/sequence")
 	public ApiResponse changeSequenceProject(@RequestBody List<ChangeSequenceProjectReq> changeSequenceProjectReqList){
 		return projectService.changeSequenceProject(changeSequenceProjectReqList);
+	}
+
+	@Operation(summary = "Main Page 프로젝트 순서 변경 API")
+	@PutMapping("/projects/main/sequence")
+	public ApiResponse changeMainSequenceProject(@RequestBody List<ChangeMainSequenceProjectReq> changeMainSequenceProjectReqList){
+		return projectService.changeMainSequenceProject(changeMainSequenceProjectReqList);
 	}
 
 	@Operation(summary = "프로젝트 삭제 API")
@@ -60,10 +66,16 @@ public class ProjectController {
 		return projectService.deleteProject(projectId);
 	}
 
-	@Operation(summary = "프로젝트 전체 조회 API")
+	@Operation(summary = "프로젝트 전체 조회 API (request 페이지, sequence 순)")
 	@GetMapping("/projects")
-	public ApiResponse retrieveAllProject(){
-		return projectService.retrieveAllProject();
+	public ApiResponse retrieveAllArtworkProject(){
+		return projectService.retrieveAllArtworkProject();
+	}
+
+	@Operation(summary = "프로젝트 전체 조회 API (메인 페이지, top, main1, main2 .. 순)")
+	@GetMapping("/projects/main")
+	public ApiResponse retrieveAllMainProject(){
+		return projectService.retrieveAllMainProject();
 	}
 
 	@Operation(summary = "프로젝트 상세 조회 API")
