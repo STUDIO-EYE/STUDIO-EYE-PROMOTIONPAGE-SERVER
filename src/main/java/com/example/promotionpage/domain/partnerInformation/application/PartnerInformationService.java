@@ -2,7 +2,6 @@ package com.example.promotionpage.domain.partnerInformation.application;
 
 import java.util.*;
 
-import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
 import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoServiceRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

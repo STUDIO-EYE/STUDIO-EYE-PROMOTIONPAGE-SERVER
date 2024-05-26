@@ -1,7 +1,5 @@
 package com.example.promotionpage.domain.partnerInformation.api;
 
-import java.util.List;
-
 import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.promotionpage.domain.partnerInformation.application.PartnerInformationService;
 import com.example.promotionpage.domain.partnerInformation.dto.request.CreatePartnerInfoRequestDto;
-import com.example.promotionpage.domain.project.dto.request.CreateProjectRequestDto;
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
