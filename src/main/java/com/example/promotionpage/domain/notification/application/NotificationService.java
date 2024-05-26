@@ -33,7 +33,7 @@ public class NotificationService {
     // 기본 타임아웃 설정
     private static final Long DEFAULT_TIMEOUT = 600L * 1000 * 60;
 
-    public ApiResponse subscribe(Long requestId) {
+    public ApiResponse<Long> subscribe(Long requestId) {
         System.out.println("subscribe");
         // 모든 유저 가져오기
         List<Long> userIds = userServiceImpl.getAllApprovedUserIds();
@@ -58,7 +58,7 @@ public class NotificationService {
         }
     }
 
-    public ApiResponse createNotification(Long userId, Notification notification) {
+    public ApiResponse<Notification> createNotification(Long userId, Notification notification) {
         // notification 저장
         Notification savedNotification = notificationRepository.save(notification);
 
@@ -79,7 +79,7 @@ public class NotificationService {
         return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
     }
 
-    public ApiResponse retrieveAllNotification() {
+    public ApiResponse<List<Notification>> retrieveAllNotification() {
         List<Notification> notificationList = notificationRepository.findAll();
         if(notificationList.isEmpty()) {
             return ApiResponse.ok("알림이 존재하지 않습니다.");
