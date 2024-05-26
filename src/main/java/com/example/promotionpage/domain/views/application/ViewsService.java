@@ -145,8 +145,6 @@ public class ViewsService {
     public ApiResponse updateThisMonthViews(String cookieValue) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 
-        System.out.println("cookieValue : "+ cookieValue);
-
         if(cookieValue != null) {
             return ApiResponse.ok("이미 방문한 사용자입니다.");
         }
