@@ -196,7 +196,6 @@ public class ProjectService {
 	// for main page
 	public ApiResponse retrieveAllMainProject() {
 		// 조회수 증가
-		viewsService.updateThisMonthViews();
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderByMainSequenceAsc();
 		List<Project> responseProject = new ArrayList<>();
 		List<Project> topProject = projectRepository.findByProjectType(TOP_PROJECT_TYPE);
