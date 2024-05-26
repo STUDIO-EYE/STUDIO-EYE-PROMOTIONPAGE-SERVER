@@ -1,15 +1,8 @@
 package com.example.promotionpage.domain.client.domain;
 
 import com.example.promotionpage.domain.client.dto.request.UpdateClientServiceRequestDto;
-import com.example.promotionpage.domain.project.domain.Project;
-import com.example.promotionpage.domain.project.domain.ProjectImage;
-import com.example.promotionpage.domain.project.dto.request.UpdateProjectServiceRequestDto;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 @Getter
