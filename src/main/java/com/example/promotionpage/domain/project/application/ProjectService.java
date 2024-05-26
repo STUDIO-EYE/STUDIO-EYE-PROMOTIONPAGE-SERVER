@@ -8,7 +8,6 @@ import java.util.Optional;
 import com.example.promotionpage.domain.project.domain.ProjectImage;
 import com.example.promotionpage.domain.project.dto.request.*;
 import com.example.promotionpage.domain.views.application.ViewsService;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +32,7 @@ public class ProjectService {
 	private static final String MAIN_PROJECT_TYPE = "main";
 	private static final String OTHERS_PROJECT_TYPE = "others";
 
-	public ApiResponse createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
+	public ApiResponse<Project> createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
@@ -63,7 +62,7 @@ public class ProjectService {
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedProject);
 	}
 
-	public ApiResponse updateProject(UpdateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
+	public ApiResponse<Project> updateProject(UpdateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -116,7 +115,7 @@ public class ProjectService {
 	}
 
 	// 프로젝트 순서 변경 : artwork page
-	public ApiResponse changeSequenceProject(List<ChangeSequenceProjectReq> changeSequenceProjectReqList) {
+	public ApiResponse<String> changeSequenceProject(List<ChangeSequenceProjectReq> changeSequenceProjectReqList) {
 
 		for (ChangeSequenceProjectReq changeSequenceProjectReq : changeSequenceProjectReqList) {
 			Optional<Project> findProject = projectRepository.findById(changeSequenceProjectReq.getProjectId());
@@ -130,7 +129,7 @@ public class ProjectService {
 	}
 
 	// 프로젝트 순서 변경 : main page
-	public ApiResponse changeMainSequenceProject(List<ChangeMainSequenceProjectReq> changeMainSequenceProjectReqList) {
+	public ApiResponse<String> changeMainSequenceProject(List<ChangeMainSequenceProjectReq> changeMainSequenceProjectReqList) {
 
 		for (ChangeMainSequenceProjectReq changeMainSequenceProjectReq : changeMainSequenceProjectReqList) {
 			Optional<Project> findProject = projectRepository.findById(changeMainSequenceProjectReq.getProjectId());
@@ -152,11 +151,10 @@ public class ProjectService {
 
 			return "";
 		}
-		String imageUrl = updateFileResponse.getData();
-		return imageUrl;
+        return updateFileResponse.getData();
 	}
 
-	public ApiResponse deleteProject(Long projectId) {
+	public ApiResponse<String> deleteProject(Long projectId) {
 		Optional<Project> optionalProject = projectRepository.findById(projectId);
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -182,7 +180,7 @@ public class ProjectService {
 	}
 
 	// for artwork page
-	public ApiResponse retrieveAllArtworkProject() {
+	public ApiResponse<List<Project>> retrieveAllArtworkProject() {
 		// 조회수 증가
 //		viewsService.updateThisMonthViews();
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderBySequenceAsc();
@@ -194,7 +192,7 @@ public class ProjectService {
 	}
 
 	// for main page
-	public ApiResponse retrieveAllMainProject() {
+	public ApiResponse<List<Project>> retrieveAllMainProject() {
 		// 조회수 증가
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderByMainSequenceAsc();
 		List<Project> responseProject = new ArrayList<>();
@@ -204,9 +202,7 @@ public class ProjectService {
 			top = topProject.get(0);
 			responseProject.add(top);
 		}
-		for (Project project : projectList) {
-			responseProject.add(project);
-		}
+        responseProject.addAll(projectList);
 
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
@@ -216,7 +212,7 @@ public class ProjectService {
 
 	}
 
-	public ApiResponse retrieveProject(Long projectId) {
+	public ApiResponse<Project> retrieveProject(Long projectId) {
 		Optional<Project> optionalProject = projectRepository.findById(projectId);
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -226,7 +222,7 @@ public class ProjectService {
 		return ApiResponse.ok("프로젝트를 성공적으로 조회했습니다.", project);
 	}
 
-	public ApiResponse updatePostingStatus(UpdatePostingStatusDto dto) {
+	public ApiResponse<Project> updatePostingStatus(UpdatePostingStatusDto dto) {
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -239,7 +235,7 @@ public class ProjectService {
 
 	}
 
-	public ApiResponse updateProjectType(UpdateProjectTypeDto dto) {
+	public ApiResponse<Project> updateProjectType(UpdateProjectTypeDto dto) {
 		String projectType = dto.projectType();
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
