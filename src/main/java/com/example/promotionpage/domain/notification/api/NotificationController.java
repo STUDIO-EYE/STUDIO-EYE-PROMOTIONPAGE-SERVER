@@ -24,7 +24,7 @@ public class NotificationController {
 
     @Operation(summary = "알림 등록 (TEST) API")
     @PostMapping("/notification/{requestId}")
-    public ApiResponse<Long> createNotification(Long requestId) {
+    public ApiResponse<Long> createNotification(@PathVariable("requestId") Long requestId) {
         return notificationService.subscribe(requestId);
     }
 
