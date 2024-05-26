@@ -1,7 +1,5 @@
 package com.example.promotionpage.domain.request.dao;
 
-import java.util.HashMap;
-import java.util.Map;
 public class RequestCategoryCountImpl implements RequestCategoryCount{
     private Integer year;
     private Integer month;

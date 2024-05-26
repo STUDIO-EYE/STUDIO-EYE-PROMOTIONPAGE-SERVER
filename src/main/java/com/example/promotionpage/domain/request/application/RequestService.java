@@ -42,28 +42,28 @@ public class RequestService {
 					"(?:[a-zA-Z0-9-]+\\.)+[a-z" +
 					"A-Z]{2,7}$";
 
-	private final Integer waitingState = 0;
-	private final Integer approvedState = 1;
-	private final Integer rejectedState = 2;
-	private final Integer completedState = 3;
+	private static final Integer waitingState = 0;
+	private static final Integer approvedState = 1;
+	private static final Integer rejectedState = 2;
+	private static final Integer completedState = 3;
 
 
 	private String convertState(Integer state) {
-		if(state == this.approvedState) {
+		if(state.equals(approvedState)) {
 			return "승인";
 		}
-		if(state == this.completedState) {
+		if(state.equals(completedState)) {
 			return "처리 완료";
 		}
-		if(state == this.rejectedState) {
+		if(state.equals(rejectedState)) {
 			return "거절";
 		}
-		if(state == this.waitingState) {
+		if(state.equals(waitingState)) {
 			return "대기중";
 		}
 		return "해당사항 없음";
 	}
-	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
+	public ApiResponse<Request> createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
 		if(!isValidEmail(dto.email())) {
 			return ApiResponse.withError(ErrorCode.INVALID_EMAIL_FORMAT);
 		}
@@ -105,7 +105,7 @@ public class RequestService {
 		return ApiResponse.ok("문의를 성공적으로 등록하였습니다.", savedRequest);
 	}
 
-	public ApiResponse retrieveAllRequest() {
+	public ApiResponse<List<Request>> retrieveAllRequest() {
 		List<Request> requestList = requestRepository.findAll();
 
 		if (requestList.isEmpty()){
@@ -114,7 +114,7 @@ public class RequestService {
 		return ApiResponse.ok("문의 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
-	public ApiResponse retrieveRequest(Long requestId) {
+	public ApiResponse<Request> retrieveRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -124,12 +124,12 @@ public class RequestService {
 		return ApiResponse.ok("문의를 성공적으로 조회했습니다.", request);
 	}
 
-	public ApiResponse retrieveRequestCount() {
+	public ApiResponse<Long> retrieveRequestCount() {
 		Long requestCount = requestRepository.count();
 		return ApiResponse.ok("전체 문의수를 성공적으로 조회했습니다.", requestCount);
 	}
 
-	public ApiResponse retrieveRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+	public ApiResponse<List<RequestCount>> retrieveRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
 		// 월 형식 검사
 		if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_REQUEST_MONTH);
 		// 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -174,7 +174,7 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
 
-	public ApiResponse retrieveCategoryRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+	public ApiResponse<List<Map<String, Object>>> retrieveCategoryRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
 		// 월 형식 검사
 		if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_REQUEST_MONTH);
 		// 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -215,12 +215,12 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", responseList);
 	}
 
-	public ApiResponse retrieveWaitingRequestCount() {
+	public ApiResponse<Long> retrieveWaitingRequestCount() {
 		Long requestCount = requestRepository.countByState(this.waitingState);
 		return ApiResponse.ok("접수 대기 중인 문의 수를 성공적으로 조회했습니다.", requestCount);
 	}
 
-	public ApiResponse retrieveWaitingRequest() {
+	public ApiResponse<List<Request>> retrieveWaitingRequest() {
 		List<Request> requestList = requestRepository.findByState(this.waitingState);
 
 		if (requestList.isEmpty()){
@@ -229,7 +229,7 @@ public class RequestService {
 		return ApiResponse.ok("접수 대기 중인 문의 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
-	public ApiResponse updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
+	public ApiResponse<String> updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -257,7 +257,7 @@ public class RequestService {
 		return ApiResponse.ok("상태를 성공적으로 수정했습니다.");
 	}
 
-	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
+	public ApiResponse<String> updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
 		String answer = dto.answer().trim();
 		Integer state = dto.state();
 
@@ -291,7 +291,7 @@ public class RequestService {
 		return ApiResponse.ok("답변을 성공적으로 작성했습니다.");
 	}
 
-	public ApiResponse deleteRequest(Long requestId) {
+	public ApiResponse<String> deleteRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -304,9 +304,7 @@ public class RequestService {
 	}
 
 	private boolean checkMonth(int month) {
-		// 월 형식 검사
-		if(month<1 || month>12) return false;
-		return true;
+		return (month>=1 && month<=12);
 	}
 
 	public static boolean isValidEmail(String email) {
