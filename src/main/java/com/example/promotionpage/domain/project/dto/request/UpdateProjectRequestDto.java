@@ -1,6 +1,5 @@
 package com.example.promotionpage.domain.project.dto.request;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;

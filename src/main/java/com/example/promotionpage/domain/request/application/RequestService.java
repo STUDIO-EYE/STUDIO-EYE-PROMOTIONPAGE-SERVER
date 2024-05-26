@@ -216,12 +216,12 @@ public class RequestService {
 	}
 
 	public ApiResponse<Long> retrieveWaitingRequestCount() {
-		Long requestCount = requestRepository.countByState(this.waitingState);
+		Long requestCount = requestRepository.countByState(waitingState);
 		return ApiResponse.ok("접수 대기 중인 문의 수를 성공적으로 조회했습니다.", requestCount);
 	}
 
 	public ApiResponse<List<Request>> retrieveWaitingRequest() {
-		List<Request> requestList = requestRepository.findByState(this.waitingState);
+		List<Request> requestList = requestRepository.findByState(waitingState);
 
 		if (requestList.isEmpty()){
 			return ApiResponse.ok("접수 대기 중인 문의가 존재하지 않습니다.");
