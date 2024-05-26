@@ -96,5 +96,4 @@ public class RequestController {
 	public ApiResponse<String> updateRequestComment(@PathVariable Long requestId, @Valid @RequestBody UpdateRequestStateDto dto) {
 		return requestService.updateRequestState(requestId, dto.toServiceRequest());
 	}
-
 }

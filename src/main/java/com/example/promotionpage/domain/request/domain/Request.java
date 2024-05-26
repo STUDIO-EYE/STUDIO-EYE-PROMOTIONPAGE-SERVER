@@ -1,14 +1,15 @@
 package com.example.promotionpage.domain.request.domain;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,7 +36,8 @@ public class Request {
 
 	private String description;
 
-	private String answer;
+	@OneToMany(mappedBy = "request", cascade = CascadeType.REMOVE)
+	private List<Answer> answers = new ArrayList<>();
 
 	@Column(name = "year_value")
 	private Integer year;
@@ -43,7 +45,8 @@ public class Request {
 	@Column(name = "month_value")
 	private Integer month;
 
-	private Integer state;
+	@Enumerated(EnumType.STRING)
+	private State state;
 
 	@ElementCollection
 	private List<String> fileUrlList = new LinkedList<>();
@@ -54,8 +57,8 @@ public class Request {
 	@Builder
 	public Request(String category, String projectName, String clientName, String organization, String contact, String email,
 				   String position,
-				   List<String> fileUrlList, String description, String answer,
-				   Integer year, Integer month, Integer state, Date createdAt) {
+				   List<String> fileUrlList, String description, List<Answer> answers,
+				   Integer year, Integer month, State state, Date createdAt) {
 		this.category = category;
 		this.projectName = projectName;
 		this.clientName = clientName;
@@ -65,17 +68,17 @@ public class Request {
 		this.position = position;
 		this.fileUrlList = fileUrlList;
 		this.description = description;
-		this.answer = answer;
+		this.answers = answers;
 		this.year = year;
 		this.month = month;
 		this.state = state;
 		this.createdAt = createdAt;
 	}
 
-	public void updateAnswer(String answer) {
-		this.answer = answer;
+	public void updateAnswer(List<Answer> answers) {
+		this.answers = answers;
 	}
-	public void updateState(Integer state) {
+	public void updateState(State state) {
 		this.state = state;
 	}
 }
