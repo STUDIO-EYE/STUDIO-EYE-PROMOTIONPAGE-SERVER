@@ -26,6 +26,7 @@ public record CreateProjectServiceRequestDto(
 			.mainImg(mainImg)
 			.projectImages(projectImages)
 				.sequence((int) (count + 1))
+				.mainSequence(999)
 			.build();
 	}
 }
