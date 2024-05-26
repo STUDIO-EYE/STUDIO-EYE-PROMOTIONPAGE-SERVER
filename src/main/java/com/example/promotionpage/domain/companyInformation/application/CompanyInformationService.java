@@ -111,18 +111,20 @@ public class CompanyInformationService {
     public ApiResponse updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto,
                                                    MultipartFile logoImage,
                                                    MultipartFile sloganImage) throws IOException {
-        String logoImageFileName = null;
-        String logoImageUrl = null;
-        String sloganImageFileName = null;
-        String sloganImageUrl = null;
+
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
-        if (!companyInformations.isEmpty()) {
-            String logoFileName = companyInformations.get(0).getLogoImageFileName();
-            if(logoFileName != null) s3Adapter.deleteFile(logoFileName);
-            String sloganFileName = companyInformations.get(0).getSloganImageFileName();
-            if(sloganFileName != null) s3Adapter.deleteFile(sloganFileName);
+        if (companyInformations.isEmpty()) {
+            ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
         }
-        if(logoImage != null) {
+
+        String logoImageFileName = companyInformations.get(0).getLogoImageFileName();
+        String logoImageUrl = companyInformations.get(0).getLogoImageUrl();
+        String sloganImageFileName = companyInformations.get(0).getSloganImageFileName();
+        String sloganImageUrl = companyInformations.get(0).getSloganImageUrl();
+
+        if(logoImage != null && !logoImage.isEmpty()) {
+            if (logoImageFileName != null) s3Adapter.deleteFile(logoImageFileName);
+
             ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
             if (updateLogoFileResponse.getStatus().is5xxServerError()) {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
@@ -130,9 +132,10 @@ public class CompanyInformationService {
             logoImageUrl = updateLogoFileResponse.getData();
             logoImageFileName = logoImage.getOriginalFilename();
         }
-        if(sloganImage != null) {
-            ApiResponse<String> updateSloganFileResponse = s3Adapter.uploadFile(sloganImage);
+        if(sloganImage != null && !sloganImage.isEmpty()) {
+            if (sloganImageFileName != null) s3Adapter.deleteFile(sloganImageFileName);
 
+            ApiResponse<String> updateSloganFileResponse = s3Adapter.uploadFile(sloganImage);
             if (updateSloganFileResponse.getStatus().is5xxServerError()) {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
             }

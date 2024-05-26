@@ -1,6 +1,5 @@
 package com.example.promotionpage.domain.project.dto.request;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,10 +37,13 @@ public record UpdateProjectRequestDto(
 
 	@Schema(description = "overView는 빈 값/공백/null 을 허용하지 않습니다.")
 	@NotBlank(message = "overView는 필수 값입니다.")
-	String overView
+	String overView,
+
+	@Schema(description = "삭제된 이미지 리스트")
+	List<Long> deletedImagesId
 
 ) {
 	public UpdateProjectServiceRequestDto toServiceRequest() {
-		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView);
+		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView,deletedImagesId);
 	}
 }

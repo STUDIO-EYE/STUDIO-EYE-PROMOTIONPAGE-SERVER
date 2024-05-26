@@ -2,7 +2,6 @@ package com.example.promotionpage.domain.partnerInformation.application;
 
 import java.util.*;
 
-import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
 import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoServiceRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public class PartnerInformationService {
 	private final S3Adapter s3Adapter;
 
 
-	public ApiResponse createPartnerInfo(CreatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
+	public ApiResponse<PartnerInformation> createPartnerInfo(CreatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
 		String logoImgStr = getImgUrl(logoImg);
 		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
@@ -47,11 +46,10 @@ public class PartnerInformationService {
 
 			return "";
 		}
-		String imageUrl = updateFileResponse.getData();
-		return imageUrl;
+        return updateFileResponse.getData();
 	}
 
-	public ApiResponse deletePartnerInfo(Long partnerId) {
+	public ApiResponse<String> deletePartnerInfo(Long partnerId) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
@@ -68,7 +66,7 @@ public class PartnerInformationService {
 	}
 
 
-	public ApiResponse updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
+	public ApiResponse<PartnerInformation> updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
 		if (optionalPartnerInformation.isEmpty()) {
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
@@ -85,7 +83,7 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 로고 이미지를 성공적으로 수정했습니다.", updatedPartner);
 	}
 
-	public ApiResponse retrieveAllPartnerInfo() {
+	public ApiResponse<List<Map<String, Object>>> retrieveAllPartnerInfo() {
 		List<PartnerInformation> partnerInformationList = partnerInformationRepository.findAll();
 		if (partnerInformationList.isEmpty()){
 			return ApiResponse.ok("협력사 정보가 존재하지 않습니다.");
@@ -100,7 +98,7 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 정보 목록을 성공적으로 조회했습니다.", responseList);
 	}
 
-	public ApiResponse retrievePartnerInfo(Long partnerId) {
+	public ApiResponse<Map<String, Object>> retrievePartnerInfo(Long partnerId) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
@@ -111,7 +109,7 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 정보를 성공적으로 조회했습니다.", responseBody);
 	}
 
-	public ApiResponse retrieveAllPartnerLogoImgList() {
+	public ApiResponse<List<String>> retrieveAllPartnerLogoImgList() {
 		List<PartnerInformation> partnerList = partnerInformationRepository.findAll();
 		if (partnerList.isEmpty()){
 			return ApiResponse.ok("협력사 정보가 존재하지 않습니다.");
@@ -139,7 +137,7 @@ public class PartnerInformationService {
 		return responseBody;
 	}
 
-	public ApiResponse updatePartnerInfo(UpdatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
+	public ApiResponse<PartnerInformation> updatePartnerInfo(UpdatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(dto.id());
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
@@ -164,7 +162,7 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
 	}
 
-	public ApiResponse updatePartnerInfoText(UpdatePartnerInfoServiceRequestDto dto) {
+	public ApiResponse<PartnerInformation> updatePartnerInfoText(UpdatePartnerInfoServiceRequestDto dto) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(dto.id());
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);

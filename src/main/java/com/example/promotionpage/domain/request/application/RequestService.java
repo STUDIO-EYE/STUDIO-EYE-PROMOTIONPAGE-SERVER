@@ -1,32 +1,28 @@
 package com.example.promotionpage.domain.request.application;
 
+import com.example.promotionpage.domain.email.service.EmailService;
+import com.example.promotionpage.domain.notification.application.NotificationService;
+import com.example.promotionpage.domain.request.dao.*;
+import com.example.promotionpage.domain.request.domain.Answer;
+import com.example.promotionpage.domain.request.domain.Request;
+import com.example.promotionpage.domain.request.domain.State;
+import com.example.promotionpage.domain.request.dto.request.CreateRequestServiceDto;
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestStateServiceDto;
+import com.example.promotionpage.global.adapter.S3Adapter;
+import com.example.promotionpage.global.common.response.ApiResponse;
+import com.example.promotionpage.global.error.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.example.promotionpage.domain.email.service.EmailService;
-import com.example.promotionpage.domain.notification.application.NotificationService;
-
-import com.example.promotionpage.domain.request.dao.*;
-
-import com.example.promotionpage.domain.request.domain.Answer;
-import com.example.promotionpage.domain.request.domain.State;
-import com.example.promotionpage.domain.request.dto.request.*;
-import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.promotionpage.domain.request.domain.Request;
-import com.example.promotionpage.global.adapter.S3Adapter;
-import com.example.promotionpage.global.common.response.ApiResponse;
-import com.example.promotionpage.global.error.ErrorCode;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
@@ -67,7 +63,7 @@ public class RequestService {
 //		}
 //		return "해당사항 없음";
 //	}
-	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
+	public ApiResponse<Request> createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
 		if(!isValidEmail(dto.email())) {
 			return ApiResponse.withError(ErrorCode.INVALID_EMAIL_FORMAT);
 		}
@@ -112,7 +108,7 @@ public class RequestService {
 		return ApiResponse.ok("문의를 성공적으로 등록하였습니다.", savedRequest);
 	}
 
-	public ApiResponse retrieveAllRequest() {
+	public ApiResponse<List<Request>> retrieveAllRequest() {
 		List<Request> requestList = requestRepository.findAll();
 
 		if (requestList.isEmpty()){
@@ -121,7 +117,7 @@ public class RequestService {
 		return ApiResponse.ok("문의 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
-	public ApiResponse retrieveRequest(Long requestId) {
+	public ApiResponse<Request> retrieveRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -131,12 +127,12 @@ public class RequestService {
 		return ApiResponse.ok("문의를 성공적으로 조회했습니다.", request);
 	}
 
-	public ApiResponse retrieveRequestCount() {
+	public ApiResponse<Long> retrieveRequestCount() {
 		Long requestCount = requestRepository.count();
 		return ApiResponse.ok("전체 문의수를 성공적으로 조회했습니다.", requestCount);
 	}
 
-	public ApiResponse retrieveRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+	public ApiResponse<List<RequestCount>> retrieveRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
 		// 월 형식 검사
 		if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_REQUEST_MONTH);
 		// 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -181,7 +177,7 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
 
-	public ApiResponse retrieveCategoryRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+	public ApiResponse<List<Map<String, Object>>> retrieveCategoryRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
 		// 월 형식 검사
 		if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_REQUEST_MONTH);
 		// 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -222,12 +218,12 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", responseList);
 	}
 
-	public ApiResponse retrieveWaitingRequestCount() {
+	public ApiResponse<Long> retrieveWaitingRequestCount() {
 		Long requestCount = requestRepository.countByState(State.WAITING);
 		return ApiResponse.ok("접수 대기 중인 문의 수를 성공적으로 조회했습니다.", requestCount);
 	}
 
-	public ApiResponse retrieveWaitingRequest() {
+	public ApiResponse<List<Request>> retrieveWaitingRequest() {
 		List<Request> requestList = requestRepository.findByState(State.WAITING);
 
 		if (requestList.isEmpty()){
@@ -236,7 +232,7 @@ public class RequestService {
 		return ApiResponse.ok("접수 대기 중인 문의 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
-	public ApiResponse updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
+	public ApiResponse<String> updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -265,7 +261,7 @@ public class RequestService {
 		return ApiResponse.ok("상태를 성공적으로 수정했습니다.");
 	}
 
-	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
+	public ApiResponse<String> updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
 		String answer = dto.answer().trim();
 		State state = dto.state();
 
@@ -312,7 +308,7 @@ public class RequestService {
 		return ApiResponse.ok("답변을 성공적으로 작성했습니다.");
 	}
 
-	public ApiResponse deleteRequest(Long requestId) {
+	public ApiResponse<String> deleteRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -325,9 +321,7 @@ public class RequestService {
 	}
 
 	private boolean checkMonth(int month) {
-		// 월 형식 검사
-		if(month<1 || month>12) return false;
-		return true;
+		return (month>=1 && month<=12);
 	}
 
 	public static boolean isValidEmail(String email) {

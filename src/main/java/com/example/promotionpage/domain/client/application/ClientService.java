@@ -22,7 +22,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final S3Adapter s3Adapter;
 
-    public ApiResponse createClient(CreateClientServiceRequestDto dto, MultipartFile logoImg) {
+    public ApiResponse<Client> createClient(CreateClientServiceRequestDto dto, MultipartFile logoImg) {
         String logoImgStr = getImgUrl(logoImg);
         if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
@@ -32,7 +32,7 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 등록하였습니다.", savedClient);
     }
 
-    public ApiResponse updateClient(UpdateClientServiceRequestDto dto, MultipartFile logoImg) {
+    public ApiResponse<Client> updateClient(UpdateClientServiceRequestDto dto, MultipartFile logoImg) {
         Optional<Client> optionalClient = clientRepository.findById(dto.clientId());
         if(optionalClient.isEmpty()){
             return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
@@ -52,7 +52,7 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 수정했습니다.", updatedClient);
     }
 
-    public ApiResponse updateClientText(UpdateClientServiceRequestDto dto) {
+    public ApiResponse<Client> updateClientText(UpdateClientServiceRequestDto dto) {
         Optional<Client> optionalClient = clientRepository.findById(dto.clientId());
         if(optionalClient.isEmpty()){
             return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
@@ -64,7 +64,7 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 수정했습니다.", updatedClient);
     }
 
-    public ApiResponse updateClientLogoImg(Long clientId, MultipartFile logoImg) {
+    public ApiResponse<Client> updateClientLogoImg(Long clientId, MultipartFile logoImg) {
         Optional<Client> optionalClient = clientRepository.findById(clientId);
         if (optionalClient.isEmpty()) {
             return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
@@ -88,11 +88,10 @@ public class ClientService {
 
             return "";
         }
-        String imageUrl = updateFileResponse.getData();
-        return imageUrl;
+        return updateFileResponse.getData();
     }
 
-    public ApiResponse deleteClient(Long clientId) {
+    public ApiResponse<String> deleteClient(Long clientId) {
         Optional<Client> optionalClient = clientRepository.findById(clientId);
         if(optionalClient.isEmpty()){
             return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
@@ -104,7 +103,7 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 삭제했습니다.");
     }
 
-    public ApiResponse retrieveAllClient() {
+    public ApiResponse<List<Map<String, Object>>> retrieveAllClient() {
         List<Client> clientList = clientRepository.findAll();
         if (clientList.isEmpty()){
             return ApiResponse.ok("클라이언트가 존재하지 않습니다.");
@@ -119,7 +118,7 @@ public class ClientService {
         return ApiResponse.ok("클라이언트 목록을 성공적으로 조회했습니다.", responseList);
     }
 
-    public ApiResponse retrieveClient(Long clientId) {
+    public ApiResponse<Map<String, Object>> retrieveClient(Long clientId) {
         Optional<Client> optionalClient = clientRepository.findById(clientId);
         if(optionalClient.isEmpty()){
             return ApiResponse.withError(ErrorCode.INVALID_CLIENT_ID);
@@ -131,7 +130,7 @@ public class ClientService {
         return ApiResponse.ok("클라이언트를 성공적으로 조회했습니다.", responseBody);
     }
 
-    public ApiResponse retrieveAllClientLogoImgList() {
+    public ApiResponse<List<String>> retrieveAllClientLogoImgList() {
         List<Client> clientList = clientRepository.findAll();
         if (clientList.isEmpty()){
             return ApiResponse.ok("클라이언트가 존재하지 않습니다.");

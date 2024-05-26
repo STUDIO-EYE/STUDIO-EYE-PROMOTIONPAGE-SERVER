@@ -7,9 +7,6 @@ import com.example.promotionpage.domain.notification.domain.Notification;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
 import com.example.promotionpage.domain.user.service.UserServiceImpl;
 import com.example.promotionpage.domain.userNotification.application.UserNotificationService;
-import com.example.promotionpage.domain.userNotification.dao.UserNotificationRepository;
-import com.example.promotionpage.domain.userNotification.domain.UserNotification;
-import com.example.promotionpage.domain.userNotification.dto.request.CreateUserNotificationServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,18 +29,15 @@ public class NotificationService {
     // 기본 타임아웃 설정
     private static final Long DEFAULT_TIMEOUT = 600L * 1000 * 60;
 
-    public ApiResponse subscribe(Long requestId) {
-        System.out.println("subscribe");
+    public ApiResponse<Long> subscribe(Long requestId) {
         // 모든 유저 가져오기
         List<Long> userIds = userServiceImpl.getAllApprovedUserIds();
         if (userIds.isEmpty()) {
             return ApiResponse.withError(ErrorCode.USER_IS_EMPTY);
         } else {
-            System.out.println(userIds);
             Notification notification = new CreateNotificationServiceRequestDto(requestId).toEntity();
             for (Long userId : userIds) {
                 SseEmitter emitter = createEmitter(userId);
-                System.out.println(emitter);
                 emitterRepository.save(userId, emitter);
                 createNotification(userId, notification);
 
@@ -58,7 +51,7 @@ public class NotificationService {
         }
     }
 
-    public ApiResponse createNotification(Long userId, Notification notification) {
+    public ApiResponse<Notification> createNotification(Long userId, Notification notification) {
         // notification 저장
         Notification savedNotification = notificationRepository.save(notification);
 
@@ -79,7 +72,7 @@ public class NotificationService {
         return ApiResponse.ok("알림을 성공적으로 등록하였습니다.", savedNotification);
     }
 
-    public ApiResponse retrieveAllNotification() {
+    public ApiResponse<List<Notification>> retrieveAllNotification() {
         List<Notification> notificationList = notificationRepository.findAll();
         if(notificationList.isEmpty()) {
             return ApiResponse.ok("알림이 존재하지 않습니다.");
