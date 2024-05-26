@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Tag(name = "알림 API", description = "알림 등록 / 조회")
 @RestController
-// TODO 추후 /api를 /admin으로 변경해야 한다.
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class NotificationController {

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Collection;
-import java.util.Map;
 @Repository
 // Emitter가 어떤 데이터와 연결되어있는지, 어떤 이벤트들이 현재까지 발생했는지 저장해야하므로 EmitterRepository 생성
 public interface EmitterRepository {

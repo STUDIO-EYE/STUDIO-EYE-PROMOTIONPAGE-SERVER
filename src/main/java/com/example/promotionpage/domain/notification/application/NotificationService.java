@@ -7,9 +7,6 @@ import com.example.promotionpage.domain.notification.domain.Notification;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
 import com.example.promotionpage.domain.user.service.UserServiceImpl;
 import com.example.promotionpage.domain.userNotification.application.UserNotificationService;
-import com.example.promotionpage.domain.userNotification.dao.UserNotificationRepository;
-import com.example.promotionpage.domain.userNotification.domain.UserNotification;
-import com.example.promotionpage.domain.userNotification.dto.request.CreateUserNotificationServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,17 +30,14 @@ public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 600L * 1000 * 60;
 
     public ApiResponse<Long> subscribe(Long requestId) {
-        System.out.println("subscribe");
         // 모든 유저 가져오기
         List<Long> userIds = userServiceImpl.getAllApprovedUserIds();
         if (userIds.isEmpty()) {
             return ApiResponse.withError(ErrorCode.USER_IS_EMPTY);
         } else {
-            System.out.println(userIds);
             Notification notification = new CreateNotificationServiceRequestDto(requestId).toEntity();
             for (Long userId : userIds) {
                 SseEmitter emitter = createEmitter(userId);
-                System.out.println(emitter);
                 emitterRepository.save(userId, emitter);
                 createNotification(userId, notification);
 
