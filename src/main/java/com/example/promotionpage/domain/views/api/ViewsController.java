@@ -79,7 +79,7 @@ public class ViewsController {
 
     @Operation(summary = "이번 월 조회수 1 상승 API (해당 월이 존재하지 않을 경우에는 생성)")
     @PutMapping("/views/increase")
-    public ApiResponse updateThisMonthViews(){
-        return viewsService.updateThisMonthViews();
+    public ApiResponse updateThisMonthViews(@CookieValue(name = "viewed_cookie", required = false) String cookieValue) {
+        return viewsService.updateThisMonthViews(cookieValue);
     }
 }

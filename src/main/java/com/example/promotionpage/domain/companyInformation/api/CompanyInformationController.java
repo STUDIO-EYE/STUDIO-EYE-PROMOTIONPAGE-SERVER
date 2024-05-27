@@ -108,7 +108,7 @@ public class CompanyInformationController {
         return companyInformationService.deleteCompanyLogoImage();
     }
 
-    @Operation(summary = "회사 기본 정보(주소, 유선번호, 팩스번호) 삭제 API")
+    @Operation(summary = "회사 기본 정보(주소, 영문주소, 유선번호, 팩스번호) 삭제 API")
     @DeleteMapping("/company/basic")
     public ApiResponse deleteCompanyBasicInformation() {
         return companyInformationService.deleteCompanyBasicInformation();

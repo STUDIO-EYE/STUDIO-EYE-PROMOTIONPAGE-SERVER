@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 
 @Service
 @Transactional
@@ -145,11 +142,17 @@ public class ViewsService {
         return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
     }
 
-    public ApiResponse updateThisMonthViews() {
+    public ApiResponse updateThisMonthViews(String cookieValue) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+
+        if(cookieValue != null) {
+            return ApiResponse.ok("이미 방문한 사용자입니다.");
+        }
+
         return this.updateViewsByYearMonth(
                 Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime())),
-                Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime())));
+                Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()))
+        );
     }
 
     private boolean checkMonth(int month) {

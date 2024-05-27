@@ -6,6 +6,7 @@ import java.util.Map;
 
 public record UpdateCompanyBasicInformationServiceRequestDto(
         String address,
+        String addressEnglish,
         String phone,
         String fax
 ) {

@@ -32,6 +32,9 @@ public class CompanyInformation {
     private String address;
 
     @NotNull
+    private String addressEnglish;
+
+    @NotNull
     private String logoImageFileName;
 
     @NotNull
@@ -58,6 +61,7 @@ public class CompanyInformation {
     @Builder
     public CompanyInformation(String mainOverview, String commitment,
                               String address,
+                              String addressEnglish,
                               String logoImageFileName, String logoImageUrl,
                               String phone,
                               String fax,
@@ -67,6 +71,7 @@ public class CompanyInformation {
         this.mainOverview = mainOverview;
         this.commitment = commitment;
         this.address = address;
+        this.addressEnglish = addressEnglish;
         this.logoImageFileName = logoImageFileName;
         this.logoImageUrl = logoImageUrl;
         this.phone = phone;
@@ -84,6 +89,7 @@ public class CompanyInformation {
 
     public void deleteCompanyBasicInformation() {
         this.address = null;
+        this.addressEnglish = null;
         this.phone = null;
         this.fax = null;
     }
@@ -107,6 +113,7 @@ public class CompanyInformation {
         this.mainOverview = dto.mainOverview();
         this.commitment = dto.commitment();
         this.address = dto.address();
+        this.addressEnglish = dto.addressEnglish();
         this.logoImageFileName = logoImageFileName;
         this.logoImageUrl = logoImageUrl;
         this.phone = dto.phone();
@@ -121,6 +128,7 @@ public class CompanyInformation {
         this.mainOverview = dto.mainOverview();
         this.commitment = dto.commitment();
         this.address = dto.address();
+        this.addressEnglish = dto.addressEnglish();
         this.phone = dto.phone();
         this.fax = dto.fax();
         this.introduction = dto.introduction();
@@ -129,6 +137,7 @@ public class CompanyInformation {
 
     public void updateCompanyBasicInformation(UpdateCompanyBasicInformationServiceRequestDto dto) {
         this.address = dto.address();
+        this.addressEnglish = dto.addressEnglish();
         this.phone = dto.phone();
         this.fax = dto.fax();
     }

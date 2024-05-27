@@ -8,6 +8,7 @@ public record CreateCompanyInformationServiceRequestDto(
         String mainOverview,
         String commitment,
         String address,
+        String addressEnglish,
         String phone,
         String fax,
         String introduction,
@@ -19,6 +20,7 @@ public record CreateCompanyInformationServiceRequestDto(
                 .mainOverview(mainOverview)
                 .commitment(commitment)
                 .address(address)
+                .addressEnglish(addressEnglish)
                 .phone(phone)
                 .fax(fax)
                 .introduction(introduction)
@@ -31,6 +33,6 @@ public record CreateCompanyInformationServiceRequestDto(
     }
 
     public UpdateAllCompanyInformationServiceRequestDto toUpdateServiceRequest() {
-        return new UpdateAllCompanyInformationServiceRequestDto(mainOverview, commitment, address, phone, fax, introduction, detailInformation);
+        return new UpdateAllCompanyInformationServiceRequestDto(mainOverview, commitment, address, addressEnglish, phone, fax, introduction, detailInformation);
     }
 }
