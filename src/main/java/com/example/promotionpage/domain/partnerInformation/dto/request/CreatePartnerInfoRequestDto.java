@@ -5,7 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CreatePartnerInfoRequestDto(
+	@NotNull(message = "협력사 이름은 필수 값입니다, null / 빈 값 / 공백 허용 x")
+	@NotBlank(message = "link는 필수 값입니다.")
+	String name,
+
 	@NotNull(message = "is_main은 필수 값입니다.")
+	@NotBlank(message = "link는 필수 값입니다.")
 	Boolean is_main,
 
 	@Schema(description = "협력사 링크 URL, null / 빈 값 / 공백 허용 x")
@@ -14,6 +19,6 @@ public record CreatePartnerInfoRequestDto(
 ) {
 
 	public CreatePartnerInfoServiceRequestDto toServiceRequest() {
-		return new CreatePartnerInfoServiceRequestDto( is_main, link);
+		return new CreatePartnerInfoServiceRequestDto(name, is_main, link);
 	}
 }
