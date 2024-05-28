@@ -18,10 +18,13 @@ public class Client {
 
     private String logoImg;
 
+    private Boolean visibility;
+
     @Builder
-    public Client(String name, String logoImg) {
+    public Client(String name, String logoImg, Boolean visibility) {
         this.name = name;
         this.logoImg = logoImg;
+        this.visibility = visibility;
     }
 
     public Client update(UpdateClientServiceRequestDto dto) {
