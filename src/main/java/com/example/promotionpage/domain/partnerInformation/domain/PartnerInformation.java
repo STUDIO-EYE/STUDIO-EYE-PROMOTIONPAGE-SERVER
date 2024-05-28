@@ -31,4 +31,5 @@ public class PartnerInformation {
 		this.is_main = is_main;
 		this.link = link;
 	}
+
 }

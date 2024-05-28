@@ -151,6 +151,7 @@ public class PartnerInformationService {
 			}
 			partnerInformation.setLogoImageUrl(logoImgStr);
 		}
+		partnerInformation.setName(dto.name());
 		partnerInformation.setIs_main(dto.is_main());
 		partnerInformation.setLink(dto.link());
 
