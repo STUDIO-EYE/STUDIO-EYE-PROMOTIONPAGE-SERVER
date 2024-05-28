@@ -8,6 +8,9 @@ import com.example.promotionpage.domain.faq.dto.request.UpdateFaqServiceRequestD
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +59,11 @@ public class FaqService {
         return ApiResponse.ok("FAQ를 성공적으로 조회했습니다.", faq);
     }
 
+    public Page<Faq> retrieveFaqPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return faqRepository.findAll(pageable);
+    }
+
     public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
         String question = dto.question().trim();
         String answer = dto.answer().trim();
@@ -90,7 +98,6 @@ public class FaqService {
     }
     public ApiResponse deleteFaqs(List<Long> ids) {
         for(Long id : ids) {
-            System.out.println("아이디가 이거라고"+id);
             Optional<Faq> optionalFaq = faqRepository.findById(id);
             if (optionalFaq.isEmpty()) {
                 return ApiResponse.withError(ErrorCode.INVALID_FAQ_ID);

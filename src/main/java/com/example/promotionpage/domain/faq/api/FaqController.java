@@ -1,6 +1,7 @@
 package com.example.promotionpage.domain.faq.api;
 
 import com.example.promotionpage.domain.faq.application.FaqService;
+import com.example.promotionpage.domain.faq.domain.Faq;
 import com.example.promotionpage.domain.faq.dto.request.CreateFaqRequestDto;
 import com.example.promotionpage.domain.faq.dto.request.UpdateFaqRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +44,13 @@ public class FaqController {
     @GetMapping("/faq/{id}")
     public ApiResponse retrieveFaqById(@PathVariable Long id) {
         return faqService.retrieveFaqById(id);
+    }
+
+    @Operation(summary = "FAQ 페이지네이션 조회 API")
+    @GetMapping("/faq/page")
+    public Page<Faq> retrieveFaqPage(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size) {
+        return faqService.retrieveFaqPage(page, size);
     }
 
     @Operation(summary = "FAQ 수정 API")
