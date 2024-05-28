@@ -29,11 +29,7 @@ public class PartnerInformationService {
 		String logoImgStr = getImgUrl(logoImg);
 		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
-		PartnerInformation partnerInformation = PartnerInformation.builder()
-			.logoImageUrl(logoImgStr)
-			.is_main(dto.is_main())
-			.link(dto.link())
-			.build();
+		PartnerInformation partnerInformation = dto.toEntity(logoImgStr);
 
 		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
 		return ApiResponse.ok("협력사 정보를 성공적으로 등록하였습니다.", savedPartnerInformation);
