@@ -29,6 +29,7 @@ public class Client {
 
     public Client update(UpdateClientServiceRequestDto dto) {
         this.name = dto.name();
+        this.visibility = dto.visibility();
         return this;
     }
 }
