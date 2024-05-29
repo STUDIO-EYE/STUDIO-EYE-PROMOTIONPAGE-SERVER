@@ -83,6 +83,13 @@ public class CompanyInformationController {
         return companyInformationService.updateCompanySloganImage(sloganImageUrl);
     }
 
+    @Operation(summary = "회사 로고, 슬로건 이미지 수정 API")
+    @PutMapping("/company/logo&slogan")
+    public ApiResponse updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
+                                              @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
+        return companyInformationService.updateCompanyLogoAndSlogan(logoImageUrl, sloganImageUrl);
+    }
+
     @Operation(summary = "회사 기본 정보(주소, 유선번호, 팩스번호) 수정 API")
     @PutMapping("/company/basic")
     public ApiResponse updateCompanyBasicInformation(@Valid @RequestBody UpdateCompanyBasicInformationRequestDto dto) {

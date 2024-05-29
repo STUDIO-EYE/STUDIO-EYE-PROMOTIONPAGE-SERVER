@@ -156,4 +156,11 @@ public class CompanyInformation {
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
     }
+
+    public void updateCompanyLogoAndSlogan(String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+        this.logoImageFileName = logoImageFileName;
+        this.logoImageUrl = logoImageUrl;
+        this.sloganImageFileName = sloganImageFileName;
+        this.sloganImageUrl = sloganImageUrl;
+    }
 }
