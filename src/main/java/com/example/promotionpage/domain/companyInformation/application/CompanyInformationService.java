@@ -181,8 +181,10 @@ public class CompanyInformationService {
         if (updateLogoFileResponse.getStatus().is5xxServerError()) {
             return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
         }
-        companyInformations.get(0).updateCompanyLogo(logoImage.getOriginalFilename(), updateLogoFileResponse.getData());
-        return ApiResponse.ok("회사 로고 이미지를 성공적으로 수정했습니다.");
+        CompanyInformation companyInformation = companyInformations.get(0);
+        companyInformation.updateCompanyLogo(logoImage.getOriginalFilename(), updateLogoFileResponse.getData());
+        CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
+        return ApiResponse.ok("회사 로고 이미지를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
     public ApiResponse updateCompanySloganImage(MultipartFile sloganImageUrl) throws IOException {
