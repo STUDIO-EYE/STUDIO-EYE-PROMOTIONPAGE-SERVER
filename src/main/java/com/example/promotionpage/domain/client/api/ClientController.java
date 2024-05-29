@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +47,13 @@ public class ClientController {
     @GetMapping("/client/logoImgList")
     public ApiResponse<List<String>> retrieveAllClientLogoImgList(){
         return clientService.retrieveAllClientLogoImgList();
+    }
+
+    @Operation(summary = "클라이언트 페이지네이션 조회 API")
+    @GetMapping("/client/page")
+    public Page<Client> retrieveClientPage(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size){
+        return clientService.retrieveClientPage(page, size);
     }
 
     @Operation(summary = "클라이언트 수정 API")

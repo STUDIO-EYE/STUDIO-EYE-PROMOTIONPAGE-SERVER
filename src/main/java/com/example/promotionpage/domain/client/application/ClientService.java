@@ -8,6 +8,9 @@ import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +74,11 @@ public class ClientService {
         }
 
         return ApiResponse.ok("클라이언트 로고 이미지 리스트를 성공적으로 조회했습니다.", logoImgList);
+    }
+
+    public Page<Client> retrieveClientPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return clientRepository.findAll(pageable);
     }
 
     private static Map<String, Object> getResponseBody(Client client) {
