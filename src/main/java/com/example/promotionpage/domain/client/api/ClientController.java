@@ -30,6 +30,24 @@ public class ClientController {
         return clientService.createClient(dto.toServiceRequest(), logoImg);
     }
 
+    @Operation(summary = "클라이언트 전체 조회 API")
+    @GetMapping("/client")
+    public ApiResponse<List<Map<String, Object>>> retrieveAllClient(){
+        return clientService.retrieveAllClient();
+    }
+
+    @Operation(summary = "클라이언트 상세 조회 API")
+    @GetMapping("/client/{clientId}")
+    public ApiResponse<Map<String, Object>> retrieveClient(@PathVariable Long clientId){
+        return clientService.retrieveClient(clientId);
+    }
+
+    @Operation(summary = "클라이언트 로고 이미지 리스트 조회 API")
+    @GetMapping("/client/logoImgList")
+    public ApiResponse<List<String>> retrieveAllClientLogoImgList(){
+        return clientService.retrieveAllClientLogoImgList();
+    }
+
     @Operation(summary = "클라이언트 수정 API")
     @PutMapping("/client")
     public ApiResponse<Client> updateClient(@Valid @RequestPart("clientInfo") UpdateClientRequestDto dto,
@@ -54,24 +72,4 @@ public class ClientController {
     public ApiResponse<String> deleteClient(@PathVariable Long clientId){
         return clientService.deleteClient(clientId);
     }
-
-    @Operation(summary = "클라이언트 전체 조회 API")
-    @GetMapping("/client")
-    public ApiResponse<List<Map<String, Object>>> retrieveAllClient(){
-        return clientService.retrieveAllClient();
-    }
-
-    @Operation(summary = "클라이언트 상세 조회 API")
-    @GetMapping("/client/{clientId}")
-    public ApiResponse<Map<String, Object>> retrieveClient(@PathVariable Long clientId){
-        return clientService.retrieveClient(clientId);
-    }
-
-    @Operation(summary = "클라이언트 로고 이미지 리스트 조회 API")
-    @GetMapping("/client/logoImgList")
-    public ApiResponse<List<String>> retrieveAllClientLogoImgList(){
-        return clientService.retrieveAllClientLogoImgList();
-    }
-
-
 }
