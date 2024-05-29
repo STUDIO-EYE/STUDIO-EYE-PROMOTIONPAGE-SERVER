@@ -2,14 +2,8 @@ package com.example.promotionpage.domain.partnerInformation.api;
 
 import com.example.promotionpage.domain.partnerInformation.domain.PartnerInformation;
 import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.promotionpage.domain.partnerInformation.application.PartnerInformationService;
@@ -55,6 +49,13 @@ public class PartnerInformationController {
 	@GetMapping("/partners/logoImgList")
 	public ApiResponse<List<String>> retrieveAllPartnerLogoImgList(){
 		return partnerInformationService.retrieveAllPartnerLogoImgList();
+	}
+
+	@Operation(summary = "협력사 정보 페이지네이션 조회 API")
+	@GetMapping("/partners/page")
+	public Page<PartnerInformation> retrievePartnerInformationPage(@RequestParam(defaultValue = "0") int page,
+																   @RequestParam(defaultValue = "10") int size) {
+		return partnerInformationService.retrievePartnerInformationPage(page, size);
 	}
 
 	@Operation(summary = "협력사 전체 수정 API")

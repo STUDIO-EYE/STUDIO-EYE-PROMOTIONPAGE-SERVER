@@ -3,6 +3,9 @@ package com.example.promotionpage.domain.partnerInformation.application;
 import java.util.*;
 
 import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoServiceRequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +86,11 @@ public class PartnerInformationService {
 		}
 
 		return ApiResponse.ok("협력사 로고 이미지 리스트를 성공적으로 조회했습니다.", logoImgList);
+	}
+
+	public Page<PartnerInformation> retrievePartnerInformationPage(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return partnerInformationRepository.findAll(pageable);
 	}
 
 	private static Map<String, Object> getResponseBody(PartnerInformation partnerInformation) {
