@@ -45,23 +45,6 @@ public class PartnerInformationService {
         return updateFileResponse.getData();
 	}
 
-	public ApiResponse<PartnerInformation> updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
-		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
-		if (optionalPartnerInformation.isEmpty()) {
-			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
-		}
-
-		PartnerInformation partner = optionalPartnerInformation.get();
-
-		// 새로운 로고이미지 저장
-		String logoImgStr = getImgUrl(logoImg);
-		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-		partner.setLogoImageUrl(logoImgStr);
-
-		PartnerInformation updatedPartner = partnerInformationRepository.save(partner);
-		return ApiResponse.ok("협력사 로고 이미지를 성공적으로 수정했습니다.", updatedPartner);
-	}
-
 	public ApiResponse<List<Map<String, Object>>> retrieveAllPartnerInfo() {
 		List<PartnerInformation> partnerInformationList = partnerInformationRepository.findAll();
 		if (partnerInformationList.isEmpty()){
@@ -153,6 +136,23 @@ public class PartnerInformationService {
 
 		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
 		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
+	}
+
+	public ApiResponse<PartnerInformation> updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
+		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
+		if (optionalPartnerInformation.isEmpty()) {
+			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
+		}
+
+		PartnerInformation partner = optionalPartnerInformation.get();
+
+		// 새로운 로고이미지 저장
+		String logoImgStr = getImgUrl(logoImg);
+		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		partner.setLogoImageUrl(logoImgStr);
+
+		PartnerInformation updatedPartner = partnerInformationRepository.save(partner);
+		return ApiResponse.ok("협력사 로고 이미지를 성공적으로 수정했습니다.", updatedPartner);
 	}
 
 	public ApiResponse<String> deletePartnerInfo(Long partnerId) {
