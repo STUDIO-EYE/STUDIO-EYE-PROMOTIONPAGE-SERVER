@@ -45,23 +45,6 @@ public class PartnerInformationService {
         return updateFileResponse.getData();
 	}
 
-	public ApiResponse<String> deletePartnerInfo(Long partnerId) {
-		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
-		if(optionalPartnerInformation.isEmpty()){
-			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
-		}
-
-		PartnerInformation partnerInformation = optionalPartnerInformation.get();
-		ApiResponse<String> deleteFileResponse = s3Adapter.deleteFile(partnerInformation.getLogoImageUrl().split("/")[3]);
-		if(deleteFileResponse.getStatus().is5xxServerError()){
-			return ApiResponse.withError(ErrorCode.ERROR_S3_DELETE_OBJECT);
-		}
-
-		partnerInformationRepository.delete(partnerInformation);
-		return ApiResponse.ok("협력사 정보를 성공적으로 삭제하였습니다.");
-	}
-
-
 	public ApiResponse<PartnerInformation> updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
 		if (optionalPartnerInformation.isEmpty()) {
@@ -119,7 +102,6 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 로고 이미지 리스트를 성공적으로 조회했습니다.", logoImgList);
 	}
 
-
 	private static Map<String, Object> getResponseBody(PartnerInformation partnerInformation) {
 		// post와 get의 구조 통일
 		LinkedHashMap<String, Object> responseBody = new LinkedHashMap<>();
@@ -171,5 +153,21 @@ public class PartnerInformationService {
 
 		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
 		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
+	}
+
+	public ApiResponse<String> deletePartnerInfo(Long partnerId) {
+		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
+		if(optionalPartnerInformation.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
+		}
+
+		PartnerInformation partnerInformation = optionalPartnerInformation.get();
+		ApiResponse<String> deleteFileResponse = s3Adapter.deleteFile(partnerInformation.getLogoImageUrl().split("/")[3]);
+		if(deleteFileResponse.getStatus().is5xxServerError()){
+			return ApiResponse.withError(ErrorCode.ERROR_S3_DELETE_OBJECT);
+		}
+
+		partnerInformationRepository.delete(partnerInformation);
+		return ApiResponse.ok("협력사 정보를 성공적으로 삭제하였습니다.");
 	}
 }
