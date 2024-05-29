@@ -151,10 +151,10 @@ public class CompanyInformation {
         this.detailInformation = dto.detailInformation();
     }
 
-    public void updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto, String sloganImageFileName, String sloganImageUrl) {
+    public void updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto) {
+        this.mainOverview = dto.mainOverview();
+        this.commitment = dto.commitment();
         this.introduction = dto.introduction();
-        this.sloganImageFileName = sloganImageFileName;
-        this.sloganImageUrl = sloganImageUrl;
     }
 
     public void updateCompanyLogoAndSlogan(String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {

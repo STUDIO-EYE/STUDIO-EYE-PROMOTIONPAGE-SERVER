@@ -245,25 +245,10 @@ public class CompanyInformationService {
     }
 
 
-    public ApiResponse updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto, MultipartFile sloganImage) throws IOException {
-        String sloganImageFileName = null;
-        String sloganImageUrl = null;
+    public ApiResponse updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto) {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
-        if (!companyInformations.isEmpty()) {
-            String sloganFileName = companyInformations.get(0).getSloganImageFileName();
-            s3Adapter.deleteFile(sloganFileName);
-        }
-        if(sloganImage != null) {
-            ApiResponse<String> updateSloganFileResponse = s3Adapter.uploadFile(sloganImage);
-
-            if (updateSloganFileResponse.getStatus().is5xxServerError()) {
-                return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-            }
-            sloganImageUrl = updateSloganFileResponse.getData();
-            sloganImageFileName = sloganImage.getOriginalFilename();
-        }
         CompanyInformation companyInformation = companyInformations.get(0);
-        companyInformation.updateCompanyIntroductionInformation(dto, sloganImageFileName, sloganImageUrl);
+        companyInformation.updateCompanyIntroductionInformation(dto);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("회사 소개 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }

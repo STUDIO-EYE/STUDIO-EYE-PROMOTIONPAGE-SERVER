@@ -96,11 +96,10 @@ public class CompanyInformationController {
         return companyInformationService.updateCompanyBasicInformation(dto.toServiceRequest());
     }
 
-    @Operation(summary = "회사 소개 정보(소개 문구, 로고 이미지 수정 API")
+    @Operation(summary = "회사 소개 정보(mainOverview, commitment, introduction) 수정 API")
     @PutMapping("/company/introduction")
-    public ApiResponse updateCompanyIntroductionInformation(@Valid @RequestPart("request") UpdateCompanyIntroductionInformationRequestDto dto,
-                                                            @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
-        return companyInformationService.updateCompanyIntroductionInformation(dto.toServiceRequest(), sloganImageUrl);
+    public ApiResponse updateCompanyIntroductionInformation(@Valid @RequestBody UpdateCompanyIntroductionInformationRequestDto dto) {
+        return companyInformationService.updateCompanyIntroductionInformation(dto.toServiceRequest());
     }
 
     @Operation(summary = "회사 5가지 상세 정보 수정 API")
