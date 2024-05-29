@@ -8,6 +8,7 @@ import com.example.promotionpage.domain.request.dao.RequestCount;
 import com.example.promotionpage.domain.request.domain.Request;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestStateDto;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,6 +84,13 @@ public class RequestController {
 	@GetMapping("/requests/waiting")
 	public ApiResponse<List<Request>> retrieveWaitingRequest() {
 		return requestService.retrieveWaitingRequest();
+	}
+
+	@Operation(summary = "문의 목록 페이지네이션 조회 API")
+	@GetMapping("/requests/page")
+	public Page<Request> retrieveRequestPage(@RequestParam(defaultValue = "0") int page,
+											 @RequestParam(defaultValue = "10") int size) {
+		return requestService.retrieveRequestPage(page, size);
 	}
 
 	@Operation(summary = "문의 답변 등록 API")

@@ -1,6 +1,8 @@
 package com.example.promotionpage.domain.request.dao;
 
 import com.example.promotionpage.domain.request.domain.State;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.promotionpage.domain.request.domain.Request;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
+
+    Page<Request> findAll(Pageable pageable);
     List<Request> findByState(State state);
     Long countByState(State state);
     // 기간 중 request 수

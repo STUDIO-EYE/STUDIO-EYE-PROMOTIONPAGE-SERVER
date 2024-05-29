@@ -13,6 +13,9 @@ import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -230,6 +233,11 @@ public class RequestService {
 			return ApiResponse.ok("접수 대기 중인 문의가 존재하지 않습니다.");
 		}
 		return ApiResponse.ok("접수 대기 중인 문의 목록을 성공적으로 조회했습니다.", requestList);
+	}
+
+	public Page<Request> retrieveRequestPage(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return requestRepository.findAll(pageable);
 	}
 
 	public ApiResponse<String> updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
