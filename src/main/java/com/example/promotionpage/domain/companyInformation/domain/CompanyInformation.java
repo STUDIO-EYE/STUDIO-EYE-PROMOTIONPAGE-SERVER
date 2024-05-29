@@ -109,6 +109,11 @@ public class CompanyInformation {
         this.logoImageUrl = logoImageUrl;
     }
 
+    public void updateCompanySlogan(String sloganImageFileName, String sloganImageUrl) {
+        this.sloganImageFileName = sloganImageFileName;
+        this.sloganImageUrl = sloganImageUrl;
+    }
+
     public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
         this.mainOverview = dto.mainOverview();
         this.commitment = dto.commitment();

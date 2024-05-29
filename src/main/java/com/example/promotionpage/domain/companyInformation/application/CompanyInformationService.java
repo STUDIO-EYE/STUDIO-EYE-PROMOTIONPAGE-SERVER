@@ -114,7 +114,7 @@ public class CompanyInformationService {
 
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
-            ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
+            return ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
         }
 
         String logoImageFileName = companyInformations.get(0).getLogoImageFileName();
@@ -169,7 +169,7 @@ public class CompanyInformationService {
 
     public ApiResponse updateCompanyLogoImage(MultipartFile logoImage) throws IOException  {
         if(logoImage == null) {
-            ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
+            return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
         }
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (!companyInformations.isEmpty()) {
@@ -183,6 +183,24 @@ public class CompanyInformationService {
         }
         companyInformations.get(0).updateCompanyLogo(logoImage.getOriginalFilename(), updateLogoFileResponse.getData());
         return ApiResponse.ok("회사 로고 이미지를 성공적으로 수정했습니다.");
+    }
+
+    public ApiResponse updateCompanySloganImage(MultipartFile sloganImageUrl) throws IOException {
+        if(sloganImageUrl == null) {
+            return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
+        }
+        List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
+        if (!companyInformations.isEmpty()) {
+            String fileName = companyInformations.get(0).getSloganImageFileName();
+            s3Adapter.deleteFile(fileName);
+        }
+
+        ApiResponse<String> updateSloganFileResponse = s3Adapter.uploadFile(sloganImageUrl);
+        if (updateSloganFileResponse.getStatus().is5xxServerError()) {
+            return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+        }
+        companyInformations.get(0).updateCompanySlogan(sloganImageUrl.getOriginalFilename(), updateSloganFileResponse.getData());
+        return ApiResponse.ok("회사 슬로건 이미지를 성공적으로 수정했습니다.");
     }
 
     public ApiResponse updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto, MultipartFile sloganImage) throws IOException {
