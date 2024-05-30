@@ -86,7 +86,8 @@ public class ClientService {
         LinkedHashMap<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("clientInfo", Map.of(
                 "id", client.getId(),
-                "name", client.getName()
+                "name", client.getName(),
+                "visibility",client.getVisibility()
         ));
         responseBody.put("logoImg", client.getLogoImg());
         return responseBody;
