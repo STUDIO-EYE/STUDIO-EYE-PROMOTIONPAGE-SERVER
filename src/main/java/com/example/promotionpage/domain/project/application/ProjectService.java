@@ -50,8 +50,9 @@ public class ProjectService {
 				projectImages.add(projectImage);
 			}
 		}
-		long count = projectRepository.count();
-		Project project = dto.toEntity(mainImg, projectImages, count);
+		long projectCount = projectRepository.count();
+		Integer mainProjectCount = projectRepository.countByProjectType(MAIN_PROJECT_TYPE);
+		Project project = dto.toEntity(mainImg, projectImages, projectCount, mainProjectCount);
 
 		// ProjectImage의 project 필드 설정
 		for (ProjectImage projectImage : projectImages) {
