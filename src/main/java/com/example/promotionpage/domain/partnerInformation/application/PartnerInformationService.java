@@ -140,6 +140,7 @@ public class PartnerInformationService {
 		}
 		PartnerInformation partnerInformation = optionalPartnerInformation.get();
 
+		partnerInformation.setName(dto.name());
 		partnerInformation.setIs_main(dto.is_main());
 		partnerInformation.setLink(dto.link());
 
