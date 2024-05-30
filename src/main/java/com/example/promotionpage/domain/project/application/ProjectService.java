@@ -271,6 +271,14 @@ public class ProjectService {
 		}
 		Project project = optionalProject.get();
 
+		// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+		if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+			List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+			for (Project findMainProject : findByMainSequenceGreaterThan) {
+				findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+			}
+		}
+
 		switch (projectType) {
 			// 받아온 projectType String 값이 유효한 경우
 			case TOP_PROJECT_TYPE:
