@@ -18,7 +18,7 @@ public record CreateProjectServiceRequestDto(
 	String projectType,
 	Boolean isPosted
 ) {
-	public Project toEntity(String mainImg, List<ProjectImage> projectImages, long count) {
+	public Project toEntity(String mainImg, List<ProjectImage> projectImages, long projectCount, Integer mainSequence) {
 		return Project.builder()
 			.department(department)
 			.category(category)
@@ -29,8 +29,8 @@ public record CreateProjectServiceRequestDto(
 			.overView(overView)
 			.mainImg(mainImg)
 			.projectImages(projectImages)
-			.sequence((int) (count + 1))
-			.mainSequence(999)
+			.sequence((int) (projectCount + 1))
+			.mainSequence(mainSequence)
 			.projectType(projectType)
 			.isPosted(isPosted)
 			.build();
