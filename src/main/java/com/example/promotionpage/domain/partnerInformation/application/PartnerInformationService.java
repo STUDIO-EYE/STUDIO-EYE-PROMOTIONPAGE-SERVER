@@ -98,6 +98,7 @@ public class PartnerInformationService {
 		LinkedHashMap<String, Object> responseBody = new LinkedHashMap<>();
 		responseBody.put("partnerInfo", Map.of(
 				"id", partnerInformation.getId(),
+				"name", partnerInformation.getName(),
 				"is_main", partnerInformation.getIs_main(),
 				"link", partnerInformation.getLink()
 
