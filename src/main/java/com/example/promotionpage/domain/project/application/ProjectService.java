@@ -50,9 +50,36 @@ public class ProjectService {
 				projectImages.add(projectImage);
 			}
 		}
+		// 총 프로젝트 개수
 		long projectCount = projectRepository.count();
-		Integer mainProjectCount = projectRepository.countByProjectType(MAIN_PROJECT_TYPE);
-		Project project = dto.toEntity(mainImg, projectImages, projectCount, mainProjectCount);
+
+		// 프로젝트 타입 결정
+		int mainSequence = 999;
+		String projectType = dto.projectType();
+		switch (projectType) {
+			// 받아온 projectType String 값이 유효한 경우
+			case TOP_PROJECT_TYPE:
+				List<Project> topProject = projectRepository.findByProjectType(projectType);
+				// TOP 프로젝트가 이미 존재하는 경우
+				if (!topProject.isEmpty()) {
+					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
+				}
+				break;
+			case MAIN_PROJECT_TYPE:
+				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
+				// "main"인 프로젝트가 이미 5개 이상인 경우
+				if (mainProjects.size() >= 5) {
+					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
+				}
+				mainSequence = mainProjects.size() + 1;
+				break;
+			case OTHERS_PROJECT_TYPE:
+				break;
+			default: // 유효하지 않은 값일 경우
+				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
+		}
+
+		Project project = dto.toEntity(mainImg, projectImages, projectCount, mainSequence);
 
 		// ProjectImage의 project 필드 설정
 		for (ProjectImage projectImage : projectImages) {
@@ -252,8 +279,9 @@ public class ProjectService {
 				if (!topProject.isEmpty() && !project.getId().equals(topProject.get(0).getId())) {
 					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
 				}
-//				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
-//					project.updateMainSequence(999);
+				Project updatedTopProject = project.updateProjectType(projectType);
+				project.updateMainSequence(999);
+				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedTopProject);
 			case MAIN_PROJECT_TYPE:
 				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
 				// "main"인 프로젝트가 이미 5개 이상인 경우
@@ -262,13 +290,13 @@ public class ProjectService {
 				}
 				Project updatedMainProject = project.updateProjectType(projectType);
 				Integer mainSequence = projectRepository.countByProjectType(projectType);
-				project.updateMainSequence(mainSequence + 1);
+				project.updateMainSequence(mainSequence);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedMainProject);
 			case OTHERS_PROJECT_TYPE:
 				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
 					project.updateMainSequence(999);
 
-				Project updatedProject = project.updateProjectType(dto.projectType());
+				Project updatedProject = project.updateProjectType(projectType);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedProject);
 			default: // 유효하지 않은 값일 경우
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
