@@ -5,15 +5,21 @@ import com.example.promotionpage.domain.faq.dao.FaqRepository;
 import com.example.promotionpage.domain.faq.domain.Faq;
 import com.example.promotionpage.domain.faq.dto.request.CreateFaqServiceRequestDto;
 import com.example.promotionpage.domain.faq.dto.request.UpdateFaqServiceRequestDto;
+import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +29,7 @@ import java.util.Optional;
 public class FaqService {
 
     private final FaqRepository faqRepository;
+    private final S3Adapter s3Adapter;
 
     public ApiResponse createFaq(CreateFaqServiceRequestDto dto){
         if(dto.question().trim().isEmpty() || dto.answer().trim().isEmpty() || dto.visibility() == null) {
@@ -62,6 +69,18 @@ public class FaqService {
     public Page<Faq> retrieveFaqPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return faqRepository.findAll(pageable);
+    }
+
+    public ApiResponse retrieveFaqImageUrl(String base64Code) throws IOException {
+        MultipartFile file = this.convert(base64Code);
+        ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
+        String imageUrl = null;
+        if (updateFileResponse.getStatus().is5xxServerError()) {
+            return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+        }
+        imageUrl = updateFileResponse.getData();
+        if(imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+        return ApiResponse.ok("FAQ base64 이미지를 성공적으로 저장했습니다.",imageUrl);
     }
 
     public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
@@ -106,5 +125,19 @@ public class FaqService {
             faqRepository.delete(faq);
         }
         return ApiResponse.ok("FAQ를 성공적으로 삭제했습니다.");
+    }
+
+    public MultipartFile convert(String base64Image) throws IOException {
+        // "data:image/png;base64,"와 같은 접두사 제거
+        String[] parts = base64Image.split(",");
+        String imageString = parts[1];
+        byte[] decodedBytes = Base64.getDecoder().decode(imageString);
+
+        return new MockMultipartFile(
+                "image", // 파일 이름
+                "image.png", // 원본 파일 이름
+                "image/png", // MIME 타입
+                new ByteArrayInputStream(decodedBytes)
+        );
     }
 }

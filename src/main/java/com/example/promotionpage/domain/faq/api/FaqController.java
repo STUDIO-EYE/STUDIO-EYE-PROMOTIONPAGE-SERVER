@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "FAQ API", description = "FAQ 등록 / 수정 / 삭제 / 조회")
@@ -51,6 +52,12 @@ public class FaqController {
     public Page<Faq> retrieveFaqPage(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size) {
         return faqService.retrieveFaqPage(page, size);
+    }
+
+    @Operation(summary = "FAQ base64 이미지 저장 후 url 반환 API")
+    @GetMapping("/faq/image")
+    public ApiResponse retrieveFaqImageUrl(@RequestParam String base64Code) throws IOException {
+        return faqService.retrieveFaqImageUrl(base64Code);
     }
 
     @Operation(summary = "FAQ 수정 API")
