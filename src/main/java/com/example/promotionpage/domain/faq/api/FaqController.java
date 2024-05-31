@@ -29,6 +29,12 @@ public class FaqController {
         return faqService.createFaq(dto.toServiceFaq());
     }
 
+    @Operation(summary = "FAQ base64 이미지 저장 후 url 반환 API")
+    @PostMapping("/faq/image")
+    public ApiResponse convertBase64ToImageUrl(@RequestBody String base64Code) throws IOException {
+        return faqService.convertBase64ToImageUrl(base64Code);
+    }
+
     @Operation(summary = "FAQ 전체 조회 API")
     @GetMapping("/faq")
     public ApiResponse retrieveAllFaq() {
@@ -52,12 +58,6 @@ public class FaqController {
     public Page<Faq> retrieveFaqPage(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size) {
         return faqService.retrieveFaqPage(page, size);
-    }
-
-    @Operation(summary = "FAQ base64 이미지 저장 후 url 반환 API")
-    @GetMapping("/faq/image")
-    public ApiResponse retrieveFaqImageUrl(@RequestParam String base64Code) throws IOException {
-        return faqService.retrieveFaqImageUrl(base64Code);
     }
 
     @Operation(summary = "FAQ 수정 API")

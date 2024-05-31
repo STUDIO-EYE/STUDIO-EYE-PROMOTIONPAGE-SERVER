@@ -71,7 +71,8 @@ public class FaqService {
         return faqRepository.findAll(pageable);
     }
 
-    public ApiResponse retrieveFaqImageUrl(String base64Code) throws IOException {
+    public ApiResponse convertBase64ToImageUrl(String base64Code) throws IOException {
+        base64Code = base64Code.replaceAll("\"", ""); // requestBody에서 문자열 앞뒤에 "" 추가되는 현상 처리
         MultipartFile file = this.convert(base64Code);
         ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
         String imageUrl = null;
