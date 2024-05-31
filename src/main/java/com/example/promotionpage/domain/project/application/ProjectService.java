@@ -8,6 +8,9 @@ import java.util.Optional;
 import com.example.promotionpage.domain.project.domain.ProjectImage;
 import com.example.promotionpage.domain.project.dto.request.*;
 import com.example.promotionpage.domain.views.application.ViewsService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -209,8 +212,6 @@ public class ProjectService {
 
 	// for artwork page
 	public ApiResponse<List<Project>> retrieveAllArtworkProject() {
-		// 조회수 증가
-//		viewsService.updateThisMonthViews();
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderBySequenceAsc();
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
@@ -221,7 +222,6 @@ public class ProjectService {
 
 	// for main page
 	public ApiResponse<List<Project>> retrieveAllMainProject() {
-		// 조회수 증가
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderByMainSequenceAsc();
 		List<Project> responseProject = new ArrayList<>();
 		List<Project> topProject = projectRepository.findByProjectType(TOP_PROJECT_TYPE);
@@ -311,4 +311,8 @@ public class ProjectService {
 		}
 	}
 
+	public Page<Project> retrieveArtworkProjectPage(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return projectRepository.findAll(pageable);
+	}
 }

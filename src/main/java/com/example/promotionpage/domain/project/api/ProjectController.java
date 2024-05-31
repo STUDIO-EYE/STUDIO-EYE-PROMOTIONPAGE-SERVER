@@ -4,15 +4,8 @@ import java.util.List;
 
 import com.example.promotionpage.domain.project.domain.Project;
 import com.example.promotionpage.domain.project.dto.request.*;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.promotionpage.domain.project.application.ProjectService;
@@ -83,6 +76,13 @@ public class ProjectController {
 	@GetMapping("/projects/{projectId}")
 	public ApiResponse<Project> retrieveProject(@PathVariable Long projectId){
 		return projectService.retrieveProject(projectId);
+	}
+
+	@Operation(summary = "프로젝트 페이지네이션 조회 API (request 페이지, sequence 순)")
+	@GetMapping("/projects/page")
+	public Page<Project> retrieveArtworkProjectPage(@RequestParam(defaultValue = "0") int page,
+													@RequestParam(defaultValue = "10") int size){
+		return projectService.retrieveArtworkProjectPage(page, size);
 	}
 
 	@Operation(summary = "게시 여부 변경 API")
