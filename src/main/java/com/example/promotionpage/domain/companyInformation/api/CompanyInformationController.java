@@ -40,7 +40,7 @@ public class CompanyInformationController {
         return companyInformationService.retrieveCampanyLogoImage();
     }
 
-    @Operation(summary = "회사 기본 정보(주소, 유선번호, 팩스번호) 조회 API")
+    @Operation(summary = "회사 기본 정보(주소, 영문주소, 유선번호, 팩스번호) 조회 API")
     @GetMapping("/company/basic")
     public ApiResponse retrieveCompanyBasicInformation() {
         return companyInformationService.retrieveCompanyBasicInformation();
