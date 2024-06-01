@@ -75,6 +75,8 @@ public class Project {
 		this.date = dto.date();
 		this.link = dto.link();
 		this.overView = dto.overView();
+		this.projectType = dto.projectType();
+		this.isPosted = dto.isPosted();
 		return this;
 	}
 

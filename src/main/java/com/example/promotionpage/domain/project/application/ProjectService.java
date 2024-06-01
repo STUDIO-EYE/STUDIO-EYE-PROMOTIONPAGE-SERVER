@@ -97,6 +97,57 @@ public class ProjectService {
 		}
 
 		Project project = optionalProject.get();
+
+		String projectType = dto.projectType();
+
+
+
+		switch (projectType) {
+			// 받아온 projectType String 값이 유효한 경우
+			case TOP_PROJECT_TYPE:
+				List<Project> topProject = projectRepository.findByProjectType(projectType);
+				// TOP 프로젝트가 이미 존재하고, 전달된 프로젝트 id가 이미 존재하는 TOP 프로젝트 id와 다른 경우
+				if (!topProject.isEmpty() && !project.getId().equals(topProject.get(0).getId())) {
+					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
+				}
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
+				project.updateProjectType(projectType);
+				project.updateMainSequence(999);
+				break;
+			case MAIN_PROJECT_TYPE:
+				// 원래 프로젝트 타입이 main이었으면 종료
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
+					break;
+				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
+				// "main"인 프로젝트가 이미 5개 이상이고 전달된 프로젝트가 원래 main이 아닌 경우
+				if (mainProjects.size() >= 5) {
+					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
+				}
+				project.updateProjectType(projectType);
+				Integer mainSequence = projectRepository.countByProjectType(projectType);
+				project.updateMainSequence(mainSequence);
+				break;
+			case OTHERS_PROJECT_TYPE:
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
+				project.updateProjectType(projectType);
+				project.updateMainSequence(999);
+				break;
+			default: // 유효하지 않은 값일 경우
+				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
+		}
+
 		// 삭제할 이미지 ID 목록이 비어있지 않은 경우 삭제 처리
 		if (dto.deletedImagesId() != null && !dto.deletedImagesId().isEmpty()) {
 			List<Long> deletedImagesIdList = dto.deletedImagesId();
@@ -271,14 +322,6 @@ public class ProjectService {
 		}
 		Project project = optionalProject.get();
 
-		// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
-		if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
-			List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
-			for (Project findMainProject : findByMainSequenceGreaterThan) {
-				findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
-			}
-		}
-
 		switch (projectType) {
 			// 받아온 projectType String 값이 유효한 경우
 			case TOP_PROJECT_TYPE:
@@ -287,28 +330,44 @@ public class ProjectService {
 				if (!topProject.isEmpty() && !project.getId().equals(topProject.get(0).getId())) {
 					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
 				}
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
 				Project updatedTopProject = project.updateProjectType(projectType);
-				project.updateMainSequence(999);
+				updatedTopProject.updateMainSequence(999);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedTopProject);
 			case MAIN_PROJECT_TYPE:
+				// 원래 프로젝트 타입이 main이었으면 종료
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
+					return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", project);
 				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
 				// "main"인 프로젝트가 이미 5개 이상인 경우
 				if (mainProjects.size() >= 5) {
 					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
 				}
 				Project updatedMainProject = project.updateProjectType(projectType);
+				// mainSequence 수정
 				Integer mainSequence = projectRepository.countByProjectType(projectType);
-				project.updateMainSequence(mainSequence);
+				System.out.print("------------------------------------" + mainSequence);
+				updatedMainProject.updateMainSequence(mainSequence);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedMainProject);
 			case OTHERS_PROJECT_TYPE:
-				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
-					project.updateMainSequence(999);
-
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
 				Project updatedProject = project.updateProjectType(projectType);
+				updatedProject.updateMainSequence(999);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedProject);
 			default: // 유효하지 않은 값일 경우
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 	}
-
 }

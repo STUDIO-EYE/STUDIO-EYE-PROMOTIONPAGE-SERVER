@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record UpdateProjectRequestDto(
@@ -40,10 +41,18 @@ public record UpdateProjectRequestDto(
 	String overView,
 
 	@Schema(description = "삭제된 이미지 리스트")
-	List<Long> deletedImagesId
+	List<Long> deletedImagesId,
+
+	@Schema(description = "프로젝트 타입")
+	@NotNull(message = "null 값을 허용하지 않습니다.")
+	String projectType,
+
+	@Schema(description = "프로젝트 게시 여부")
+	@NotNull(message = "null 값을 허용하지 않습니다.")
+	Boolean isPosted
 
 ) {
 	public UpdateProjectServiceRequestDto toServiceRequest() {
-		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView,deletedImagesId);
+		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView,deletedImagesId, projectType, isPosted);
 	}
 }
