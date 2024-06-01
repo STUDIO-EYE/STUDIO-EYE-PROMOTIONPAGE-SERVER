@@ -99,9 +99,6 @@ public class ProjectService {
 		Project project = optionalProject.get();
 
 		String projectType = dto.projectType();
-
-
-
 		switch (projectType) {
 			// 받아온 projectType String 값이 유효한 경우
 			case TOP_PROJECT_TYPE:
@@ -148,31 +145,24 @@ public class ProjectService {
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 
-		// 삭제할 이미지 ID 목록이 비어있지 않은 경우 삭제 처리
-		if (dto.deletedImagesId() != null && !dto.deletedImagesId().isEmpty()) {
-			List<Long> deletedImagesIdList = dto.deletedImagesId();
-			List<ProjectImage> imagesToRemove = project.getProjectImages().stream()
-					.filter(image -> deletedImagesIdList.contains(image.getId()))
-					.toList();
-
-			for (ProjectImage image : imagesToRemove) {
-				String fileName = image.getFileName();
-				// S3에서 해당 이미지 삭제
-				s3Adapter.deleteFile(fileName);
-				project.getProjectImages().remove(image);
-			}
+		// 기존 이미지들 전체 삭제
+		List<ProjectImage> existingImages = project.getProjectImages();
+		// S3에서 기존 이미지들 삭제
+		for (ProjectImage image : existingImages) {
+			String fileName = image.getFileName();
+			// S3Adapter의 deleteFile 메소드를 호출하여 이미지를 삭제
+			s3Adapter.deleteFile(fileName);
 		}
+		project.getProjectImages().clear();
 
-		// 새로운 메인 이미지가 전달된 경우에만 새로 저장
-		if (mainImgFile != null && !mainImgFile.isEmpty()) {
-			String mainImg = getImgUrl(mainImgFile);
-			if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-			project.setMainImg(mainImg);
-		}
+		// 새로운 메인이미지 저장
+		String mainImg = getImgUrl(mainImgFile);
+		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		project.setMainImg(mainImg);
 
-		// 새로운 이미지들 추가
-		if (files != null && !files.isEmpty()) {
-			List<ProjectImage> projectImages = new LinkedList<>();
+		// 기존 이미지 + 새로운 이미지들 저장
+		List<ProjectImage> projectImages = new LinkedList<>();
+		if (files != null) {
 			for (MultipartFile file : files) {
 				String imageUrl = getImgUrl(file);
 				if (imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);

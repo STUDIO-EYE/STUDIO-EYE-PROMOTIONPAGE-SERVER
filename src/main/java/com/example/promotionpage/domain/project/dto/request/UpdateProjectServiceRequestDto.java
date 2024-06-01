@@ -11,7 +11,6 @@ public record UpdateProjectServiceRequestDto(
 	String date,
 	String link,
 	String overView,
-	List<Long> deletedImagesId,
 	String projectType,
 	Boolean isPosted
 ) {

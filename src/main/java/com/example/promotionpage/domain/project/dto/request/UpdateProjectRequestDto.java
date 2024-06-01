@@ -40,9 +40,6 @@ public record UpdateProjectRequestDto(
 	@NotBlank(message = "overView는 필수 값입니다.")
 	String overView,
 
-	@Schema(description = "삭제된 이미지 리스트")
-	List<Long> deletedImagesId,
-
 	@Schema(description = "프로젝트 타입")
 	@NotNull(message = "null 값을 허용하지 않습니다.")
 	String projectType,
@@ -53,6 +50,6 @@ public record UpdateProjectRequestDto(
 
 ) {
 	public UpdateProjectServiceRequestDto toServiceRequest() {
-		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView,deletedImagesId, projectType, isPosted);
+		return new UpdateProjectServiceRequestDto(projectId, department,category,name,client,date,link,overView, projectType, isPosted);
 	}
 }
