@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Tag(name = "회사 정보(기본 정보, 소개 정보, 상세 정보) API", description = "회사 정보(기본 정보, 소개 정보, 상세 정보) 등록 / 수정 / 삭제 / 조회")
@@ -35,7 +34,7 @@ public class CompanyInformationController {
 
     @Operation(summary = "회사 전체 정보 조회 API")
     @GetMapping("/company/information")
-    public ApiResponse<List<CompanyInformation>> retrieveAllCampanyInformation() {
+    public ApiResponse<CompanyInformation> retrieveAllCampanyInformation() {
         return companyInformationService.retrieveAllCampanyInformation();
     }
 
