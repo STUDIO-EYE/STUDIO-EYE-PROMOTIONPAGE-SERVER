@@ -1,6 +1,9 @@
 package com.example.promotionpage.domain.companyInformation.api;
 
 import com.example.promotionpage.domain.companyInformation.application.CompanyInformationService;
+import com.example.promotionpage.domain.companyInformation.dao.CompanyBasicInformation;
+import com.example.promotionpage.domain.companyInformation.dao.CompanyIntroductionInformation;
+import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
 import com.example.promotionpage.domain.companyInformation.dto.request.*;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "회사 정보(기본 정보, 소개 정보, 상세 정보) API", description = "회사 정보(기본 정보, 소개 정보, 상세 정보) 등록 / 수정 / 삭제 / 조회")
 @RestController
@@ -22,119 +27,119 @@ public class CompanyInformationController {
 
     @Operation(summary = "회사 정보 등록 API")
     @PostMapping("/company/information")
-    public ApiResponse createCompanyInformation(@Valid @RequestPart("request") CreateCompanyInformationRequestDto dto,
-                                                @RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
-                                                @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
+    public ApiResponse<CompanyInformation> createCompanyInformation(@Valid @RequestPart("request") CreateCompanyInformationRequestDto dto,
+                                                                    @RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
+                                                                    @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.createCompanyInformation(dto.toServiceRequest(), logoImageUrl, sloganImageUrl);
     }
 
     @Operation(summary = "회사 전체 정보 조회 API")
     @GetMapping("/company/information")
-    public ApiResponse retrieveAllCampanyInformation() {
+    public ApiResponse<List<CompanyInformation>> retrieveAllCampanyInformation() {
         return companyInformationService.retrieveAllCampanyInformation();
     }
 
     @Operation(summary = "회사 로고 이미지 조회 API")
     @GetMapping("/company/logo")
-    public ApiResponse retrieveCampanyLogoImage() {
+    public ApiResponse<String> retrieveCampanyLogoImage() {
         return companyInformationService.retrieveCampanyLogoImage();
     }
 
     @Operation(summary = "회사 기본 정보(주소, 영문주소, 유선번호, 팩스번호) 조회 API")
     @GetMapping("/company/basic")
-    public ApiResponse retrieveCompanyBasicInformation() {
+    public ApiResponse<CompanyBasicInformation> retrieveCompanyBasicInformation() {
         return companyInformationService.retrieveCompanyBasicInformation();
     }
 
     @Operation(summary = "회사 소개 정보 조회 API")
     @GetMapping("/company/introduction")
-    public ApiResponse retrieveCompanyIntroductionInformation() {
+    public ApiResponse<CompanyIntroductionInformation> retrieveCompanyIntroductionInformation() {
         return companyInformationService.retrieveCompanyIntroductionInformation();
     }
 
     @Operation(summary = "회사 5가지 상세 정보 조회 API")
     @GetMapping("/company/detail")
-    public ApiResponse retrieveCompanyDetailInformation() {
+    public ApiResponse<Map<String, String>> retrieveCompanyDetailInformation() {
         return companyInformationService.retrieveCompanyDetailInformation();
     }
 
     @Operation(summary = "회사 전체 정보 수정 API")
     @PutMapping("/company/information")
-    public ApiResponse updateAllCompanyInformation(@Valid @RequestPart("request") UpdateAllCompanyInformationRequestDto dto,
+    public ApiResponse<CompanyInformation> updateAllCompanyInformation(@Valid @RequestPart("request") UpdateAllCompanyInformationRequestDto dto,
                                                    @RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
                                                    @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.updateAllCompanyInformation(dto.toServiceRequest(), logoImageUrl, sloganImageUrl);
     }
     @Operation(summary = "회사 전체 텍스트 정보(이미지 제외) 수정 API")
     @PutMapping("/company/information/modify")
-    public ApiResponse updateAllCompanyInformation(@Valid @RequestPart("request") UpdateAllCompanyInformationRequestDto dto) throws IOException {
+    public ApiResponse<CompanyInformation> updateAllCompanyInformation(@Valid @RequestPart("request") UpdateAllCompanyInformationRequestDto dto) throws IOException {
         return companyInformationService.updateAllCompanyTextInformation(dto.toServiceRequest());
     }
 
     @Operation(summary = "회사 로고 이미지 수정 API")
     @PutMapping("/company/logo")
-    public ApiResponse updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl) throws IOException {
+    public ApiResponse<CompanyInformation> updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl) throws IOException {
         return companyInformationService.updateCompanyLogoImage(logoImageUrl);
     }
 
     @Operation(summary = "회사 슬로건 이미지 수정 API")
     @PutMapping("/company/slogan")
-    public ApiResponse updateCompanySloganImage(@RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
+    public ApiResponse<CompanyInformation> updateCompanySloganImage(@RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.updateCompanySloganImage(sloganImageUrl);
     }
 
     @Operation(summary = "회사 로고, 슬로건 이미지 수정 API")
     @PutMapping("/company/logo&slogan")
-    public ApiResponse updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
+    public ApiResponse<CompanyInformation> updateCompanyLogoImage(@RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
                                               @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
         return companyInformationService.updateCompanyLogoAndSlogan(logoImageUrl, sloganImageUrl);
     }
 
     @Operation(summary = "회사 기본 정보(주소, 유선번호, 팩스번호) 수정 API")
     @PutMapping("/company/basic")
-    public ApiResponse updateCompanyBasicInformation(@Valid @RequestBody UpdateCompanyBasicInformationRequestDto dto) {
+    public ApiResponse<CompanyInformation> updateCompanyBasicInformation(@Valid @RequestBody UpdateCompanyBasicInformationRequestDto dto) {
         return companyInformationService.updateCompanyBasicInformation(dto.toServiceRequest());
     }
 
     @Operation(summary = "회사 소개 정보(mainOverview, commitment, introduction) 수정 API")
     @PutMapping("/company/introduction")
-    public ApiResponse updateCompanyIntroductionInformation(@Valid @RequestBody UpdateCompanyIntroductionInformationRequestDto dto) {
+    public ApiResponse<CompanyInformation> updateCompanyIntroductionInformation(@Valid @RequestBody UpdateCompanyIntroductionInformationRequestDto dto) {
         return companyInformationService.updateCompanyIntroductionInformation(dto.toServiceRequest());
     }
 
     @Operation(summary = "회사 5가지 상세 정보 수정 API")
     @PutMapping("/company/detail")
-    public ApiResponse updateCompanyDetailInformation(@Valid @RequestBody UpdateCompanyDetailInformationRequestDto dto) {
+    public ApiResponse<CompanyInformation> updateCompanyDetailInformation(@Valid @RequestBody UpdateCompanyDetailInformationRequestDto dto) {
         return companyInformationService.updateCompanyDetailInformation(dto.toServiceRequest());
     }
 
     @Operation(summary = "회사 전체 정보 삭제 API")
     @DeleteMapping("/company/information")
-    public ApiResponse deleteAllCompanyInformation() {
+    public ApiResponse<String> deleteAllCompanyInformation() {
         return companyInformationService.deleteAllCompanyInformation();
     }
 
     @Operation(summary = "회사 로고 이미지 삭제 API")
     @DeleteMapping("/company/logo")
-    public ApiResponse deleteCompanyLogoImage() {
+    public ApiResponse<String> deleteCompanyLogoImage() {
         return companyInformationService.deleteCompanyLogoImage();
     }
 
     @Operation(summary = "회사 기본 정보(주소, 영문주소, 유선번호, 팩스번호) 삭제 API")
     @DeleteMapping("/company/basic")
-    public ApiResponse deleteCompanyBasicInformation() {
+    public ApiResponse<CompanyInformation> deleteCompanyBasicInformation() {
         return companyInformationService.deleteCompanyBasicInformation();
     }
 
     @Operation(summary = "회사 소개 정보 삭제 API")
     @DeleteMapping("/company/introduction")
-    public ApiResponse deleteCompanyIntroductionInformation() {
+    public ApiResponse<CompanyInformation> deleteCompanyIntroductionInformation() {
         return companyInformationService.deleteCompanyIntroductionInformation();
     }
 
     @Operation(summary = "회사 5가지 상세 정보 삭제 API")
     @DeleteMapping("/company/detail")
-    public ApiResponse deleteCompanyDetailInformation() {
+    public ApiResponse<CompanyInformation> deleteCompanyDetailInformation() {
         return companyInformationService.deleteCompanyDetailInformation();
     }
 }

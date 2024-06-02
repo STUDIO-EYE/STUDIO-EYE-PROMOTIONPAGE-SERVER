@@ -1,7 +1,6 @@
 package com.example.promotionpage.domain.companyInformation.dao;
 
 import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
-import com.example.promotionpage.domain.faq.dao.FaqQuestions;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

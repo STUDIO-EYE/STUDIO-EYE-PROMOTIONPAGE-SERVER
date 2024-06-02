@@ -26,11 +26,11 @@ public class CompanyInformationService {
     private final S3Adapter s3Adapter;
 
 
-    public ApiResponse createCompanyInformation(CreateCompanyInformationServiceRequestDto dto,
+    public ApiResponse<CompanyInformation> createCompanyInformation(CreateCompanyInformationServiceRequestDto dto,
                                                 MultipartFile logoImage,
                                                 MultipartFile sloganImage) throws IOException {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
-        if(companyInformations.size() > 0) {
+        if(!companyInformations.isEmpty()) {
             return updateAllCompanyInformation(dto.toUpdateServiceRequest(), logoImage, sloganImage);
         }
         String logoImageFileName = null;
@@ -59,7 +59,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 정보를 성공적으로 등록하였습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse retrieveAllCampanyInformation() {
+    public ApiResponse<List<CompanyInformation>> retrieveAllCampanyInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if(companyInformations.isEmpty()) {
             return ApiResponse.ok("회사 정보가 존재하지 않습니다.");
@@ -68,7 +68,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("전체 회사 정보를 성공적으로 조회하였습니다.", companyInformation);
     }
 
-    public ApiResponse retrieveCampanyLogoImage() {
+    public ApiResponse<String> retrieveCampanyLogoImage() {
         List<String> logoImageUrls = companyInformationRepository.findLogoImageUrl();
         if(logoImageUrls.isEmpty()) {
             return ApiResponse.ok("회사 로고 이미지가 존재하지 않습니다.");
@@ -77,7 +77,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 로고 이미지를 성공적으로 조회하였습니다.", logoImageUrl);
     }
 
-    public ApiResponse retrieveCompanyBasicInformation() {
+    public ApiResponse<CompanyBasicInformation> retrieveCompanyBasicInformation() {
         List<CompanyBasicInformation> companyBasicInformations = companyInformationRepository.findAddressAndPhoneAndFax();
         if(companyBasicInformations.isEmpty()) {
             return ApiResponse.ok("회사 기본 정보가 존재하지 않습니다.");
@@ -86,7 +86,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 기본 정보를 성공적으로 조회하였습니다.", companyBasicInformation);
     }
 
-    public ApiResponse retrieveCompanyIntroductionInformation() {
+    public ApiResponse<CompanyIntroductionInformation> retrieveCompanyIntroductionInformation() {
         List<CompanyIntroductionInformation> companyIntroductionInformations = companyInformationRepository.findIntroductionAndSloganImageUrl();
         if(companyIntroductionInformations.isEmpty()) {
             return ApiResponse.ok("회사 소개 정보가 존재하지 않습니다.");
@@ -95,7 +95,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 소개 정보를 성공적으로 조회하였습니다.", companyIntroductionInformation);
     }
 
-    public ApiResponse retrieveCompanyDetailInformation() {
+    public ApiResponse<Map<String, String>> retrieveCompanyDetailInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if(companyInformations.isEmpty()) {
             return ApiResponse.ok("회사 정보가 존재하지 않습니다.");
@@ -108,7 +108,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 상세 정보를 성공적으로 조회하였습니다.", companyDetailInformation);
     }
 
-    public ApiResponse updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto,
+    public ApiResponse<CompanyInformation> updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto,
                                                    MultipartFile logoImage,
                                                    MultipartFile sloganImage) throws IOException {
 
@@ -148,7 +148,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("전체 회사 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse updateAllCompanyTextInformation(UpdateAllCompanyInformationServiceRequestDto dto) throws IOException {
+    public ApiResponse<CompanyInformation> updateAllCompanyTextInformation(UpdateAllCompanyInformationServiceRequestDto dto) throws IOException {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         CompanyInformation companyInformation = companyInformations.get(0);
         companyInformation.updateAllCompanyTextInformation(dto);
@@ -156,7 +156,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("전체 회사 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse updateCompanyBasicInformation(UpdateCompanyBasicInformationServiceRequestDto dto) {
+    public ApiResponse<CompanyInformation> updateCompanyBasicInformation(UpdateCompanyBasicInformationServiceRequestDto dto) {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -167,7 +167,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 기본 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse updateCompanyLogoImage(MultipartFile logoImage) throws IOException  {
+    public ApiResponse<CompanyInformation> updateCompanyLogoImage(MultipartFile logoImage) throws IOException  {
         if(logoImage == null) {
             return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
         }
@@ -187,7 +187,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 로고 이미지를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse updateCompanySloganImage(MultipartFile sloganImageUrl) throws IOException {
+    public ApiResponse<CompanyInformation> updateCompanySloganImage(MultipartFile sloganImageUrl) throws IOException {
         if(sloganImageUrl == null) {
             return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
         }
@@ -207,7 +207,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 슬로건 이미지를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse updateCompanyLogoAndSlogan(MultipartFile logoImage, MultipartFile sloganImage) throws IOException {
+    public ApiResponse<CompanyInformation> updateCompanyLogoAndSlogan(MultipartFile logoImage, MultipartFile sloganImage) throws IOException {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             return ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -245,7 +245,7 @@ public class CompanyInformationService {
     }
 
 
-    public ApiResponse updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto) {
+    public ApiResponse<CompanyInformation> updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto) {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         CompanyInformation companyInformation = companyInformations.get(0);
         companyInformation.updateCompanyIntroductionInformation(dto);
@@ -253,7 +253,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 소개 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse updateCompanyDetailInformation(UpdateCompanyDetailInformationServiceRequestDto dto) {
+    public ApiResponse<CompanyInformation> updateCompanyDetailInformation(UpdateCompanyDetailInformationServiceRequestDto dto) {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -264,7 +264,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 5가지 상세 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse deleteAllCompanyInformation() {
+    public ApiResponse<String> deleteAllCompanyInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -279,7 +279,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("전체 회사 정보를 성공적으로 삭제했습니다.");
     }
 
-    public ApiResponse deleteCompanyLogoImage() {
+    public ApiResponse<String> deleteCompanyLogoImage() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -293,7 +293,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 로고 이미지를 성공적으로 삭제했습니다.");
     }
 
-    public ApiResponse deleteCompanyBasicInformation() {
+    public ApiResponse<CompanyInformation> deleteCompanyBasicInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -304,7 +304,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 기본 정보를 성공적으로 삭제했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse deleteCompanyIntroductionInformation() {
+    public ApiResponse<CompanyInformation> deleteCompanyIntroductionInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
@@ -319,7 +319,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 소개 정보를 성공적으로 삭제했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse deleteCompanyDetailInformation() {
+    public ApiResponse<CompanyInformation> deleteCompanyDetailInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
