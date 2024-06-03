@@ -1,29 +1,31 @@
 package com.example.promotionpage.domain.request.application;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.example.promotionpage.domain.email.service.EmailService;
 import com.example.promotionpage.domain.notification.application.NotificationService;
-
 import com.example.promotionpage.domain.request.dao.*;
-
-import com.example.promotionpage.domain.request.dto.request.*;
+import com.example.promotionpage.domain.request.domain.Answer;
+import com.example.promotionpage.domain.request.domain.Request;
+import com.example.promotionpage.domain.request.domain.State;
+import com.example.promotionpage.domain.request.dto.request.CreateRequestServiceDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
-
+import com.example.promotionpage.domain.request.dto.request.UpdateRequestStateServiceDto;
+import com.example.promotionpage.global.adapter.S3Adapter;
+import com.example.promotionpage.global.common.response.ApiResponse;
+import com.example.promotionpage.global.error.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.promotionpage.domain.request.domain.Request;
-import com.example.promotionpage.global.adapter.S3Adapter;
-import com.example.promotionpage.global.common.response.ApiResponse;
-import com.example.promotionpage.global.error.ErrorCode;
-
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -31,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class RequestService {
 
 	private final RequestRepository requestRepository;
+	private final AnswerRepository answerRepository;
 	private final S3Adapter s3Adapter;
 
 	private final NotificationService notificationService;
@@ -42,28 +45,28 @@ public class RequestService {
 					"(?:[a-zA-Z0-9-]+\\.)+[a-z" +
 					"A-Z]{2,7}$";
 
-	private final Integer waitingState = 0;
-	private final Integer approvedState = 1;
-	private final Integer rejectedState = 2;
-	private final Integer completedState = 3;
+//	private final Integer waitingState = 0;
+//	private final Integer approvedState = 1;
+//	private final Integer rejectedState = 2;
+//	private final Integer completedState = 3;
 
 
-	private String convertState(Integer state) {
-		if(state == this.approvedState) {
-			return "승인";
-		}
-		if(state == this.completedState) {
-			return "처리 완료";
-		}
-		if(state == this.rejectedState) {
-			return "거절";
-		}
-		if(state == this.waitingState) {
-			return "대기중";
-		}
-		return "해당사항 없음";
-	}
-	public ApiResponse createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
+//	private String convertState(Integer state) {
+//		if(state == this.approvedState) {
+//			return "승인";
+//		}
+//		if(state == this.completedState) {
+//			return "처리 완료";
+//		}
+//		if(state == this.rejectedState) {
+//			return "거절";
+//		}
+//		if(state == this.waitingState) {
+//			return "대기중";
+//		}
+//		return "해당사항 없음";
+//	}
+	public ApiResponse<Request> createRequest(CreateRequestServiceDto dto, List<MultipartFile> files) throws IOException {
 		if(!isValidEmail(dto.email())) {
 			return ApiResponse.withError(ErrorCode.INVALID_EMAIL_FORMAT);
 		}
@@ -84,28 +87,31 @@ public class RequestService {
 		Integer year = Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime()));
 		Integer month = Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()));
 
-		Request request = dto.toEntity(fileUrlList, "", year, month, waitingState, new Date());
-		Request savedRequest = requestRepository.save(request);
+		Request request = dto.toEntity(fileUrlList, new ArrayList<>(), year, month, State.WAITING, new Date());
+		Request savedRequest = requestRepository.saveAndFlush(request);
 
-		String state = convertState(savedRequest.getState());
+//		String state = convertState(savedRequest.getState());
 
-		String subject = "[studio-eye] 문의가 완료되었습니다."; // 이메일 제목
-		String text = "카테고리: " + savedRequest.getCategory() + "\n"
-				+ "프로젝트명: " + savedRequest.getProjectName() + "\n"
-				+ "의뢰인 이름: " + savedRequest.getClientName() + "\n"
+		String subject = "[STUDIO EYE] 문의가 완료되었습니다."; // 이메일 제목
+		String text = "아래와 같이 작성하신 문의가 성공적으로 접수되었습니다.\n"
+				+ "추후 담당자 배정 후 해당 메일로 결과를 전송드리겠습니다.\n\n\n"
+
+				+ "의뢰인 성명: " + savedRequest.getClientName() + "\n"
 				+ "기관 혹은 기업: " + savedRequest.getOrganization() + "\n"
-				+ "연락처: " + savedRequest.getContact() + "\n"
-				+ "이메일 주소: " + savedRequest.getEmail() + "\n"
+//				+ "이메일 주소: " + savedRequest.getEmail() + "\n"
 				+ "직책: " + savedRequest.getPosition() + "\n"
-				+ "의뢰 내용: " + savedRequest.getDescription() + "\n"
-				+ "의뢰 상태: " + state;
+				+ "연락처: " + savedRequest.getContact() + "\n\n"
+
+				+ "카테고리: " + savedRequest.getCategory() + "\n"
+				+ "프로젝트명: " + savedRequest.getProjectName() + "\n"
+				+ "문의 내용: " + savedRequest.getDescription() + "\n";
 
 		emailService.sendEmail(savedRequest.getEmail(), subject, text);
 		notificationService.subscribe(request.getId());    // 문의 등록 알림 보내기
 		return ApiResponse.ok("문의를 성공적으로 등록하였습니다.", savedRequest);
 	}
 
-	public ApiResponse retrieveAllRequest() {
+	public ApiResponse<List<Request>> retrieveAllRequest() {
 		List<Request> requestList = requestRepository.findAll();
 
 		if (requestList.isEmpty()){
@@ -114,7 +120,7 @@ public class RequestService {
 		return ApiResponse.ok("문의 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
-	public ApiResponse retrieveRequest(Long requestId) {
+	public ApiResponse<Request> retrieveRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -124,12 +130,12 @@ public class RequestService {
 		return ApiResponse.ok("문의를 성공적으로 조회했습니다.", request);
 	}
 
-	public ApiResponse retrieveRequestCount() {
+	public ApiResponse<Long> retrieveRequestCount() {
 		Long requestCount = requestRepository.count();
 		return ApiResponse.ok("전체 문의수를 성공적으로 조회했습니다.", requestCount);
 	}
 
-	public ApiResponse retrieveRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+	public ApiResponse<List<RequestCount>> retrieveRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
 		// 월 형식 검사
 		if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_REQUEST_MONTH);
 		// 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -174,7 +180,7 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", requestCountList);
 	}
 
-	public ApiResponse retrieveCategoryRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+	public ApiResponse<List<Map<String, Object>>> retrieveCategoryRequestCountByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
 		// 월 형식 검사
 		if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_REQUEST_MONTH);
 		// 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -215,13 +221,13 @@ public class RequestService {
 		return ApiResponse.ok("문의수 목록을 성공적으로 조회했습니다.", responseList);
 	}
 
-	public ApiResponse retrieveWaitingRequestCount() {
-		Long requestCount = requestRepository.countByState(this.waitingState);
+	public ApiResponse<Long> retrieveWaitingRequestCount() {
+		Long requestCount = requestRepository.countByState(State.WAITING);
 		return ApiResponse.ok("접수 대기 중인 문의 수를 성공적으로 조회했습니다.", requestCount);
 	}
 
-	public ApiResponse retrieveWaitingRequest() {
-		List<Request> requestList = requestRepository.findByState(this.waitingState);
+	public ApiResponse<List<Request>> retrieveWaitingRequest() {
+		List<Request> requestList = requestRepository.findByState(State.WAITING);
 
 		if (requestList.isEmpty()){
 			return ApiResponse.ok("접수 대기 중인 문의가 존재하지 않습니다.");
@@ -229,69 +235,88 @@ public class RequestService {
 		return ApiResponse.ok("접수 대기 중인 문의 목록을 성공적으로 조회했습니다.", requestList);
 	}
 
-	public ApiResponse updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
+	public Page<Request> retrieveRequestPage(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return requestRepository.findAll(pageable);
+	}
+
+	public ApiResponse<String> updateRequestState(Long requestId, UpdateRequestStateServiceDto dto) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
 		}
 		Request request = optionalRequest.get();
 		request.updateState(dto.state());
-		Request updatedRequest = requestRepository.save(request);
+		requestRepository.save(request);
+//		Request updatedRequest = requestRepository.save(request);
 
-		if(dto.state() != null) {
-			String subject = "[studio-eye] [" + convertState(dto.state()) + "]" + updatedRequest.getClientName() + "님의 문의에 의뢰 상태가 " + convertState(dto.state()) + "으로 변경되었습니다."; // 이메일 제목
-			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
-					+ "프로젝트명: " + updatedRequest.getProjectName() + "\n"
-					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
-					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
-					+ "연락처: " + updatedRequest.getContact() + "\n"
-					+ "이메일 주소: " + updatedRequest.getEmail() + "\n"
-					+ "직책: " + updatedRequest.getPosition() + "\n"
-					+ "의뢰 내용: " + updatedRequest.getDescription() + "\n\n"
-					+ "답변: " + updatedRequest.getAnswer() + "\n"
-					+ "의뢰 상태: " + convertState(dto.state());
-
-			emailService.sendEmail(updatedRequest.getEmail(), subject, text);
-		}
+//		if(dto.state() != null) {
+//			String subject = "[studio-eye] [" + convertState(dto.state()) + "]" + updatedRequest.getClientName() + "님의 문의에 의뢰 상태가 " + convertState(dto.state()) + "으로 변경되었습니다."; // 이메일 제목
+//			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
+//					+ "프로젝트명: " + updatedRequest.getProjectName() + "\n"
+//					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
+//					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
+//					+ "연락처: " + updatedRequest.getContact() + "\n"
+//					+ "이메일 주소: " + updatedRequest.getEmail() + "\n"
+//					+ "직책: " + updatedRequest.getPosition() + "\n"
+//					+ "의뢰 내용: " + updatedRequest.getDescription() + "\n\n"
+//					+ "답변: " + updatedRequest.getAnswer() + "\n"
+//					+ "의뢰 상태: " + convertState(dto.state());
+//
+//			emailService.sendEmail(updatedRequest.getEmail(), subject, text);
+//		}
 
 		return ApiResponse.ok("상태를 성공적으로 수정했습니다.");
 	}
 
-	public ApiResponse updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
+	public ApiResponse<String> updateRequestComment(Long requestId, UpdateRequestCommentServiceDto dto) {
 		String answer = dto.answer().trim();
-		Integer state = dto.state();
+		State state = dto.state();
 
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
 		}
 		Request request = optionalRequest.get();
-		request.updateAnswer(answer);
-		if(state != null) {
-			request.updateState(state);
-		}
+		Answer updatedAnswer = Answer.builder()
+				.text(answer)
+				.state(state)
+				.createdAt(LocalDateTime.now())
+				.request(request)
+				.build();
+		request.getAnswers().add(updatedAnswer);
+		request.updateState(state);
 		Request updatedRequest = requestRepository.save(request);
-		
+		answerRepository.save(updatedAnswer);
+//		request.updateAnswer(answer);
+//		if(state != null) {
+//			request.updateState(state);
+//		}
+//		Request updatedRequest = requestRepository.save(request);
+//
 		if(!answer.isEmpty() && state != null) {
-			String subject = "[studio-eye] [" + convertState(state) + "]" + updatedRequest.getClientName() + "님의 문의에 답변이 작성되었습니다."; // 이메일 제목
-			String text = "카테고리: " + updatedRequest.getCategory() + "\n"
-					+ "프로젝트명: " + updatedRequest.getProjectName() + "\n"
-					+ "의뢰인 이름: " + updatedRequest.getClientName() + "\n"
-					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
-					+ "연락처: " + updatedRequest.getContact() + "\n"
-					+ "이메일 주소: " + updatedRequest.getEmail() + "\n"
-					+ "직책: " + updatedRequest.getPosition() + "\n"
-					+ "의뢰 내용: " + updatedRequest.getDescription() + "\n\n"
-					+ "답변: " + updatedRequest.getAnswer() + "\n"
-					+ "의뢰 상태: " + convertState(state);
+			String subject = "[STUDIO EYE] " + updatedRequest.getClientName() + "님의 문의에 답변이 작성되었습니다."; // 이메일 제목
+			String text = "[문의 내역]\n\n"
 
+					+ "의뢰인 성명: " + updatedRequest.getClientName() + "\n"
+					+ "기관 혹은 기업: " + updatedRequest.getOrganization() + "\n"
+					+ "직책: " + updatedRequest.getPosition() + "\n"
+					+ "연락처: " + updatedRequest.getContact() + "\n\n"
+
+					+ "카테고리: " + updatedRequest.getCategory() + "\n"
+					+ "프로젝트명: " + updatedRequest.getProjectName() + "\n"
+					+ "문의 내용: " + updatedRequest.getDescription() + "\n\n\n"
+
+
+					+ "[답변 내용]" + "\n"
+					+ answer + "\n";
 			emailService.sendEmail(updatedRequest.getEmail(), subject, text);
 		}
 
 		return ApiResponse.ok("답변을 성공적으로 작성했습니다.");
 	}
 
-	public ApiResponse deleteRequest(Long requestId) {
+	public ApiResponse<String> deleteRequest(Long requestId) {
 		Optional<Request> optionalRequest = requestRepository.findById(requestId);
 		if(optionalRequest.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_REQUEST_ID);
@@ -304,9 +329,7 @@ public class RequestService {
 	}
 
 	private boolean checkMonth(int month) {
-		// 월 형식 검사
-		if(month<1 || month>12) return false;
-		return true;
+		return (month>=1 && month<=12);
 	}
 
 	public static boolean isValidEmail(String email) {

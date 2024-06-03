@@ -2,8 +2,10 @@ package com.example.promotionpage.domain.partnerInformation.application;
 
 import java.util.*;
 
-import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
 import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoServiceRequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,15 +28,11 @@ public class PartnerInformationService {
 	private final S3Adapter s3Adapter;
 
 
-	public ApiResponse createPartnerInfo(CreatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
+	public ApiResponse<PartnerInformation> createPartnerInfo(CreatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
 		String logoImgStr = getImgUrl(logoImg);
 		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
-		PartnerInformation partnerInformation = PartnerInformation.builder()
-			.logoImageUrl(logoImgStr)
-			.is_main(dto.is_main())
-			.link(dto.link())
-			.build();
+		PartnerInformation partnerInformation = dto.toEntity(logoImgStr);
 
 		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
 		return ApiResponse.ok("협력사 정보를 성공적으로 등록하였습니다.", savedPartnerInformation);
@@ -47,45 +45,10 @@ public class PartnerInformationService {
 
 			return "";
 		}
-		String imageUrl = updateFileResponse.getData();
-		return imageUrl;
+        return updateFileResponse.getData();
 	}
 
-	public ApiResponse deletePartnerInfo(Long partnerId) {
-		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
-		if(optionalPartnerInformation.isEmpty()){
-			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
-		}
-
-		PartnerInformation partnerInformation = optionalPartnerInformation.get();
-		ApiResponse<String> deleteFileResponse = s3Adapter.deleteFile(partnerInformation.getLogoImageUrl().split("/")[3]);
-		if(deleteFileResponse.getStatus().is5xxServerError()){
-			return ApiResponse.withError(ErrorCode.ERROR_S3_DELETE_OBJECT);
-		}
-
-		partnerInformationRepository.delete(partnerInformation);
-		return ApiResponse.ok("협력사 정보를 성공적으로 삭제하였습니다.");
-	}
-
-
-	public ApiResponse updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
-		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
-		if (optionalPartnerInformation.isEmpty()) {
-			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
-		}
-
-		PartnerInformation partner = optionalPartnerInformation.get();
-
-		// 새로운 로고이미지 저장
-		String logoImgStr = getImgUrl(logoImg);
-		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-		partner.setLogoImageUrl(logoImgStr);
-
-		PartnerInformation updatedPartner = partnerInformationRepository.save(partner);
-		return ApiResponse.ok("협력사 로고 이미지를 성공적으로 수정했습니다.", updatedPartner);
-	}
-
-	public ApiResponse retrieveAllPartnerInfo() {
+	public ApiResponse<List<Map<String, Object>>> retrieveAllPartnerInfo() {
 		List<PartnerInformation> partnerInformationList = partnerInformationRepository.findAll();
 		if (partnerInformationList.isEmpty()){
 			return ApiResponse.ok("협력사 정보가 존재하지 않습니다.");
@@ -100,7 +63,7 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 정보 목록을 성공적으로 조회했습니다.", responseList);
 	}
 
-	public ApiResponse retrievePartnerInfo(Long partnerId) {
+	public ApiResponse<Map<String, Object>> retrievePartnerInfo(Long partnerId) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
@@ -111,7 +74,7 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 정보를 성공적으로 조회했습니다.", responseBody);
 	}
 
-	public ApiResponse retrieveAllPartnerLogoImgList() {
+	public ApiResponse<List<String>> retrieveAllPartnerLogoImgList() {
 		List<PartnerInformation> partnerList = partnerInformationRepository.findAll();
 		if (partnerList.isEmpty()){
 			return ApiResponse.ok("협력사 정보가 존재하지 않습니다.");
@@ -125,12 +88,17 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 로고 이미지 리스트를 성공적으로 조회했습니다.", logoImgList);
 	}
 
+	public Page<PartnerInformation> retrievePartnerInformationPage(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return partnerInformationRepository.findAll(pageable);
+	}
 
 	private static Map<String, Object> getResponseBody(PartnerInformation partnerInformation) {
 		// post와 get의 구조 통일
 		LinkedHashMap<String, Object> responseBody = new LinkedHashMap<>();
 		responseBody.put("partnerInfo", Map.of(
 				"id", partnerInformation.getId(),
+				"name", partnerInformation.getName(),
 				"is_main", partnerInformation.getIs_main(),
 				"link", partnerInformation.getLink()
 
@@ -139,7 +107,7 @@ public class PartnerInformationService {
 		return responseBody;
 	}
 
-	public ApiResponse updatePartnerInfo(UpdatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
+	public ApiResponse<PartnerInformation> updatePartnerInfo(UpdatePartnerInfoServiceRequestDto dto, MultipartFile logoImg) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(dto.id());
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
@@ -157,6 +125,7 @@ public class PartnerInformationService {
 			}
 			partnerInformation.setLogoImageUrl(logoImgStr);
 		}
+		partnerInformation.setName(dto.name());
 		partnerInformation.setIs_main(dto.is_main());
 		partnerInformation.setLink(dto.link());
 
@@ -164,17 +133,51 @@ public class PartnerInformationService {
 		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
 	}
 
-	public ApiResponse updatePartnerInfoText(UpdatePartnerInfoServiceRequestDto dto) {
+	public ApiResponse<PartnerInformation> updatePartnerInfoText(UpdatePartnerInfoServiceRequestDto dto) {
 		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(dto.id());
 		if(optionalPartnerInformation.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
 		}
 		PartnerInformation partnerInformation = optionalPartnerInformation.get();
 
+		partnerInformation.setName(dto.name());
 		partnerInformation.setIs_main(dto.is_main());
 		partnerInformation.setLink(dto.link());
 
 		PartnerInformation savedPartnerInformation = partnerInformationRepository.save(partnerInformation);
 		return ApiResponse.ok("협력사 정보를 성공적으로 수정했습니다.", savedPartnerInformation);
+	}
+
+	public ApiResponse<PartnerInformation> updatePartnerLogoImg(Long partnerId, MultipartFile logoImg) {
+		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
+		if (optionalPartnerInformation.isEmpty()) {
+			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
+		}
+
+		PartnerInformation partner = optionalPartnerInformation.get();
+
+		// 새로운 로고이미지 저장
+		String logoImgStr = getImgUrl(logoImg);
+		if (logoImgStr.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		partner.setLogoImageUrl(logoImgStr);
+
+		PartnerInformation updatedPartner = partnerInformationRepository.save(partner);
+		return ApiResponse.ok("협력사 로고 이미지를 성공적으로 수정했습니다.", updatedPartner);
+	}
+
+	public ApiResponse<String> deletePartnerInfo(Long partnerId) {
+		Optional<PartnerInformation> optionalPartnerInformation = partnerInformationRepository.findById(partnerId);
+		if(optionalPartnerInformation.isEmpty()){
+			return ApiResponse.withError(ErrorCode.INVALID_PARTNER_INFORMATION_ID);
+		}
+
+		PartnerInformation partnerInformation = optionalPartnerInformation.get();
+		ApiResponse<String> deleteFileResponse = s3Adapter.deleteFile(partnerInformation.getLogoImageUrl().split("/")[3]);
+		if(deleteFileResponse.getStatus().is5xxServerError()){
+			return ApiResponse.withError(ErrorCode.ERROR_S3_DELETE_OBJECT);
+		}
+
+		partnerInformationRepository.delete(partnerInformation);
+		return ApiResponse.ok("협력사 정보를 성공적으로 삭제하였습니다.");
 	}
 }

@@ -50,7 +50,8 @@ public class Project {
 
 	@Builder
 	public Project(String department, String category, String name, String client, String date, String link,
-		String overView, String mainImg, List<ProjectImage> projectImages, Integer sequence, Integer mainSequence) {
+				   String overView, String mainImg, List<ProjectImage> projectImages, Integer sequence,
+				   Integer mainSequence, String projectType, Boolean isPosted) {
 		this.department = department;
 		this.category = category;
 		this.name = name;
@@ -60,8 +61,8 @@ public class Project {
 		this.overView = overView;
 		this.mainImg = mainImg;
 		this.projectImages = projectImages;
-		this.isPosted = false;
-		this.projectType = OTHERS_PROJECT_TYPE;
+		this.isPosted = isPosted;
+		this.projectType = projectType;
 		this.sequence = sequence;
 		this.mainSequence = mainSequence;
 	}
@@ -74,6 +75,8 @@ public class Project {
 		this.date = dto.date();
 		this.link = dto.link();
 		this.overView = dto.overView();
+		this.projectType = dto.projectType();
+		this.isPosted = dto.isPosted();
 		return this;
 	}
 

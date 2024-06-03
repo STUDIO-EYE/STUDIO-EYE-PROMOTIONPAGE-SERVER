@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.project.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record CreateProjectRequestDto(
 	@Schema(description = "부서명, 빈 값/공백/null 을 허용하지 않습니다.")
@@ -30,9 +31,18 @@ public record CreateProjectRequestDto(
 
 	@Schema(description = "overView는 빈 값/공백/null 을 허용하지 않습니다.")
 	@NotBlank(message = "overView는 필수 값입니다.")
-	String overView
+	String overView,
+
+	@Schema(description = "프로젝트 타입")
+	@NotNull(message = "null 값을 허용하지 않습니다.")
+	String projectType,
+
+	@Schema(description = "프로젝트 게시 여부")
+	@NotNull(message = "null 값을 허용하지 않습니다.")
+	Boolean isPosted
 ) {
 	public CreateProjectServiceRequestDto toServiceRequest() {
-		return new CreateProjectServiceRequestDto(department,category,name,client,date,link,overView);
+		return new CreateProjectServiceRequestDto(
+				department,category,name,client,date,link,overView,projectType,isPosted);
 	}
 }

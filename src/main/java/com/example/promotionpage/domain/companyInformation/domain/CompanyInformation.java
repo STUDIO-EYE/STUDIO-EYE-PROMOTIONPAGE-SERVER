@@ -109,6 +109,11 @@ public class CompanyInformation {
         this.logoImageUrl = logoImageUrl;
     }
 
+    public void updateCompanySlogan(String sloganImageFileName, String sloganImageUrl) {
+        this.sloganImageFileName = sloganImageFileName;
+        this.sloganImageUrl = sloganImageUrl;
+    }
+
     public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
         this.mainOverview = dto.mainOverview();
         this.commitment = dto.commitment();
@@ -146,8 +151,15 @@ public class CompanyInformation {
         this.detailInformation = dto.detailInformation();
     }
 
-    public void updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto, String sloganImageFileName, String sloganImageUrl) {
+    public void updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto) {
+        this.mainOverview = dto.mainOverview();
+        this.commitment = dto.commitment();
         this.introduction = dto.introduction();
+    }
+
+    public void updateCompanyLogoAndSlogan(String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+        this.logoImageFileName = logoImageFileName;
+        this.logoImageUrl = logoImageUrl;
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
     }

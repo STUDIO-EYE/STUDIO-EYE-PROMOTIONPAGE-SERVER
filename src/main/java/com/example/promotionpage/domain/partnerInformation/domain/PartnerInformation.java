@@ -16,6 +16,8 @@ public class PartnerInformation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	private String name;
+
 	private String logoImageUrl;
 
 	private Boolean is_main;
@@ -23,9 +25,11 @@ public class PartnerInformation {
 	private String link;
 
 	@Builder
-	public PartnerInformation(String logoImageUrl, Boolean is_main, String link) {
+	public PartnerInformation(String logoImageUrl, String name, Boolean is_main, String link) {
+		this.name = name;
 		this.logoImageUrl = logoImageUrl;
 		this.is_main = is_main;
 		this.link = link;
 	}
+
 }

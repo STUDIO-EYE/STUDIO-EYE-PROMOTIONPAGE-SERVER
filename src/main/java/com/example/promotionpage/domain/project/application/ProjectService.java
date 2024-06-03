@@ -8,7 +8,9 @@ import java.util.Optional;
 import com.example.promotionpage.domain.project.domain.ProjectImage;
 import com.example.promotionpage.domain.project.dto.request.*;
 import com.example.promotionpage.domain.views.application.ViewsService;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +35,7 @@ public class ProjectService {
 	private static final String MAIN_PROJECT_TYPE = "main";
 	private static final String OTHERS_PROJECT_TYPE = "others";
 
-	public ApiResponse createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
+	public ApiResponse<Project> createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
@@ -51,8 +53,36 @@ public class ProjectService {
 				projectImages.add(projectImage);
 			}
 		}
-		long count = projectRepository.count();
-		Project project = dto.toEntity(mainImg, projectImages, count);
+		// 총 프로젝트 개수
+		long projectCount = projectRepository.count();
+
+		// 프로젝트 타입 결정
+		int mainSequence = 999;
+		String projectType = dto.projectType();
+		switch (projectType) {
+			// 받아온 projectType String 값이 유효한 경우
+			case TOP_PROJECT_TYPE:
+				List<Project> topProject = projectRepository.findByProjectType(projectType);
+				// TOP 프로젝트가 이미 존재하는 경우
+				if (!topProject.isEmpty()) {
+					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
+				}
+				break;
+			case MAIN_PROJECT_TYPE:
+				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
+				// "main"인 프로젝트가 이미 5개 이상인 경우
+				if (mainProjects.size() >= 5) {
+					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
+				}
+				mainSequence = mainProjects.size() + 1;
+				break;
+			case OTHERS_PROJECT_TYPE:
+				break;
+			default: // 유효하지 않은 값일 경우
+				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
+		}
+
+		Project project = dto.toEntity(mainImg, projectImages, projectCount, mainSequence);
 
 		// ProjectImage의 project 필드 설정
 		for (ProjectImage projectImage : projectImages) {
@@ -63,38 +93,79 @@ public class ProjectService {
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedProject);
 	}
 
-	public ApiResponse updateProject(UpdateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
+	public ApiResponse<Project> updateProject(UpdateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) {
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
 		}
 
 		Project project = optionalProject.get();
-		// 삭제할 이미지 ID 목록이 비어있지 않은 경우 삭제 처리
-		if (dto.deletedImagesId() != null && !dto.deletedImagesId().isEmpty()) {
-			List<Long> deletedImagesIdList = dto.deletedImagesId();
-			List<ProjectImage> imagesToRemove = project.getProjectImages().stream()
-					.filter(image -> deletedImagesIdList.contains(image.getId()))
-					.toList();
 
-			for (ProjectImage image : imagesToRemove) {
-				String fileName = image.getFileName();
-				// S3에서 해당 이미지 삭제
-				s3Adapter.deleteFile(fileName);
-				project.getProjectImages().remove(image);
-			}
+		String projectType = dto.projectType();
+		switch (projectType) {
+			// 받아온 projectType String 값이 유효한 경우
+			case TOP_PROJECT_TYPE:
+				List<Project> topProject = projectRepository.findByProjectType(projectType);
+				// TOP 프로젝트가 이미 존재하고, 전달된 프로젝트 id가 이미 존재하는 TOP 프로젝트 id와 다른 경우
+				if (!topProject.isEmpty() && !project.getId().equals(topProject.get(0).getId())) {
+					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
+				}
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
+				project.updateProjectType(projectType);
+				project.updateMainSequence(999);
+				break;
+			case MAIN_PROJECT_TYPE:
+				// 원래 프로젝트 타입이 main이었으면 종료
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
+					break;
+				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
+				// "main"인 프로젝트가 이미 5개 이상이고 전달된 프로젝트가 원래 main이 아닌 경우
+				if (mainProjects.size() >= 5) {
+					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
+				}
+				project.updateProjectType(projectType);
+				Integer mainSequence = projectRepository.countByProjectType(projectType);
+				project.updateMainSequence(mainSequence);
+				break;
+			case OTHERS_PROJECT_TYPE:
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
+				project.updateProjectType(projectType);
+				project.updateMainSequence(999);
+				break;
+			default: // 유효하지 않은 값일 경우
+				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 
-		// 새로운 메인 이미지가 전달된 경우에만 새로 저장
-		if (mainImgFile != null && !mainImgFile.isEmpty()) {
-			String mainImg = getImgUrl(mainImgFile);
-			if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
-			project.setMainImg(mainImg);
+		// 기존 이미지들 전체 삭제
+		List<ProjectImage> existingImages = project.getProjectImages();
+		// S3에서 기존 이미지들 삭제
+		for (ProjectImage image : existingImages) {
+			String fileName = image.getFileName();
+			// S3Adapter의 deleteFile 메소드를 호출하여 이미지를 삭제
+			s3Adapter.deleteFile(fileName);
 		}
+		project.getProjectImages().clear();
 
-		// 새로운 이미지들 추가
-		if (files != null && !files.isEmpty()) {
-			List<ProjectImage> projectImages = new LinkedList<>();
+		// 새로운 메인이미지 저장
+		String mainImg = getImgUrl(mainImgFile);
+		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		project.setMainImg(mainImg);
+
+		// 기존 이미지 + 새로운 이미지들 저장
+		List<ProjectImage> projectImages = new LinkedList<>();
+		if (files != null) {
 			for (MultipartFile file : files) {
 				String imageUrl = getImgUrl(file);
 				if (imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
@@ -116,7 +187,7 @@ public class ProjectService {
 	}
 
 	// 프로젝트 순서 변경 : artwork page
-	public ApiResponse changeSequenceProject(List<ChangeSequenceProjectReq> changeSequenceProjectReqList) {
+	public ApiResponse<String> changeSequenceProject(List<ChangeSequenceProjectReq> changeSequenceProjectReqList) {
 
 		for (ChangeSequenceProjectReq changeSequenceProjectReq : changeSequenceProjectReqList) {
 			Optional<Project> findProject = projectRepository.findById(changeSequenceProjectReq.getProjectId());
@@ -130,7 +201,7 @@ public class ProjectService {
 	}
 
 	// 프로젝트 순서 변경 : main page
-	public ApiResponse changeMainSequenceProject(List<ChangeMainSequenceProjectReq> changeMainSequenceProjectReqList) {
+	public ApiResponse<String> changeMainSequenceProject(List<ChangeMainSequenceProjectReq> changeMainSequenceProjectReqList) {
 
 		for (ChangeMainSequenceProjectReq changeMainSequenceProjectReq : changeMainSequenceProjectReqList) {
 			Optional<Project> findProject = projectRepository.findById(changeMainSequenceProjectReq.getProjectId());
@@ -152,11 +223,10 @@ public class ProjectService {
 
 			return "";
 		}
-		String imageUrl = updateFileResponse.getData();
-		return imageUrl;
+        return updateFileResponse.getData();
 	}
 
-	public ApiResponse deleteProject(Long projectId) {
+	public ApiResponse<String> deleteProject(Long projectId) {
 		Optional<Project> optionalProject = projectRepository.findById(projectId);
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -182,9 +252,7 @@ public class ProjectService {
 	}
 
 	// for artwork page
-	public ApiResponse retrieveAllArtworkProject() {
-		// 조회수 증가
-//		viewsService.updateThisMonthViews();
+	public ApiResponse<List<Project>> retrieveAllArtworkProject() {
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderBySequenceAsc();
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
@@ -194,8 +262,7 @@ public class ProjectService {
 	}
 
 	// for main page
-	public ApiResponse retrieveAllMainProject() {
-		// 조회수 증가
+	public ApiResponse<List<Project>> retrieveAllMainProject() {
 		List<Project> projectList = projectRepository.findAllWithImagesAndOrderByMainSequenceAsc();
 		List<Project> responseProject = new ArrayList<>();
 		List<Project> topProject = projectRepository.findByProjectType(TOP_PROJECT_TYPE);
@@ -204,9 +271,7 @@ public class ProjectService {
 			top = topProject.get(0);
 			responseProject.add(top);
 		}
-		for (Project project : projectList) {
-			responseProject.add(project);
-		}
+        responseProject.addAll(projectList);
 
 		if (projectList.isEmpty()){
 			return ApiResponse.ok("프로젝트가 존재하지 않습니다.");
@@ -216,7 +281,7 @@ public class ProjectService {
 
 	}
 
-	public ApiResponse retrieveProject(Long projectId) {
+	public ApiResponse<Project> retrieveProject(Long projectId) {
 		Optional<Project> optionalProject = projectRepository.findById(projectId);
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -226,7 +291,7 @@ public class ProjectService {
 		return ApiResponse.ok("프로젝트를 성공적으로 조회했습니다.", project);
 	}
 
-	public ApiResponse updatePostingStatus(UpdatePostingStatusDto dto) {
+	public ApiResponse<Project> updatePostingStatus(UpdatePostingStatusDto dto) {
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -239,7 +304,7 @@ public class ProjectService {
 
 	}
 
-	public ApiResponse updateProjectType(UpdateProjectTypeDto dto) {
+	public ApiResponse<Project> updateProjectType(UpdateProjectTypeDto dto) {
 		String projectType = dto.projectType();
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
@@ -255,27 +320,49 @@ public class ProjectService {
 				if (!topProject.isEmpty() && !project.getId().equals(topProject.get(0).getId())) {
 					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
 				}
-//				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
-//					project.updateMainSequence(999);
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
+				Project updatedTopProject = project.updateProjectType(projectType);
+				updatedTopProject.updateMainSequence(999);
+				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedTopProject);
 			case MAIN_PROJECT_TYPE:
+				// 원래 프로젝트 타입이 main이었으면 종료
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
+					return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", project);
 				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
 				// "main"인 프로젝트가 이미 5개 이상인 경우
 				if (mainProjects.size() >= 5) {
 					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
 				}
 				Project updatedMainProject = project.updateProjectType(projectType);
+				// mainSequence 수정
 				Integer mainSequence = projectRepository.countByProjectType(projectType);
-				project.updateMainSequence(mainSequence + 1);
+				System.out.print("------------------------------------" + mainSequence);
+				updatedMainProject.updateMainSequence(mainSequence);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedMainProject);
 			case OTHERS_PROJECT_TYPE:
-				if (project.getProjectType().equals(MAIN_PROJECT_TYPE))
-					project.updateMainSequence(999);
-
-				Project updatedProject = project.updateProjectType(dto.projectType());
+				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
+				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
+					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					for (Project findMainProject : findByMainSequenceGreaterThan) {
+						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
+					}
+				}
+				Project updatedProject = project.updateProjectType(projectType);
+				updatedProject.updateMainSequence(999);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedProject);
 			default: // 유효하지 않은 값일 경우
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 	}
 
+	public Page<Project> retrieveArtworkProjectPage(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return projectRepository.findAll(pageable);
+	}
 }
