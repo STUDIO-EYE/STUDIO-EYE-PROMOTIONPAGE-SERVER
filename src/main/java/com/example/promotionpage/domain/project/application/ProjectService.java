@@ -67,12 +67,20 @@ public class ProjectService {
 				if (!topProject.isEmpty()) {
 					return ApiResponse.withError(ErrorCode.TOP_PROJECT_ALREADY_EXISTS);
 				}
+				// top인데 isPosted를 false로 할 경우 프로젝트 생성 안 됨
+				if (!dto.isPosted()) {
+					return ApiResponse.withError(ErrorCode.PROJECT_TYPE_AND_IS_POSTED_MISMATCH);
+				}
 				break;
 			case MAIN_PROJECT_TYPE:
 				List<Project> mainProjects = projectRepository.findByProjectType(MAIN_PROJECT_TYPE);
 				// "main"인 프로젝트가 이미 5개 이상인 경우
 				if (mainProjects.size() >= 5) {
 					return ApiResponse.withError(ErrorCode.MAIN_PROJECT_LIMIT_EXCEEDED);
+				}
+				// main인데 isPosted를 false로 할 경우 프로젝트 생성 안 됨
+				if (!dto.isPosted()) {
+					return ApiResponse.withError(ErrorCode.PROJECT_TYPE_AND_IS_POSTED_MISMATCH);
 				}
 				mainSequence = mainProjects.size() + 1;
 				break;
@@ -329,6 +337,7 @@ public class ProjectService {
 				}
 				Project updatedTopProject = project.updateProjectType(projectType);
 				updatedTopProject.updateMainSequence(999);
+				updatedTopProject.setIsPosted(true);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedTopProject);
 			case MAIN_PROJECT_TYPE:
 				// 원래 프로젝트 타입이 main이었으면 종료
@@ -344,6 +353,7 @@ public class ProjectService {
 				Integer mainSequence = projectRepository.countByProjectType(projectType);
 				System.out.print("------------------------------------" + mainSequence);
 				updatedMainProject.updateMainSequence(mainSequence);
+				updatedMainProject.setIsPosted(true);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedMainProject);
 			case OTHERS_PROJECT_TYPE:
 				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
