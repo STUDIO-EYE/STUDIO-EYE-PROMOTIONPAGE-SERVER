@@ -1,6 +1,7 @@
 package com.example.promotionpage.domain.faq.api;
 
 import com.example.promotionpage.domain.faq.application.FaqService;
+import com.example.promotionpage.domain.faq.dao.FaqQuestions;
 import com.example.promotionpage.domain.faq.domain.Faq;
 import com.example.promotionpage.domain.faq.dto.request.CreateFaqRequestDto;
 import com.example.promotionpage.domain.faq.dto.request.UpdateFaqRequestDto;
@@ -25,31 +26,31 @@ public class FaqController {
 
     @Operation(summary = "FAQ 등록 API")
     @PostMapping("/faq")
-    public ApiResponse createFaq(@Valid @RequestBody CreateFaqRequestDto dto) {
+    public ApiResponse<Faq> createFaq(@Valid @RequestBody CreateFaqRequestDto dto) {
         return faqService.createFaq(dto.toServiceFaq());
     }
 
     @Operation(summary = "FAQ base64 이미지 저장 후 url 반환 API")
     @PostMapping("/faq/image")
-    public ApiResponse convertBase64ToImageUrl(@RequestBody String base64Code) throws IOException {
+    public ApiResponse<String> convertBase64ToImageUrl(@RequestBody String base64Code) throws IOException {
         return faqService.convertBase64ToImageUrl(base64Code);
     }
 
     @Operation(summary = "FAQ 전체 조회 API")
     @GetMapping("/faq")
-    public ApiResponse retrieveAllFaq() {
+    public ApiResponse<List<Faq>> retrieveAllFaq() {
         return faqService.retrieveAllFaq();
     }
 
     @Operation(summary = "FAQ 제목(id, 제목) 전체 조회 API")
     @GetMapping("/faq/title")
-    public ApiResponse retrieveAllFaqTitle() {
+    public ApiResponse<List<FaqQuestions>> retrieveAllFaqTitle() {
         return faqService.retrieveAllFaqTitle();
     }
 
     @Operation(summary = "id로 FAQ 상세 조회 API")
     @GetMapping("/faq/{id}")
-    public ApiResponse retrieveFaqById(@PathVariable Long id) {
+    public ApiResponse<Faq> retrieveFaqById(@PathVariable Long id) {
         return faqService.retrieveFaqById(id);
     }
 
@@ -62,19 +63,19 @@ public class FaqController {
 
     @Operation(summary = "FAQ 수정 API")
     @PutMapping("/faq")
-    public ApiResponse updateFaq(@Valid @RequestBody UpdateFaqRequestDto dto) {
+    public ApiResponse<Faq> updateFaq(@Valid @RequestBody UpdateFaqRequestDto dto) {
         return faqService.updateFaq(dto.toServiceRequest());
     }
 
     @Operation(summary = "id로 FAQ 삭제 API")
     @DeleteMapping("/faq/{id}")
-    public ApiResponse deleteFaq(@PathVariable Long id) {
+    public ApiResponse<String> deleteFaq(@PathVariable Long id) {
         return faqService.deleteFaq(id);
     }
 
     @Operation(summary = "id로 FAQ 복수 삭제 API")
     @DeleteMapping("/faq")
-    public ApiResponse deleteFaqs(@RequestBody List<Long> ids) {
+    public ApiResponse<String> deleteFaqs(@RequestBody List<Long> ids) {
         return faqService.deleteFaqs(ids);
     }
 }
