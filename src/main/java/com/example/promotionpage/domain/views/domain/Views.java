@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 @Getter
