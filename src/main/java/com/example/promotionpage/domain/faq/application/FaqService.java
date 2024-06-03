@@ -31,7 +31,7 @@ public class FaqService {
     private final FaqRepository faqRepository;
     private final S3Adapter s3Adapter;
 
-    public ApiResponse createFaq(CreateFaqServiceRequestDto dto){
+    public ApiResponse<Faq> createFaq(CreateFaqServiceRequestDto dto){
         if(dto.question().trim().isEmpty() || dto.answer().trim().isEmpty() || dto.visibility() == null) {
             return ApiResponse.withError(ErrorCode.FAQ_IS_EMPTY);
         }
@@ -40,7 +40,7 @@ public class FaqService {
         return ApiResponse.ok("FAQ를 성공적으로 등록하였습니다.", savedFaq);
     }
 
-    public ApiResponse retrieveAllFaq() {
+    public ApiResponse<List<Faq>> retrieveAllFaq() {
         List<Faq> faqList = faqRepository.findAll();
         if(faqList.isEmpty()) {
             return ApiResponse.ok("FAQ가 존재하지 않습니다.");
@@ -49,7 +49,7 @@ public class FaqService {
     }
 
 
-    public ApiResponse retrieveAllFaqTitle() {
+    public ApiResponse<List<FaqQuestions>> retrieveAllFaqTitle() {
         List<FaqQuestions> faqQuestions = faqRepository.findAllQuestions();
         if(faqQuestions.isEmpty()) {
             return ApiResponse.ok("FAQ가 존재하지 않습니다.");
@@ -57,7 +57,7 @@ public class FaqService {
         return ApiResponse.ok("FAQ 목록을 성공적으로 조회했습니다.", faqQuestions);
     }
 
-    public ApiResponse retrieveFaqById(Long id) {
+    public ApiResponse<Faq> retrieveFaqById(Long id) {
         Optional<Faq> optionalFaq = faqRepository.findById(id);
         if(optionalFaq.isEmpty()) {
             return ApiResponse.ok("FAQ가 존재하지 않습니다.");
@@ -71,7 +71,7 @@ public class FaqService {
         return faqRepository.findAll(pageable);
     }
 
-    public ApiResponse convertBase64ToImageUrl(String base64Code) throws IOException {
+    public ApiResponse<String> convertBase64ToImageUrl(String base64Code) throws IOException {
         base64Code = base64Code.replaceAll("\"", ""); // requestBody에서 문자열 앞뒤에 "" 추가되는 현상 처리
         MultipartFile file = this.convert(base64Code);
         ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
@@ -84,7 +84,7 @@ public class FaqService {
         return ApiResponse.ok("FAQ base64 이미지를 성공적으로 저장했습니다.",imageUrl);
     }
 
-    public ApiResponse updateFaq(UpdateFaqServiceRequestDto dto) {
+    public ApiResponse<Faq> updateFaq(UpdateFaqServiceRequestDto dto) {
         String question = dto.question().trim();
         String answer = dto.answer().trim();
         Boolean visibility = dto.visibility();
@@ -107,7 +107,7 @@ public class FaqService {
         return ApiResponse.ok("FAQ를 성공적으로 수정하였습니다.", updatedFaq);
     }
 
-    public ApiResponse deleteFaq(Long id) {
+    public ApiResponse<String> deleteFaq(Long id) {
         Optional<Faq> optionalFaq = faqRepository.findById(id);
         if(optionalFaq.isEmpty()) {
             return ApiResponse.withError(ErrorCode.INVALID_FAQ_ID);
@@ -116,7 +116,7 @@ public class FaqService {
         faqRepository.delete(faq);
         return ApiResponse.ok("FAQ를 성공적으로 삭제했습니다.");
     }
-    public ApiResponse deleteFaqs(List<Long> ids) {
+    public ApiResponse<String> deleteFaqs(List<Long> ids) {
         for(Long id : ids) {
             Optional<Faq> optionalFaq = faqRepository.findById(id);
             if (optionalFaq.isEmpty()) {

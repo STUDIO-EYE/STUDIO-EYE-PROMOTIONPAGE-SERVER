@@ -28,7 +28,7 @@ public class CeoService {
     private final CeoRepository ceoRepository;
     private final S3Adapter s3Adapter;
 
-    public ApiResponse createCeoInformation(CreateCeoServiceRequestDto dto, MultipartFile file) {
+    public ApiResponse<Ceo> createCeoInformation(CreateCeoServiceRequestDto dto, MultipartFile file) {
         List<Ceo> ceoList = ceoRepository.findAll();
         if(ceoList.size() > 0) {
             return updateCeoInformation(dto.toUpdateServiceRequest(), file);
@@ -47,7 +47,7 @@ public class CeoService {
         return ApiResponse.ok("CEO 정보를 성공적으로 등록하였습니다.", savedCeo);
     }
 
-    public ApiResponse retrieveCeoInformation() {
+    public ApiResponse<Ceo> retrieveCeoInformation() {
         List<Ceo> ceoList = ceoRepository.findAll();
         if(ceoList.isEmpty()) {
             return ApiResponse.ok("CEO 정보가 존재하지 않습니다.");
@@ -56,7 +56,7 @@ public class CeoService {
         return ApiResponse.ok("CEO 정보를 성공적으로 조회했습니다.", ceo);
     }
 
-    public ApiResponse updateCeoInformation(UpdateCeoServiceRequestDto dto, MultipartFile file) {
+    public ApiResponse<Ceo> updateCeoInformation(UpdateCeoServiceRequestDto dto, MultipartFile file) {
         String imageUrl = null;
         String fileName = null;
         List<Ceo> ceoList = ceoRepository.findAll();
@@ -79,7 +79,7 @@ public class CeoService {
         return ApiResponse.ok("CEO 정보를 성공적으로 수정했습니다.", savedCeo);
     }
 
-    public ApiResponse updateCeoTextInformation(UpdateCeoServiceRequestDto dto) {
+    public ApiResponse<Ceo> updateCeoTextInformation(UpdateCeoServiceRequestDto dto) {
         List<Ceo> ceoList = ceoRepository.findAll();
         if(!ceoList.isEmpty()) {
             String ceoImageFileName = ceoList.get(0).getImageFileName();
@@ -91,7 +91,7 @@ public class CeoService {
         return ApiResponse.ok("CEO 텍스트 정보를 성공적으로 수정했습니다.", savedCeo);
     }
 
-    public ApiResponse updateCeoImageInformation(MultipartFile file) {
+    public ApiResponse<Ceo> updateCeoImageInformation(MultipartFile file) {
         String imageUrl = null;
         String fileName = null;
         List<Ceo> ceoList = ceoRepository.findAll();
@@ -115,7 +115,7 @@ public class CeoService {
     }
 
 
-    public ApiResponse deleteCeoInformation() {
+    public ApiResponse<String> deleteCeoInformation() {
         List<Ceo> ceoList = ceoRepository.findAll();
         if(ceoList.isEmpty()) {
             ApiResponse.withError(ErrorCode.CEO_IS_EMPTY);
