@@ -23,9 +23,11 @@ public class CompanyInformation {
     private Long id;
 
     @NotNull
+    @Column(columnDefinition = "TEXT")
     private String mainOverview;
 
     @NotNull
+    @Column(columnDefinition = "TEXT")
     private String commitment;
 
     @NotNull
@@ -47,6 +49,7 @@ public class CompanyInformation {
     private String fax;
 
     @NotNull
+    @Column(columnDefinition = "TEXT")
     private String introduction;
 
     @NotNull
