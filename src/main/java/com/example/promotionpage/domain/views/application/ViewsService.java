@@ -50,11 +50,11 @@ public class ViewsService {
         // 월 형식 검사
         if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         // 종료점이 시작점보다 앞에 있을 경우 제한 걸기
-        if(startYear > endYear || (startYear.equals(endYear) && startMonth>endMonth)) {
+        if(startYear > endYear || (startYear.equals(endYear) && startMonth > endMonth)) {
             return ApiResponse.withError(ErrorCode.INVALID_PERIOD_FORMAT);
         }
         // 2~12달로 제한 걸기
-        Integer months = (endYear - startYear)*12+(endMonth-startMonth)+1;
+        Integer months = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
         if(months < 2 || months > 12) {
             return ApiResponse.withError(ErrorCode.INVALID_VIEWS_PERIOD);
         }
