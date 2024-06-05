@@ -4,12 +4,6 @@ import com.example.promotionpage.domain.ceo.dao.CeoRepository;
 import com.example.promotionpage.domain.ceo.domain.Ceo;
 import com.example.promotionpage.domain.ceo.dto.request.CreateCeoServiceRequestDto;
 import com.example.promotionpage.domain.ceo.dto.request.UpdateCeoServiceRequestDto;
-import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
-import com.example.promotionpage.domain.faq.domain.Faq;
-import com.example.promotionpage.domain.partnerInformation.domain.PartnerInformation;
-import com.example.promotionpage.domain.project.domain.Project;
-import com.example.promotionpage.domain.project.domain.ProjectImage;
-import com.example.promotionpage.domain.project.dto.request.CreateProjectServiceRequestDto;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -18,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -30,7 +23,7 @@ public class CeoService {
 
     public ApiResponse<Ceo> createCeoInformation(CreateCeoServiceRequestDto dto, MultipartFile file) {
         List<Ceo> ceoList = ceoRepository.findAll();
-        if(ceoList.size() > 0) {
+        if(!ceoList.isEmpty()) {
             return updateCeoInformation(dto.toUpdateServiceRequest(), file);
         }
         String imageUrl = null;
@@ -42,7 +35,7 @@ public class CeoService {
             imageUrl = updateFileResponse.getData();
             if(imageUrl.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
         }
-        Ceo ceo = dto.toEntity(file.getOriginalFilename(), imageUrl);
+        Ceo ceo = dto.toEntity(file != null ? file.getOriginalFilename() : null, imageUrl);
         Ceo savedCeo = ceoRepository.save(ceo);
         return ApiResponse.ok("CEO 정보를 성공적으로 등록하였습니다.", savedCeo);
     }
