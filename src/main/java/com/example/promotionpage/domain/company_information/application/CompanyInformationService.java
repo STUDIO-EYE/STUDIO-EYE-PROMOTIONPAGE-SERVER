@@ -148,7 +148,7 @@ public class CompanyInformationService {
         return ApiResponse.ok("전체 회사 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse<CompanyInformation> updateAllCompanyTextInformation(UpdateAllCompanyInformationServiceRequestDto dto) throws IOException {
+    public ApiResponse<CompanyInformation> updateAllCompanyTextInformation(UpdateAllCompanyInformationServiceRequestDto dto) {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         CompanyInformation companyInformation = companyInformations.get(0);
         companyInformation.updateAllCompanyTextInformation(dto);
