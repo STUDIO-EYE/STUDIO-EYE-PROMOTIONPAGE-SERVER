@@ -19,7 +19,7 @@ public class ViewsService {
 
     private final ViewsRepository viewsRepository;
     // for initial views data / for adding views
-    private final Long num1 = 1L;
+    private static final Long num1 = 1L;
 
     public ApiResponse<Views> createViews(CreateViewsServiceDto dto) {
         if(!checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
@@ -134,7 +134,6 @@ public class ViewsService {
         if(optionalViews.isEmpty()){
             // 생성 코드 필요?
             return this.justCreateViews(new CreateViewsServiceDto(year, month, num1));
-//            return ApiResponse.withError(ErrorCode.INVALID_VIEWS_ID);
         }
         Views views = optionalViews.get();
         views.updateViews(views.getViews()+num1);
@@ -157,8 +156,7 @@ public class ViewsService {
 
     private boolean checkMonth(int month) {
         // 월 형식 검사
-        if(month<1 || month>12) return false;
-        return true;
+        return month >= 1 && month <= 12;
     }
 
 }
