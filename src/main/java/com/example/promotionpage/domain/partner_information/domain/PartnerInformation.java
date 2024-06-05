@@ -1,4 +1,4 @@
-package com.example.promotionpage.domain.partnerInformation.domain;
+package com.example.promotionpage.domain.partner_information.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

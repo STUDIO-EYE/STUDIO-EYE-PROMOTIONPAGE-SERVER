@@ -1,4 +1,4 @@
-package com.example.promotionpage.domain.partnerInformation.dto.request;
+package com.example.promotionpage.domain.partner_information.dto.request;
 
 public record UpdatePartnerInfoServiceRequestDto(
 	Long id,

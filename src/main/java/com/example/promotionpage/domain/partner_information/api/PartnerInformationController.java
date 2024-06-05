@@ -1,13 +1,13 @@
-package com.example.promotionpage.domain.partnerInformation.api;
+package com.example.promotionpage.domain.partner_information.api;
 
-import com.example.promotionpage.domain.partnerInformation.domain.PartnerInformation;
-import com.example.promotionpage.domain.partnerInformation.dto.request.UpdatePartnerInfoRequestDto;
+import com.example.promotionpage.domain.partner_information.domain.PartnerInformation;
+import com.example.promotionpage.domain.partner_information.dto.request.UpdatePartnerInfoRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.promotionpage.domain.partnerInformation.application.PartnerInformationService;
-import com.example.promotionpage.domain.partnerInformation.dto.request.CreatePartnerInfoRequestDto;
+import com.example.promotionpage.domain.partner_information.application.PartnerInformationService;
+import com.example.promotionpage.domain.partner_information.dto.request.CreatePartnerInfoRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
-package com.example.promotionpage.domain.partnerInformation.dto.request;
+package com.example.promotionpage.domain.partner_information.dto.request;
 
-import com.example.promotionpage.domain.partnerInformation.domain.PartnerInformation;
+import com.example.promotionpage.domain.partner_information.domain.PartnerInformation;
 
 public record CreatePartnerInfoServiceRequestDto(
 	String name,
