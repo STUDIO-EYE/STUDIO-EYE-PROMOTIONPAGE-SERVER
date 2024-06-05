@@ -1,6 +1,5 @@
 package com.example.promotionpage.domain.userNotification.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

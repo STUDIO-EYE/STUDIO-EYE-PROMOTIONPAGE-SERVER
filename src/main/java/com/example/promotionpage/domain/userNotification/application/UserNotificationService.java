@@ -17,20 +17,20 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserNotificationService {
 
-    private final Boolean READ = true;
-    private final Boolean UNREAD = false;
+    private static final Boolean READ = true;
+    private static final Boolean UNREAD = false;
 
     private final NotificationRepository notificationRepository;
     private final UserNotificationRepository userNotificationRepository;
 
-    public ApiResponse createUserNotification(Long userId, Long notificationId) {
+    public ApiResponse<UserNotification> createUserNotification(Long userId, Long notificationId) {
         UserNotification userNotification =
                 new CreateUserNotificationServiceRequestDto(userId, notificationId, UNREAD).toEntity();
         userNotificationRepository.save(userNotification);
         return ApiResponse.ok("USER_NOTIFICATION 정보를 저장하였습니다.", userNotification);
     }
 
-    public ApiResponse retrieveAllUserNotification(Long userId) {
+    public ApiResponse<List<Map<String, Object>>> retrieveAllUserNotification(Long userId) {
         List<UserNotification> userNotificationList = userNotificationRepository.findByUserId(userId);
         List<Map<String, Object>> notificationDetails = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class UserNotificationService {
         return ApiResponse.ok("유저의 알림 목록을 성공적으로 조회했습니다.", notificationDetails);
     }
 
-    public ApiResponse checkNotification(Long userId, Long notificationId) {
+    public ApiResponse<UserNotification> checkNotification(Long userId, Long notificationId) {
         UserNotificationPK userNotificationPK = new UserNotificationPK(userId, notificationId);
         Optional<UserNotification> userNotification = userNotificationRepository.findById(userNotificationPK);
         if (userNotification.isPresent()) {
@@ -63,7 +63,7 @@ public class UserNotificationService {
         }
     }
 
-    public ApiResponse deleteUserNotification(Long userId, Long notificationId) {
+    public ApiResponse<Optional<UserNotification>> deleteUserNotification(Long userId, Long notificationId) {
         try {
             UserNotificationPK userNotificationPK = new UserNotificationPK(userId, notificationId);
             Optional<UserNotification> userNotification = userNotificationRepository.findById(userNotificationPK);
