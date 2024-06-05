@@ -69,7 +69,10 @@ public enum ErrorCode {
 	COMPANYINFORMATION_IS_EMPTY(HttpStatus.BAD_REQUEST, "CompanyInformation가 존재하지 않습니다."),
 
 	// Ceo
-	CEO_IS_EMPTY(HttpStatus.BAD_REQUEST, "CEO 정보가 존재하지 않습니다.");
+	CEO_IS_EMPTY(HttpStatus.BAD_REQUEST, "CEO 정보가 존재하지 않습니다."),
+
+	// Mail
+	EMAIL_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "E-mail 용량이 초과되었습니다.");
 
 	private final HttpStatus status;
 	private final String message;
