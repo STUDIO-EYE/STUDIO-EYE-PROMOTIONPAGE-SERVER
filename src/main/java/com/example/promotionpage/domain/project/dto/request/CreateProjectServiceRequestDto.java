@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.example.promotionpage.domain.project.domain.Project;
 import com.example.promotionpage.domain.project.domain.ProjectImage;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 public record CreateProjectServiceRequestDto(
 	String department,

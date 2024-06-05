@@ -18,12 +18,10 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "프로젝트 API", description = "프로젝트 등록 / 수정 / 삭제 / 조회")
 @RestController
-// TODO 추후 /api를 /admin으로 변경해야 한다.
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ProjectController {
 
-	// TODO 프로젝트 게시 여부 수정
 	private final ProjectService projectService;
 
 	@Operation(summary = "프로젝트 등록 API")

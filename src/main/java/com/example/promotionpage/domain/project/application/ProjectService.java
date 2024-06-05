@@ -351,7 +351,6 @@ public class ProjectService {
 				Project updatedMainProject = project.updateProjectType(projectType);
 				// mainSequence 수정
 				Integer mainSequence = projectRepository.countByProjectType(projectType);
-				System.out.print("------------------------------------" + mainSequence);
 				updatedMainProject.updateMainSequence(mainSequence);
 				updatedMainProject.setIsPosted(true);
 				return ApiResponse.ok("프로젝트 타입을 성공적으로 변경하였습니다.", updatedMainProject);
