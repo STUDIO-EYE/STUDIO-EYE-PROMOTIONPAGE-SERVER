@@ -16,11 +16,9 @@ public class UserServiceImpl {
 
     public List<Long> getAllApprovedUserIds() {
         try {
-            System.out.println(userFeignClient.getAllApprovedUserIds());
             return userFeignClient.getAllApprovedUserIds();
         }
         catch (Exception e){
-            System.out.println("null");
             return null;
         }
     }
