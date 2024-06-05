@@ -1,7 +1,6 @@
-package com.example.promotionpage.domain.userNotification.dto.request;
+package com.example.promotionpage.domain.user_notification.dto.request;
 
-import com.example.promotionpage.domain.userNotification.domain.UserNotification;
-import com.example.promotionpage.domain.userNotification.domain.UserNotificationPK;
+import com.example.promotionpage.domain.user_notification.domain.UserNotification;
 
 public record CreateUserNotificationServiceRequestDto(
         Long userId,

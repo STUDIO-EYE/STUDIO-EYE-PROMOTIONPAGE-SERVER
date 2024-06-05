@@ -1,7 +1,7 @@
-package com.example.promotionpage.domain.userNotification.api;
+package com.example.promotionpage.domain.user_notification.api;
 
-import com.example.promotionpage.domain.userNotification.application.UserNotificationService;
-import com.example.promotionpage.domain.userNotification.domain.UserNotification;
+import com.example.promotionpage.domain.user_notification.application.UserNotificationService;
+import com.example.promotionpage.domain.user_notification.domain.UserNotification;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

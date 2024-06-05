@@ -6,7 +6,7 @@ import com.example.promotionpage.domain.notification.dao.NotificationRepository;
 import com.example.promotionpage.domain.notification.domain.Notification;
 import com.example.promotionpage.domain.notification.dto.request.CreateNotificationServiceRequestDto;
 import com.example.promotionpage.domain.user.service.UserServiceImpl;
-import com.example.promotionpage.domain.userNotification.application.UserNotificationService;
+import com.example.promotionpage.domain.user_notification.application.UserNotificationService;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;

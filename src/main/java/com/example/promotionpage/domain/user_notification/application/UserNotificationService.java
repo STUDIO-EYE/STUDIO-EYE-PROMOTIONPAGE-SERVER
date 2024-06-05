@@ -1,11 +1,11 @@
-package com.example.promotionpage.domain.userNotification.application;
+package com.example.promotionpage.domain.user_notification.application;
 
 import com.example.promotionpage.domain.notification.dao.NotificationRepository;
 import com.example.promotionpage.domain.notification.domain.Notification;
-import com.example.promotionpage.domain.userNotification.dao.UserNotificationRepository;
-import com.example.promotionpage.domain.userNotification.domain.UserNotification;
-import com.example.promotionpage.domain.userNotification.domain.UserNotificationPK;
-import com.example.promotionpage.domain.userNotification.dto.request.CreateUserNotificationServiceRequestDto;
+import com.example.promotionpage.domain.user_notification.dao.UserNotificationRepository;
+import com.example.promotionpage.domain.user_notification.domain.UserNotification;
+import com.example.promotionpage.domain.user_notification.domain.UserNotificationPK;
+import com.example.promotionpage.domain.user_notification.dto.request.CreateUserNotificationServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;

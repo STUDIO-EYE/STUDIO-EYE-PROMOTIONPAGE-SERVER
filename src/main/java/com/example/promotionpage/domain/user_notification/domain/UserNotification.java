@@ -1,4 +1,4 @@
-package com.example.promotionpage.domain.userNotification.domain;
+package com.example.promotionpage.domain.user_notification.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
