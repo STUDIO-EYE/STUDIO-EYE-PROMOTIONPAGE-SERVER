@@ -1,4 +1,4 @@
-package com.example.promotionpage.domain.companyInformation.dto.request;
+package com.example.promotionpage.domain.company_information.dto.request;
 
 public record UpdateCompanyIntroductionInformationServiceRequestDto(
         String mainOverview, String commitment, String introduction

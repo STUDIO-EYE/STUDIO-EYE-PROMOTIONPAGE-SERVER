@@ -1,10 +1,10 @@
-package com.example.promotionpage.domain.companyInformation.api;
+package com.example.promotionpage.domain.company_information.api;
 
-import com.example.promotionpage.domain.companyInformation.application.CompanyInformationService;
-import com.example.promotionpage.domain.companyInformation.dao.CompanyBasicInformation;
-import com.example.promotionpage.domain.companyInformation.dao.CompanyIntroductionInformation;
-import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
-import com.example.promotionpage.domain.companyInformation.dto.request.*;
+import com.example.promotionpage.domain.company_information.application.CompanyInformationService;
+import com.example.promotionpage.domain.company_information.dao.CompanyBasicInformation;
+import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,10 +1,10 @@
-package com.example.promotionpage.domain.companyInformation.application;
+package com.example.promotionpage.domain.company_information.application;
 
-import com.example.promotionpage.domain.companyInformation.dao.CompanyBasicInformation;
-import com.example.promotionpage.domain.companyInformation.dao.CompanyInformationRepository;
-import com.example.promotionpage.domain.companyInformation.dao.CompanyIntroductionInformation;
-import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
-import com.example.promotionpage.domain.companyInformation.dto.request.*;
+import com.example.promotionpage.domain.company_information.dao.CompanyBasicInformation;
+import com.example.promotionpage.domain.company_information.dao.CompanyInformationRepository;
+import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;

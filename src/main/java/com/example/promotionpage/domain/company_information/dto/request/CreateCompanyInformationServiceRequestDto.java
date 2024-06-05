@@ -1,6 +1,6 @@
-package com.example.promotionpage.domain.companyInformation.dto.request;
+package com.example.promotionpage.domain.company_information.dto.request;
 
-import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
 
 import java.util.Map;
 

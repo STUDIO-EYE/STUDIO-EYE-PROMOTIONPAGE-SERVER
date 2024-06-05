@@ -1,4 +1,4 @@
-package com.example.promotionpage.domain.companyInformation.dao;
+package com.example.promotionpage.domain.company_information.dao;
 
 public interface CompanyBasicInformation {
     String getAddress();

@@ -1,9 +1,9 @@
-package com.example.promotionpage.domain.companyInformation.domain;
+package com.example.promotionpage.domain.company_information.domain;
 
-import com.example.promotionpage.domain.companyInformation.dto.request.UpdateAllCompanyInformationServiceRequestDto;
-import com.example.promotionpage.domain.companyInformation.dto.request.UpdateCompanyBasicInformationServiceRequestDto;
-import com.example.promotionpage.domain.companyInformation.dto.request.UpdateCompanyDetailInformationServiceRequestDto;
-import com.example.promotionpage.domain.companyInformation.dto.request.UpdateCompanyIntroductionInformationServiceRequestDto;
+import com.example.promotionpage.domain.company_information.dto.request.UpdateAllCompanyInformationServiceRequestDto;
+import com.example.promotionpage.domain.company_information.dto.request.UpdateCompanyBasicInformationServiceRequestDto;
+import com.example.promotionpage.domain.company_information.dto.request.UpdateCompanyDetailInformationServiceRequestDto;
+import com.example.promotionpage.domain.company_information.dto.request.UpdateCompanyIntroductionInformationServiceRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

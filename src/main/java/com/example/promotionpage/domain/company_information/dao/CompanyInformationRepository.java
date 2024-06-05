@@ -1,6 +1,6 @@
-package com.example.promotionpage.domain.companyInformation.dao;
+package com.example.promotionpage.domain.company_information.dao;
 
-import com.example.promotionpage.domain.companyInformation.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
