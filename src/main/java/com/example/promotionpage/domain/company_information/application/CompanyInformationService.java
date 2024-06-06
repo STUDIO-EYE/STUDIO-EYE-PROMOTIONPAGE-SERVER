@@ -74,7 +74,8 @@ public class CompanyInformationService {
             return ApiResponse.ok("회사 로고 이미지가 존재하지 않습니다.");
         }
         String logoImageUrl = logoImageUrls.get(0);
-        return ApiResponse.ok("회사 로고 이미지를 성공적으로 조회하였습니다.", logoImageUrl);
+        String cacheBustedLogoImageUrl = logoImageUrl + "?v=" + System.currentTimeMillis();
+        return ApiResponse.ok("회사 로고 이미지를 성공적으로 조회하였습니다.", cacheBustedLogoImageUrl);
     }
 
     public ApiResponse<CompanyBasicInformation> retrieveCompanyBasicInformation() {
