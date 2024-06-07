@@ -34,6 +34,7 @@ public class Request {
 
 	private String position;
 
+	@Column(columnDefinition = "TEXT")
 	private String description;
 
 	@OneToMany(mappedBy = "request", cascade = CascadeType.REMOVE)
