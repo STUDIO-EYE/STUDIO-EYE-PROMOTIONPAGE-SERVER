@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.company_information.application;
 import com.example.promotionpage.domain.company_information.dao.CompanyBasicInformation;
 import com.example.promotionpage.domain.company_information.dao.CompanyInformationRepository;
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
+import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformationImpl;
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
 import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.adapter.S3Adapter;
@@ -93,7 +94,11 @@ public class CompanyInformationService {
             return ApiResponse.ok("회사 소개 정보가 존재하지 않습니다.");
         }
         CompanyIntroductionInformation companyIntroductionInformation = companyIntroductionInformations.get(0);
-        return ApiResponse.ok("회사 소개 정보를 성공적으로 조회하였습니다.", companyIntroductionInformation);
+
+        String updatedSloganImageUrl = companyIntroductionInformation.getSloganImageUrl() + "?v=" + System.currentTimeMillis();
+        CompanyIntroductionInformation updatedCompanyIntroInformation = new CompanyIntroductionInformationImpl(companyIntroductionInformation.getIntroduction(), updatedSloganImageUrl);
+
+        return ApiResponse.ok("회사 소개 정보를 성공적으로 조회하였습니다.", updatedCompanyIntroInformation);
     }
 
     public ApiResponse<Map<String, String>> retrieveCompanyDetailInformation() {
