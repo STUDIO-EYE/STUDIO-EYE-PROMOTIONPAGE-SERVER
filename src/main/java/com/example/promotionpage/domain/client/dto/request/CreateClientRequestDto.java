@@ -12,6 +12,6 @@ public record CreateClientRequestDto(
     Boolean visibility
     ) {
     public CreateClientServiceRequestDto toServiceRequest() {
-        return new CreateClientServiceRequestDto(name, visibility);
+        return new CreateClientServiceRequestDto(name, visibility != null && visibility);
     }
 }
