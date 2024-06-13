@@ -9,7 +9,7 @@ public record UpdatePartnerInfoRequestDto(
 	@NotBlank(message = "협력사 식별자는 양수여야 합니다.")
 	Long id,
 	@NotNull(message = "협력사 이름은 필수 값입니다, null / 빈 값 / 공백 허용 x")
-	@NotBlank(message = "link는 필수 값입니다.")
+	@NotBlank(message = "협력사 이름은 필수 값입니다.")
 	String name,
 	@NotNull(message = "is_main은 필수 값입니다.")
 	Boolean is_main,
@@ -20,6 +20,6 @@ public record UpdatePartnerInfoRequestDto(
 ) {
 
 	public UpdatePartnerInfoServiceRequestDto toServiceRequest() {
-		return new UpdatePartnerInfoServiceRequestDto(id, name, is_main, link);
+		return new UpdatePartnerInfoServiceRequestDto(id, name, is_main != null && is_main, link);
 	}
 }
