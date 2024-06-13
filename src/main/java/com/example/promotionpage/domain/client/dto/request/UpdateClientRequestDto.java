@@ -18,6 +18,6 @@ public record UpdateClientRequestDto(
     Boolean visibility
 ) {
     public UpdateClientServiceRequestDto toServiceRequest() {
-        return new UpdateClientServiceRequestDto(clientId, name, visibility);
+        return new UpdateClientServiceRequestDto(clientId, name, visibility != null && visibility);
     }
 }
