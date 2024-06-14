@@ -1,8 +1,10 @@
 package com.example.promotionpage.domain.company_information.dto.request;
 
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public record CreateCompanyInformationServiceRequestDto(
         String mainOverview,
@@ -12,11 +14,11 @@ public record CreateCompanyInformationServiceRequestDto(
         String phone,
         String fax,
         String introduction,
-        Map<String, String> detailInformation
+        List<DetailInformationDTO> detailInformation
 ) {
     public CompanyInformation toEntity(String logoImageFileName, String logoImageUrl,
                                        String sloganImageFileName, String sloganImageUrl) {
-        return CompanyInformation.builder()
+        CompanyInformation.CompanyInformationBuilder builder = CompanyInformation.builder()
                 .mainOverview(mainOverview)
                 .commitment(commitment)
                 .address(address)
@@ -27,9 +29,20 @@ public record CreateCompanyInformationServiceRequestDto(
                 .logoImageFileName(logoImageFileName)
                 .logoImageUrl(logoImageUrl)
                 .sloganImageFileName(sloganImageFileName)
-                .sloganImageUrl(sloganImageUrl)
-                .detailInformation(detailInformation)
-                .build();
+                .sloganImageUrl(sloganImageUrl);
+
+        if (detailInformation != null) {
+            List<CompanyInformationDetail> companyInformationDetails = new ArrayList<>();
+            for (DetailInformationDTO dto : detailInformation) {
+                companyInformationDetails.add(CompanyInformationDetail.builder()
+                        .key(dto.getKey())
+                        .value(dto.getValue())
+                        .build());
+            }
+            builder.detailInformation(companyInformationDetails);
+        }
+
+        return builder.build();
     }
 
     public UpdateAllCompanyInformationServiceRequestDto toUpdateServiceRequest() {

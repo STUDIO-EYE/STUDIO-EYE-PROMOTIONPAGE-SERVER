@@ -1,9 +1,7 @@
 package com.example.promotionpage.domain.company_information.domain;
 
-import com.example.promotionpage.domain.company_information.dto.request.UpdateAllCompanyInformationServiceRequestDto;
-import com.example.promotionpage.domain.company_information.dto.request.UpdateCompanyBasicInformationServiceRequestDto;
-import com.example.promotionpage.domain.company_information.dto.request.UpdateCompanyDetailInformationServiceRequestDto;
-import com.example.promotionpage.domain.company_information.dto.request.UpdateCompanyIntroductionInformationServiceRequestDto;
+import com.example.promotionpage.domain.company_information.dto.request.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -11,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 
 @Entity
 @Getter
@@ -58,8 +56,9 @@ public class CompanyInformation {
     @NotNull
     private String sloganImageUrl;
 
-    @ElementCollection
-    private Map<String, String> detailInformation;
+    @OneToMany(mappedBy = "companyInformation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CompanyInformationDetail> detailInformation;
 
     @Builder
     public CompanyInformation(String mainOverview, String commitment,
@@ -70,7 +69,7 @@ public class CompanyInformation {
                               String fax,
                               String introduction,
                               String sloganImageFileName, String sloganImageUrl,
-                              Map<String, String> detailInformation) {
+                              List<CompanyInformationDetail> detailInformation) {
         this.mainOverview = mainOverview;
         this.commitment = commitment;
         this.address = address;
@@ -82,7 +81,11 @@ public class CompanyInformation {
         this.introduction = introduction;
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
-        this.detailInformation = detailInformation;
+////        this.detailInformation = detailInformation;
+////        updateDetailInformation(detailInformation);
+        if (detailInformation != null) {
+            this.detailInformation.addAll(detailInformation);
+        }
     }
 
     public void deleteLogoImage() {
@@ -98,7 +101,9 @@ public class CompanyInformation {
     }
 
     public void deleteCompanyDetailInformation() {
-        this.detailInformation = null;
+        if (this.detailInformation != null) {
+            this.detailInformation.clear();
+        }
     }
 
     public void deleteCompanyIntroductionInformation() {
@@ -117,7 +122,8 @@ public class CompanyInformation {
         this.sloganImageUrl = sloganImageUrl;
     }
 
-    public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+    public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName,
+                                            String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
         this.mainOverview = dto.mainOverview();
         this.commitment = dto.commitment();
         this.address = dto.address();
@@ -129,7 +135,8 @@ public class CompanyInformation {
         this.introduction = dto.introduction();
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
-        this.detailInformation = dto.detailInformation();
+//        this.detailInformation.addAll(dto.detailInformation());
+        updateDetailInformation(dto.detailInformation());
     }
 
     public void updateAllCompanyTextInformation(UpdateAllCompanyInformationServiceRequestDto dto) {
@@ -140,7 +147,8 @@ public class CompanyInformation {
         this.phone = dto.phone();
         this.fax = dto.fax();
         this.introduction = dto.introduction();
-        this.detailInformation = dto.detailInformation();
+//        this.detailInformation = dto.detailInformation();
+        updateDetailInformation(dto.detailInformation());
     }
 
     public void updateCompanyBasicInformation(UpdateCompanyBasicInformationServiceRequestDto dto) {
@@ -151,7 +159,8 @@ public class CompanyInformation {
     }
 
     public void updateCompanyDetailInformation(UpdateCompanyDetailInformationServiceRequestDto dto) {
-        this.detailInformation = dto.detailInformation();
+//        this.detailInformation = dto.detailInformation();
+        updateDetailInformation(dto.detailInformation());
     }
 
     public void updateCompanyIntroductionInformation(UpdateCompanyIntroductionInformationServiceRequestDto dto) {
@@ -165,5 +174,29 @@ public class CompanyInformation {
         this.logoImageUrl = logoImageUrl;
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
+    }
+
+    private void updateDetailInformation(List<DetailInformationDTO> dtos) {
+        if (dtos == null) {
+            this.detailInformation = null;
+            return;
+        }
+
+        // Clear existing details
+        this.detailInformation.clear();
+
+        // Create new detail information
+        for (DetailInformationDTO dto : dtos) {
+//            CompanyInformationDetail detail = new CompanyInformationDetail(this, dto.getKey(), dto.getValue());
+            CompanyInformationDetail detail = CompanyInformationDetail.builder()
+                    .companyInformation(this)
+                    .key(dto.getKey())
+                    .value(dto.getValue())
+                    .build();
+//            detail.setCompanyInformation(this);
+//            detail.setKey(dto.getKey());
+//            detail.setValue(dto.getValue());
+            this.detailInformation.add(detail);
+        }
     }
 }

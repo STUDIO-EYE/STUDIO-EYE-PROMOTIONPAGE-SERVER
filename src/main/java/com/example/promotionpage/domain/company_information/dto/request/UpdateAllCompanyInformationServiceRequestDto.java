@@ -1,6 +1,6 @@
 package com.example.promotionpage.domain.company_information.dto.request;
 
-import java.util.Map;
+import java.util.List;
 
 public record UpdateAllCompanyInformationServiceRequestDto(
         String mainOverview,
@@ -10,6 +10,6 @@ public record UpdateAllCompanyInformationServiceRequestDto(
         String phone,
         String fax,
         String introduction,
-        Map<String, String> detailInformation
+        List<DetailInformationDTO> detailInformation
 ) {
 }

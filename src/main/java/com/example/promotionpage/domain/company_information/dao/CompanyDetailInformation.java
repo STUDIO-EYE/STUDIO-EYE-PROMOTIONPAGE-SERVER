@@ -1,7 +1,9 @@
 package com.example.promotionpage.domain.company_information.dao;
 
-import java.util.Map;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
+
+import java.util.List;
 
 public interface CompanyDetailInformation {
-    Map<String, String> getDetailInformation();
+    List<CompanyInformationDetail> getDetailInformation();
 }

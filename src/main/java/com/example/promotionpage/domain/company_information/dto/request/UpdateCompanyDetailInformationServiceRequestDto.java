@@ -1,8 +1,8 @@
 package com.example.promotionpage.domain.company_information.dto.request;
 
-import java.util.Map;
+import java.util.List;
 
 public record UpdateCompanyDetailInformationServiceRequestDto(
-        Map<String, String> detailInformation
+        List<DetailInformationDTO> detailInformation
 ) {
 }

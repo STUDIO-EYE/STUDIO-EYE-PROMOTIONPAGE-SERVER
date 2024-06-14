@@ -5,6 +5,7 @@ import com.example.promotionpage.domain.company_information.dao.CompanyInformati
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformationImpl;
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
 import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
@@ -16,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -101,13 +101,13 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 소개 정보를 성공적으로 조회하였습니다.", updatedCompanyIntroInformation);
     }
 
-    public ApiResponse<Map<String, String>> retrieveCompanyDetailInformation() {
+    public ApiResponse<List<CompanyInformationDetail>> retrieveCompanyDetailInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if(companyInformations.isEmpty()) {
             return ApiResponse.ok("회사 정보가 존재하지 않습니다.");
         }
         CompanyInformation companyInformation = companyInformations.get(0);
-        Map<String, String> companyDetailInformation = companyInformation.getDetailInformation();
+        List<CompanyInformationDetail> companyDetailInformation = companyInformation.getDetailInformation();
         if(companyDetailInformation.isEmpty()) {
             return ApiResponse.ok("회사 상세 정보가 존재하지 않습니다.");
         }

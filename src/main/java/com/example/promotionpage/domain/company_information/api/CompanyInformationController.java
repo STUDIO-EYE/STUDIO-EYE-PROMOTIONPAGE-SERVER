@@ -4,6 +4,7 @@ import com.example.promotionpage.domain.company_information.application.CompanyI
 import com.example.promotionpage.domain.company_information.dao.CompanyBasicInformation;
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
 import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 @Tag(name = "회사 정보(기본 정보, 소개 정보, 상세 정보) API", description = "회사 정보(기본 정보, 소개 정보, 상세 정보) 등록 / 수정 / 삭제 / 조회")
 @RestController
@@ -58,7 +59,7 @@ public class CompanyInformationController {
 
     @Operation(summary = "회사 5가지 상세 정보 조회 API")
     @GetMapping("/company/detail")
-    public ApiResponse<Map<String, String>> retrieveCompanyDetailInformation() {
+    public ApiResponse<List<CompanyInformationDetail>> retrieveCompanyDetailInformation() {
         return companyInformationService.retrieveCompanyDetailInformation();
     }
 
