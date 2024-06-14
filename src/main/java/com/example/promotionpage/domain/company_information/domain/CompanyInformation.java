@@ -58,7 +58,7 @@ public class CompanyInformation {
 
     @OneToMany(mappedBy = "companyInformation", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<CompanyInformationDetail> detailInformation;
+    private List<CompanyInformationDetailInformation> detailInformation;
 
     @Builder
     public CompanyInformation(String mainOverview, String commitment,
@@ -69,7 +69,7 @@ public class CompanyInformation {
                               String fax,
                               String introduction,
                               String sloganImageFileName, String sloganImageUrl,
-                              List<CompanyInformationDetail> detailInformation) {
+                              List<CompanyInformationDetailInformation> detailInformation) {
         this.mainOverview = mainOverview;
         this.commitment = commitment;
         this.address = address;
@@ -81,8 +81,6 @@ public class CompanyInformation {
         this.introduction = introduction;
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
-////        this.detailInformation = detailInformation;
-////        updateDetailInformation(detailInformation);
         if (detailInformation != null) {
             this.detailInformation.addAll(detailInformation);
         }
@@ -135,7 +133,6 @@ public class CompanyInformation {
         this.introduction = dto.introduction();
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
-//        this.detailInformation.addAll(dto.detailInformation());
         updateDetailInformation(dto.detailInformation());
     }
 
@@ -147,7 +144,6 @@ public class CompanyInformation {
         this.phone = dto.phone();
         this.fax = dto.fax();
         this.introduction = dto.introduction();
-//        this.detailInformation = dto.detailInformation();
         updateDetailInformation(dto.detailInformation());
     }
 
@@ -159,7 +155,6 @@ public class CompanyInformation {
     }
 
     public void updateCompanyDetailInformation(UpdateCompanyDetailInformationServiceRequestDto dto) {
-//        this.detailInformation = dto.detailInformation();
         updateDetailInformation(dto.detailInformation());
     }
 
@@ -182,20 +177,14 @@ public class CompanyInformation {
             return;
         }
 
-        // Clear existing details
         this.detailInformation.clear();
 
-        // Create new detail information
         for (DetailInformationDTO dto : dtos) {
-//            CompanyInformationDetail detail = new CompanyInformationDetail(this, dto.getKey(), dto.getValue());
-            CompanyInformationDetail detail = CompanyInformationDetail.builder()
+            CompanyInformationDetailInformation detail = CompanyInformationDetailInformation.builder()
                     .companyInformation(this)
                     .key(dto.getKey())
                     .value(dto.getValue())
                     .build();
-//            detail.setCompanyInformation(this);
-//            detail.setKey(dto.getKey());
-//            detail.setValue(dto.getValue());
             this.detailInformation.add(detail);
         }
     }

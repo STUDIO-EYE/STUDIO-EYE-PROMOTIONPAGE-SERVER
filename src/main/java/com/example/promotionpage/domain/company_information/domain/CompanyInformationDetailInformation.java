@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CompanyInformationDetail {
+public class CompanyInformationDetailInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,10 +25,8 @@ public class CompanyInformationDetail {
     private String value;
 
 
-//    public CompanyInformationDetail() {}
-
     @Builder
-    public CompanyInformationDetail(CompanyInformation companyInformation, String key, String value) {
+    public CompanyInformationDetailInformation(CompanyInformation companyInformation, String key, String value) {
         this.companyInformation = companyInformation;
         this.key = key;
         this.value = value;

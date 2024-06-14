@@ -1,7 +1,7 @@
 package com.example.promotionpage.domain.company_information.dto.request;
 
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
-import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetailInformation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public record CreateCompanyInformationServiceRequestDto(
                 .sloganImageUrl(sloganImageUrl);
 
         if (detailInformation != null) {
-            List<CompanyInformationDetail> companyInformationDetails = new ArrayList<>();
+            List<CompanyInformationDetailInformation> companyInformationDetails = new ArrayList<>();
             for (DetailInformationDTO dto : detailInformation) {
-                companyInformationDetails.add(CompanyInformationDetail.builder()
+                companyInformationDetails.add(CompanyInformationDetailInformation.builder()
                         .key(dto.getKey())
                         .value(dto.getValue())
                         .build());

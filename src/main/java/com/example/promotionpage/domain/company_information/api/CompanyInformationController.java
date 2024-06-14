@@ -4,7 +4,7 @@ import com.example.promotionpage.domain.company_information.application.CompanyI
 import com.example.promotionpage.domain.company_information.dao.CompanyBasicInformation;
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
-import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetailInformation;
 import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +59,7 @@ public class CompanyInformationController {
 
     @Operation(summary = "회사 5가지 상세 정보 조회 API")
     @GetMapping("/company/detail")
-    public ApiResponse<List<CompanyInformationDetail>> retrieveCompanyDetailInformation() {
+    public ApiResponse<List<CompanyInformationDetailInformation>> retrieveCompanyDetailInformation() {
         return companyInformationService.retrieveCompanyDetailInformation();
     }
 

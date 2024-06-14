@@ -5,7 +5,7 @@ import com.example.promotionpage.domain.company_information.dao.CompanyInformati
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformation;
 import com.example.promotionpage.domain.company_information.dao.CompanyIntroductionInformationImpl;
 import com.example.promotionpage.domain.company_information.domain.CompanyInformation;
-import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetail;
+import com.example.promotionpage.domain.company_information.domain.CompanyInformationDetailInformation;
 import com.example.promotionpage.domain.company_information.dto.request.*;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
@@ -101,13 +101,13 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 소개 정보를 성공적으로 조회하였습니다.", updatedCompanyIntroInformation);
     }
 
-    public ApiResponse<List<CompanyInformationDetail>> retrieveCompanyDetailInformation() {
+    public ApiResponse<List<CompanyInformationDetailInformation>> retrieveCompanyDetailInformation() {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if(companyInformations.isEmpty()) {
             return ApiResponse.ok("회사 정보가 존재하지 않습니다.");
         }
         CompanyInformation companyInformation = companyInformations.get(0);
-        List<CompanyInformationDetail> companyDetailInformation = companyInformation.getDetailInformation();
+        List<CompanyInformationDetailInformation> companyDetailInformation = companyInformation.getDetailInformation();
         if(companyDetailInformation.isEmpty()) {
             return ApiResponse.ok("회사 상세 정보가 존재하지 않습니다.");
         }
