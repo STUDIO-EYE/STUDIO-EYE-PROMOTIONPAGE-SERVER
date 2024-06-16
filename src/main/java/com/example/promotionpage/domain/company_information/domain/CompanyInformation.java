@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -81,6 +82,7 @@ public class CompanyInformation {
         this.introduction = introduction;
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
+        this.detailInformation = new ArrayList<>();
         if (detailInformation != null) {
             this.detailInformation.addAll(detailInformation);
         }
