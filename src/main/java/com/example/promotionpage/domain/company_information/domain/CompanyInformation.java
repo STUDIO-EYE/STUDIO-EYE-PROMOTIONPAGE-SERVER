@@ -190,4 +190,12 @@ public class CompanyInformation {
             this.detailInformation.add(detail);
         }
     }
+
+    public void initDetailInformation( List<CompanyInformationDetailInformation> detailInformation) {
+        if (this.detailInformation == null)
+            this.detailInformation = new ArrayList<>();
+        this.detailInformation = detailInformation;
+    }
+
 }
+
