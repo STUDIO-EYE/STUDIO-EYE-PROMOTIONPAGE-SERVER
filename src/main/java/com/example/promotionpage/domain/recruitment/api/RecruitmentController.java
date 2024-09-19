@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "채용공고 게시판 API", description = "채용공고 게시물 등록 / 수정 / 삭제 / 조회")
 @RestController
@@ -25,5 +22,11 @@ public class RecruitmentController {
     @PostMapping("/recruitment")
     public ApiResponse<Recruitment> createRecruitment(@Valid @RequestBody CreateRecruitmentRequestDto dto) {
         return recruitmentService.createRecruitment(dto.toServiceRequest());
+    }
+
+    @Operation(summary = "채용공고 등록 API")
+    @GetMapping("/recruitment/id/{id}")
+    public ApiResponse<Recruitment> retrieveRecruitmentById(@PathVariable Long id) {
+        return recruitmentService.retrieveRecruitmentById(id);
     }
 }
