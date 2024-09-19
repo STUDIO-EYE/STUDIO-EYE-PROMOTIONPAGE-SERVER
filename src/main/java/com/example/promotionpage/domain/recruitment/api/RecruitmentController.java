@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.recruitment.api;
 import com.example.promotionpage.domain.recruitment.application.RecruitmentService;
 import com.example.promotionpage.domain.recruitment.domain.Recruitment;
 import com.example.promotionpage.domain.recruitment.dto.request.CreateRecruitmentRequestDto;
+import com.example.promotionpage.domain.recruitment.dto.request.UpdateRecruitmentRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +29,12 @@ public class RecruitmentController {
     @GetMapping("/recruitment/id/{id}")
     public ApiResponse<Recruitment> retrieveRecruitmentById(@PathVariable Long id) {
         return recruitmentService.retrieveRecruitmentById(id);
+    }
+
+    @Operation(summary = "채용공고 게시물 수정 API")
+    @PutMapping("/recruitment")
+    public ApiResponse<Recruitment> updateRecruitment(@RequestBody UpdateRecruitmentRequestDto dto) {
+        return recruitmentService.updateRecruitment(dto.toServiceRequest());
     }
 
 

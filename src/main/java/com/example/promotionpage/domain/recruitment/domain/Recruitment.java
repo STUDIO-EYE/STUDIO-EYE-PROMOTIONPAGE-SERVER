@@ -1,5 +1,6 @@
 package com.example.promotionpage.domain.recruitment.domain;
 
+import com.example.promotionpage.domain.recruitment.dto.request.UpdateRecruitmentServiceRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -29,8 +30,8 @@ public class Recruitment {
         this.content = content;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void update(UpdateRecruitmentServiceRequestDto dto) {
+        this.title = dto.title();
+        this.content = dto.content();
     }
 }
