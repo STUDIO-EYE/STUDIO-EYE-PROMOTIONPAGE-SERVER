@@ -18,15 +18,17 @@ public class RecruitmentController {
 
     private final RecruitmentService recruitmentService;
 
-    @Operation(summary = "채용공고 등록 API")
+    @Operation(summary = "채용공고 게시물 등록 API")
     @PostMapping("/recruitment")
     public ApiResponse<Recruitment> createRecruitment(@Valid @RequestBody CreateRecruitmentRequestDto dto) {
         return recruitmentService.createRecruitment(dto.toServiceRequest());
     }
 
-    @Operation(summary = "채용공고 등록 API")
+    @Operation(summary = "채용공고 게시물 조회 API")
     @GetMapping("/recruitment/id/{id}")
     public ApiResponse<Recruitment> retrieveRecruitmentById(@PathVariable Long id) {
         return recruitmentService.retrieveRecruitmentById(id);
     }
+
+
 }
