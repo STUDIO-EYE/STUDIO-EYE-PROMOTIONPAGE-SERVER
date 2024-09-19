@@ -45,4 +45,14 @@ public class RecruitmentService {
         Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
         return ApiResponse.ok("채용공고 게시물을 성공적으로 수정했습니다.", savedRecruitment);
     }
+
+    public ApiResponse<String> deleteRecruitment(Long id) {
+        Optional<Recruitment> optionalRecruitment = recruitmentRepository.findById(id);
+        if(optionalRecruitment.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_RECRUITMENT_ID);
+        }
+        Recruitment recruitment = optionalRecruitment.get();
+        recruitmentRepository.delete(recruitment);
+        return ApiResponse.ok("채용공고를 성공적으로 삭제하였습니다.");
+    }
 }

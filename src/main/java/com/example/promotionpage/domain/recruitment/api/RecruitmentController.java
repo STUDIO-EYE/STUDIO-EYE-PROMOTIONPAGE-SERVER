@@ -26,7 +26,7 @@ public class RecruitmentController {
     }
 
     @Operation(summary = "채용공고 게시물 조회 API")
-    @GetMapping("/recruitment/id/{id}")
+    @GetMapping("/recruitment/{id}")
     public ApiResponse<Recruitment> retrieveRecruitmentById(@PathVariable Long id) {
         return recruitmentService.retrieveRecruitmentById(id);
     }
@@ -35,6 +35,12 @@ public class RecruitmentController {
     @PutMapping("/recruitment")
     public ApiResponse<Recruitment> updateRecruitment(@RequestBody UpdateRecruitmentRequestDto dto) {
         return recruitmentService.updateRecruitment(dto.toServiceRequest());
+    }
+
+    @Operation(summary = "채용공고 게시물 삭제 API")
+    @DeleteMapping("/recruitment/{id}")
+    public ApiResponse<String> deleteRecruitment(@PathVariable Long id) {
+        return recruitmentService.deleteRecruitment(id);
     }
 
 
