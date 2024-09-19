@@ -72,7 +72,10 @@ public enum ErrorCode {
 	CEO_IS_EMPTY(HttpStatus.BAD_REQUEST, "CEO 정보가 존재하지 않습니다."),
 
 	// Mail
-	EMAIL_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "E-mail 용량이 초과되었습니다.");
+	EMAIL_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "E-mail 용량이 초과되었습니다."),
+
+	// recruitment
+	INVALID_RECRUITMENT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 recruitment 식별자입니다.");
 
 	private final HttpStatus status;
 	private final String message;

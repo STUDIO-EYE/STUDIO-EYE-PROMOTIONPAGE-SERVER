@@ -4,6 +4,7 @@ import com.example.promotionpage.domain.recruitment.dao.RecruitmentRepository;
 import com.example.promotionpage.domain.recruitment.domain.Recruitment;
 import com.example.promotionpage.domain.recruitment.dto.request.CreateRecruitmentServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
+import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class RecruitmentService {
     public ApiResponse<Recruitment> retrieveRecruitmentById(Long id) {
         Optional<Recruitment> optionalRecruitment = recruitmentRepository.findById(id);
         if(optionalRecruitment.isEmpty()) {
-            return ApiResponse.ok("채용공고가 존재하지 않습니다.");
+            return ApiResponse.withError(ErrorCode.INVALID_RECRUITMENT_ID);
         }
         Recruitment recruitment = optionalRecruitment.get();
         return ApiResponse.ok("채용공고를 성공적으로 조회했습니다.", recruitment);
