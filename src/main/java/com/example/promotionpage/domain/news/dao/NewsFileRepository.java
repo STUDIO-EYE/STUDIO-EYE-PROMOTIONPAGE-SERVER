@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NewsFileRepository extends JpaRepository<NewsFile, Long> {
 
+    void deleteAllByNewsId(Long newsId);
 }

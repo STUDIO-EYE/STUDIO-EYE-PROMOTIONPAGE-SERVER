@@ -56,4 +56,10 @@ public class NewsController {
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
         return newsService.updateNews(dto.toServiceRequest(), files);
     }
+
+    @Operation(summary = "id로 News 삭제 API")
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> deleteNews(@PathVariable Long id) {
+        return newsService.deleteNews(id);
+    }
 }
