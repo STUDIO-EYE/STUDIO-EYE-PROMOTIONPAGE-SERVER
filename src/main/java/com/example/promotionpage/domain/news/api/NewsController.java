@@ -62,4 +62,10 @@ public class NewsController {
     public ApiResponse<String> deleteNews(@PathVariable Long id) {
         return newsService.deleteNews(id);
     }
+
+    @Operation(summary = "id로 News 복수 삭제 API")
+    @DeleteMapping("")
+    public ApiResponse<String> deleteNewsList(@RequestBody List<Long> ids) {
+        return newsService.deleteNewsList(ids);
+    }
 }

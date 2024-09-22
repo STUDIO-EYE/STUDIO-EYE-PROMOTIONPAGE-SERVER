@@ -135,4 +135,15 @@ public class NewsService {
         newsFileRepository.deleteAllByNewsId(news.getId());
         return ApiResponse.ok("News를 성공적으로 삭제했습니다.");
     }
+    public ApiResponse<String> deleteNewsList(List<Long> ids) {
+        for(Long id : ids) {
+            Optional<News> optionalNews = newsRepository.findById(id);
+            if (optionalNews.isEmpty()) {
+                return ApiResponse.withError(ErrorCode.INVALID_NEWS_ID);
+            }
+            News news = optionalNews.get();
+            newsRepository.delete(news);
+        }
+        return ApiResponse.ok("News를 성공적으로 삭제했습니다.");
+    }
 }
