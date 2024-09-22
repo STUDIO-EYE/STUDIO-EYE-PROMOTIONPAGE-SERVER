@@ -78,4 +78,50 @@ public class NewsService {
         Pageable pageable = PageRequest.of(page, size);
         return newsRepository.findAll(pageable);
     }
+
+    public ApiResponse<News> updateNews(UpdateNewsServiceRequestDto dto, List<MultipartFile> files) throws IOException {
+        String title = dto.title().trim();
+        String source = dto.source().trim();
+        LocalDate pubDate = dto.pubDate();
+        String content = dto.content().trim();
+        Boolean visibility = dto.visibility();
+
+        Optional<News> optionalNews = newsRepository.findById(dto.id());
+        if(optionalNews.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_NEWS_ID);
+        }
+
+        News news = optionalNews.get();
+        if(!title.isEmpty()) {
+            news.updateTitle(title);
+        }
+        if(!source.isEmpty()) {
+            news.updateSource(source);
+        }
+        if(!(pubDate == null)) {
+            news.updatePubDate(pubDate);
+        }
+        if(!content.isEmpty()) {
+            news.updateContent(content);
+        }
+        if(visibility != null) {
+            news.updateVisibility(visibility);
+        }
+        newsFileRepository.deleteAllByNewsId(optionalNews.get().getId());
+        // 파일 업로드
+        List<NewsFile> newsFiles = new ArrayList<>();
+        if (files != null){
+            for (MultipartFile file : files) {
+//                String s3key = s3Adapter.uploadFile(file);
+                newsFiles.add(NewsFile.builder()
+                        .fileName(file.getOriginalFilename())
+                        .filePath(s3Adapter.uploadFile(file).getData())
+//                        .s3key(s3key)
+                        .news(news)
+                        .build());
+            }
+            newsFileRepository.saveAllAndFlush(newsFiles);
+        }
+        return ApiResponse.ok("News를 성공적으로 수정하였습니다.");
+    }
 }

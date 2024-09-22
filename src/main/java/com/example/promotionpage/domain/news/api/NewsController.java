@@ -49,4 +49,11 @@ public class NewsController {
                                      @RequestParam(defaultValue = "10") int size) {
         return newsService.retrieveNewsPage(page, size);
     }
+
+    @Operation(summary = "News 수정 API")
+    @PutMapping("")
+    public ApiResponse<News> updateNews(@Valid @RequestPart UpdateNewsRequestDto dto,
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+        return newsService.updateNews(dto.toServiceRequest(), files);
+    }
 }
