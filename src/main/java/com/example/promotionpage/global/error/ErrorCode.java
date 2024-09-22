@@ -75,7 +75,11 @@ public enum ErrorCode {
 	EMAIL_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "E-mail 용량이 초과되었습니다."),
 
 	// recruitment
-	INVALID_RECRUITMENT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 recruitment 식별자입니다.");
+	INVALID_RECRUITMENT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 recruitment 식별자입니다."),
+
+	// news
+	NEWS_IS_EMPTY(HttpStatus.BAD_REQUEST, "입력된 내용이 없습니다" ),
+	INVALID_NEWS_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 news 식별자입니다." );
 
 	private final HttpStatus status;
 	private final String message;
