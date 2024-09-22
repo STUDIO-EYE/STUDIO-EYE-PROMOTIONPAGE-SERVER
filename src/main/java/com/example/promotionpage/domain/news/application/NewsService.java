@@ -64,4 +64,13 @@ public class NewsService {
         }
         return ApiResponse.ok("News 목록을 성공적으로 조회했습니다.", newsList);
     }
+
+    public ApiResponse<News> retrieveNewsById(Long id) {
+        Optional<News> optionalNews = newsRepository.findById(id);
+        if(optionalNews.isEmpty()) {
+            return ApiResponse.ok("News가 존재하지 않습니다.");
+        }
+        News news = optionalNews.get();
+        return ApiResponse.ok("News를 성공적으로 조회했습니다.", news);
+    }
 }

@@ -36,4 +36,10 @@ public class NewsController {
     public ApiResponse<List<News>> retrieveAllNews() {
         return newsService.retrieveAllNews();
     }
+
+    @Operation(summary = "id로 News 상세 조회 API")
+    @GetMapping("/{id}")
+    public ApiResponse<News> retrieveNewsById(@PathVariable Long id) {
+        return newsService.retrieveNewsById(id);
+    }
 }
