@@ -30,4 +30,10 @@ public class NewsController {
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files ) throws IOException {
         return newsService.createNews(dto.toServiceNews(), files);
     }
+
+    @Operation(summary = "News 전체 조회 API")
+    @GetMapping("/all")
+    public ApiResponse<List<News>> retrieveAllNews() {
+        return newsService.retrieveAllNews();
+    }
 }

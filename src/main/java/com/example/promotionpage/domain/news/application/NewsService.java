@@ -56,4 +56,12 @@ public class NewsService {
         }
         return ApiResponse.ok("News를 성공적으로 등록하였습니다.");
     }
+
+    public ApiResponse<List<News>> retrieveAllNews() {
+        List<News> newsList = newsRepository.findAll();
+        if(newsList.isEmpty()) {
+            return ApiResponse.ok("News가 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("News 목록을 성공적으로 조회했습니다.", newsList);
+    }
 }
