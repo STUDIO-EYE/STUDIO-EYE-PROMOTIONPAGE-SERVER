@@ -42,4 +42,11 @@ public class NewsController {
     public ApiResponse<News> retrieveNewsById(@PathVariable Long id) {
         return newsService.retrieveNewsById(id);
     }
+
+    @Operation(summary = "News 페이지네이션 조회 API")
+    @GetMapping("/page")
+    public Page<News> retrieveNewsPage(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size) {
+        return newsService.retrieveNewsPage(page, size);
+    }
 }

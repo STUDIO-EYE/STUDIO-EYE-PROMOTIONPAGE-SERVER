@@ -73,4 +73,9 @@ public class NewsService {
         News news = optionalNews.get();
         return ApiResponse.ok("News를 성공적으로 조회했습니다.", news);
     }
+
+    public Page<News> retrieveNewsPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return newsRepository.findAll(pageable);
+    }
 }
