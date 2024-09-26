@@ -40,6 +40,12 @@ public class RecruitmentController {
         return recruitmentService.retrieveRecruitmentById(id);
     }
 
+    @Operation(summary = "최신 채용공고 1개만 조회 API")
+    @GetMapping("/recruitment/recent")
+    public ApiResponse<Recruitment> retrieveRecentRecruitment() {
+        return recruitmentService.retrieveRecentRecruitment();
+    }
+
     @Operation(summary = "채용공고 게시물 수정 API")
     @PutMapping("/recruitment")
     public ApiResponse<Recruitment> updateRecruitment(@RequestBody UpdateRecruitmentRequestDto dto) {
