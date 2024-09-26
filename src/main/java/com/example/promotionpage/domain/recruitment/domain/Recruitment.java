@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,6 +28,9 @@ public class Recruitment {
     @NotNull
     private Boolean status;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
     @NotNull
     @Column(columnDefinition = "TEXT")
     private String qualifications;
@@ -35,12 +40,13 @@ public class Recruitment {
     private String preferential;
 
     @Builder
-    public Recruitment(String title, String period, String qualifications, String preferential) {
+    public Recruitment(String title, String period, Date createdAt, String qualifications, String preferential) {
         this.title = title;
         this.period = period;
         this.qualifications = qualifications;
         this.preferential = preferential;
         this.status = true;
+        this.createdAt = createdAt;
     }
 
     public void update(UpdateRecruitmentServiceRequestDto dto) {
