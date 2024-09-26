@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> {
 
-    @Query("SELECT r.id AS id, r.title AS title FROM Recruitment r")
+    @Query("SELECT r.id AS id, r.title AS title, r.status AS status FROM Recruitment r")
     Page<RecruitmentTitle> findAllRecruitments(Pageable pageable);
 }

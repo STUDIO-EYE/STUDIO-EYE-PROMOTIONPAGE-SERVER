@@ -4,12 +4,16 @@ import com.example.promotionpage.domain.recruitment.domain.Recruitment;
 
 public record CreateRecruitmentServiceRequestDto(
         String title,
-        String content
+        String period,
+        String qualifications,
+        String preferential
 ) {
     public Recruitment toEntity() {
         return Recruitment.builder()
                 .title(title)
-                .content(content)
+                .period(period)
+                .qualifications(qualifications)
+                .preferential(preferential)
                 .build();
     }
 }

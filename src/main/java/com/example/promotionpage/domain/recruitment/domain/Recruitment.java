@@ -21,17 +21,32 @@ public class Recruitment {
     private String title;
 
     @NotNull
+    private String period;
+
+    @NotNull
+    private Boolean status;
+
+    @NotNull
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String qualifications;
+
+    @NotNull
+    @Column(columnDefinition = "TEXT")
+    private String preferential;
 
     @Builder
-    public Recruitment(String title, String content) {
+    public Recruitment(String title, String period, String qualifications, String preferential) {
         this.title = title;
-        this.content = content;
+        this.period = period;
+        this.qualifications = qualifications;
+        this.preferential = preferential;
+        this.status = true;
     }
 
     public void update(UpdateRecruitmentServiceRequestDto dto) {
         this.title = dto.title();
-        this.content = dto.content();
+        this.period = dto.period();
+        this.qualifications = dto.qualifications();
+        this.preferential = dto.preferential();
     }
 }
