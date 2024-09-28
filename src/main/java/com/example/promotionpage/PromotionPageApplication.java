@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EnableFeignClients
-@EnableJpaAuditing
 public class PromotionPageApplication {
 
 	public static void main(String[] args) {
