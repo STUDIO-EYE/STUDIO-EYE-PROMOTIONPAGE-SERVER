@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,5 +33,13 @@ public class BenefitService {
         Benefit benefit = dto.toEntity(imageUrl, imageFileName);
         Benefit savedBenefit = benefitRepository.save(benefit);
         return ApiResponse.ok("혜택 정보를 성공적으로 등록하였습니다.", savedBenefit);
+    }
+
+    public ApiResponse<List<Benefit>> retrieveBenefit() {
+        List<Benefit> benefits = benefitRepository.findAll();
+        if(benefits.isEmpty()) {
+            return ApiResponse.ok("혜택 정보가 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("혜택 정보를 성공적으로 조회했습니다.", benefits);
     }
 }

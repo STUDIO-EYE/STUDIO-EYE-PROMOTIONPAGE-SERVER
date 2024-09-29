@@ -8,11 +8,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "혜택 정보 API", description = "혜택 정보 등록 / 수정 / 삭제 / 조회")
 @RestController
@@ -26,5 +25,11 @@ public class BenefitController {
     public ApiResponse<Benefit> createBenefit(@Valid @RequestPart("request") CreateBenefitRequestDto dto,
                                               @RequestPart(value = "file", required = false) MultipartFile file){
         return benefitService.createBenefit(dto.toServiceRequest(), file);
+    }
+
+    @Operation(summary = "혜택 정보 조회 API")
+    @GetMapping("/benefit")
+    public ApiResponse<List<Benefit>> retrieveBenefit() {
+        return benefitService.retrieveBenefit();
     }
 }
