@@ -22,4 +22,10 @@ public class MenuController {
     public ApiResponse<List<Menu>> retrieveAllMenu(){
         return menuService.retrieveAllMenu();
     }
+
+    @Operation(summary = "PP용 메뉴 제목 목록 조회 API")
+    @GetMapping("/menu")
+    public ApiResponse<List<String>> retrieveMenu() {
+        return menuService.retrieveMenu();
+    }
 }

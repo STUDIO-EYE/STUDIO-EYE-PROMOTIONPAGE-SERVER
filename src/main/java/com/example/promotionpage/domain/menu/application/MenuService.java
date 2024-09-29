@@ -21,4 +21,12 @@ public class MenuService {
         }
         return ApiResponse.ok("메뉴 목록을 성공적으로 조회했습니다.", menuList);
     }
+
+    public ApiResponse<List<String>> retrieveMenu() {
+        List<String> menuTitleList = menuRepository.findTitleByVisibilityTrue();
+        if(menuTitleList.isEmpty()) {
+            return ApiResponse.ok("공개된 메뉴가 존재하지 않습니다.");
+        }
+        return ApiResponse.ok("공개된 메뉴 목록을 성공적으로 조회했습니다.", menuTitleList);
+    }
 }
