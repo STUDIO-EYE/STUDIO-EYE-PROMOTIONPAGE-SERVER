@@ -1,5 +1,6 @@
 package com.example.promotionpage.domain.menu.domain;
 
+import com.example.promotionpage.domain.menu.dto.request.UpdateMenuServiceRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,4 +20,9 @@ public class Menu {
     private String title;
 
     private Boolean visibility;
+
+    public void update(UpdateMenuServiceRequestDto dto) {
+        title = dto.title();
+        visibility = dto.visibility();
+    }
 }

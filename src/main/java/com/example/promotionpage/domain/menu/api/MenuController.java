@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.menu.api;
 
 import com.example.promotionpage.domain.menu.application.MenuService;
 import com.example.promotionpage.domain.menu.domain.Menu;
+import com.example.promotionpage.domain.menu.dto.request.UpdateMenuRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,5 +28,11 @@ public class MenuController {
     @GetMapping("/menu")
     public ApiResponse<List<String>> retrieveMenu() {
         return menuService.retrieveMenu();
+    }
+
+    @Operation(summary = "PA용 메뉴 수정 API")
+    @PutMapping("/menu")
+    public ApiResponse<Menu> updateMenu(@RequestBody UpdateMenuRequestDto dto) {
+        return menuService.updateMenu(dto.toServiceRequest());
     }
 }
