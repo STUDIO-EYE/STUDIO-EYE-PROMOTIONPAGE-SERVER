@@ -50,4 +50,17 @@ public class MenuService {
         Menu updatedMenu = menuRepository.save(menu);
         return ApiResponse.ok("메뉴를 성공적으로 수정했습니다.", updatedMenu);
     }
+
+
+    public ApiResponse<Menu> deleteMenu(Long id) {
+        Optional<Menu> optionalMenu = menuRepository.findById(id);
+        if(optionalMenu.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_MENU_ID);
+        }
+
+        Menu menu = optionalMenu.get();
+        menuRepository.delete(menu);
+
+        return ApiResponse.ok("메뉴를 성공적으로 삭제했습니다.");
+    }
 }

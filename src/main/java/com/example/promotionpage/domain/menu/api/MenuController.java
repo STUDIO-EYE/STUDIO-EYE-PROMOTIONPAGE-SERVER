@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "메뉴 관리 API", description = "메뉴 수정 / 조회")
+@Tag(name = "메뉴 관리 API", description = "메뉴 등록 / 수정 / 삭제 / 등록")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -41,5 +41,11 @@ public class MenuController {
     @PutMapping("/menu")
     public ApiResponse<Menu> updateMenu(@RequestBody UpdateMenuRequestDto dto) {
         return menuService.updateMenu(dto.toServiceRequest());
+    }
+
+    @Operation(summary = "PA용 메뉴 삭제 API")
+    @DeleteMapping("/menu/{id}")
+    public ApiResponse<Menu> deleteMenu(@PathVariable Long id) {
+        return menuService.deleteMenu(id);
     }
 }
