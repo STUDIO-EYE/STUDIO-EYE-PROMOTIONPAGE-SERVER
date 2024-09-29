@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -41,5 +42,17 @@ public class BenefitService {
             return ApiResponse.ok("혜택 정보가 존재하지 않습니다.");
         }
         return ApiResponse.ok("혜택 정보를 성공적으로 조회했습니다.", benefits);
+    }
+
+    public ApiResponse<String> deleteBenefit(Long benefitId) {
+        Optional<Benefit> optionalBenefit = benefitRepository.findById(benefitId);
+        if(optionalBenefit.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_BENEFIT_ID);
+        }
+        Benefit benefit = optionalBenefit.get();
+        String imageFileName = benefit.getImageFileName();
+        s3Adapter.deleteFile(imageFileName);
+        benefitRepository.delete(benefit);
+        return ApiResponse.ok("혜택 정보를 성공적으로 삭제했습니다.");
     }
 }

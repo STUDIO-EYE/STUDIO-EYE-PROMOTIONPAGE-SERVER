@@ -32,4 +32,10 @@ public class BenefitController {
     public ApiResponse<List<Benefit>> retrieveBenefit() {
         return benefitService.retrieveBenefit();
     }
+
+    @Operation(summary = "혜택 정보 삭제 API")
+    @DeleteMapping("/benefit/{benefitId}")
+    public ApiResponse<String> deleteBenefit(@PathVariable Long benefitId) {
+        return benefitService.deleteBenefit(benefitId);
+    }
 }
