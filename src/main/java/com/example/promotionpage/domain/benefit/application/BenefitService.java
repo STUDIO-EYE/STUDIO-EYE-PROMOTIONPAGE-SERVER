@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +22,11 @@ public class BenefitService {
     private final BenefitRepository benefitRepository;
     private final S3Adapter s3Adapter;
 
-    public ApiResponse<Benefit> createBenefit(CreateBenefitServiceRequestDto dto, MultipartFile file) {
+    public ApiResponse<Benefit> createBenefit(CreateBenefitServiceRequestDto dto, MultipartFile file) throws IOException {
         if(file.isEmpty()) {
             return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
         }
-        ApiResponse<String> updateFileResponse = s3Adapter.uploadImage(file);
+        ApiResponse<String> updateFileResponse = s3Adapter.uploadFile(file);
         if (updateFileResponse.getStatus().is5xxServerError()) {
             return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
         }

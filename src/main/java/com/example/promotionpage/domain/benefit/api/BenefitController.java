@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "혜택 정보 API", description = "혜택 정보 등록 / 수정 / 삭제 / 조회")
@@ -23,7 +24,7 @@ public class BenefitController {
     @Operation(summary = "혜택 정보 등록 API")
     @PostMapping("/benefit")
     public ApiResponse<Benefit> createBenefit(@Valid @RequestPart("request") CreateBenefitRequestDto dto,
-                                              @RequestPart(value = "file", required = false) MultipartFile file){
+                                              @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         return benefitService.createBenefit(dto.toServiceRequest(), file);
     }
 
