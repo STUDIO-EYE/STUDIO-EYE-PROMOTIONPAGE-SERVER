@@ -26,7 +26,7 @@ public class RecruitmentService {
     private final RecruitmentRepository recruitmentRepository;
     public ApiResponse<Recruitment> createRecruitment(CreateRecruitmentServiceRequestDto dto) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-        Recruitment recruitment = dto.toEntity(new Date());
+        Recruitment recruitment = dto.toEntity(new Date(), calculateStatus(dto.startDate(), dto.deadline()));
 
         Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
 
@@ -52,7 +52,6 @@ public class RecruitmentService {
         Optional<Recruitment> optionalRecruitment = recruitmentRepository.findTopByOrderByCreatedAtDesc();
         if(optionalRecruitment.isEmpty()) {
             return ApiResponse.ok(ErrorCode.RECRUITMENT_IS_EMPTY.getMessage());
-//            return ApiResponse.withError(ErrorCode.INVALID_RECRUITMENT_ID);
         }
         Recruitment recruitment = optionalRecruitment.get();
         return ApiResponse.ok("가장 최근 채용공고를 성공적으로 조회했습니다.", recruitment);
@@ -64,7 +63,7 @@ public class RecruitmentService {
             return ApiResponse.withError(ErrorCode.INVALID_RECRUITMENT_ID);
         }
         Recruitment recruitment = optionalRecruitment.get();
-        recruitment.update(dto, true);
+        recruitment.update(dto, calculateStatus(dto.startDate(), dto.deadline()));
         Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
         return ApiResponse.ok("채용공고 게시물을 성공적으로 수정했습니다.", savedRecruitment);
     }
@@ -77,5 +76,11 @@ public class RecruitmentService {
         Recruitment recruitment = optionalRecruitment.get();
         recruitmentRepository.delete(recruitment);
         return ApiResponse.ok("채용공고를 성공적으로 삭제하였습니다.");
+    }
+
+    private Boolean calculateStatus(Date startDate, Date deadline) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+        Date now = new Date();
+        return now.compareTo(startDate) >= 0 && now.compareTo(deadline) <= 0;
     }
 }

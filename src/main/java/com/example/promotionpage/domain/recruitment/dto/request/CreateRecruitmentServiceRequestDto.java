@@ -12,7 +12,7 @@ public record CreateRecruitmentServiceRequestDto(
         String preferential,
         String link
 ) {
-    public Recruitment toEntity(Date date) {
+    public Recruitment toEntity(Date date, Boolean status) {
         return Recruitment.builder()
                 .title(title)
                 .startDate(startDate)
@@ -21,6 +21,7 @@ public record CreateRecruitmentServiceRequestDto(
                 .preferential(preferential)
                 .link(link)
                 .createdAt(date)
+                .status(status)
                 .build();
     }
 }
