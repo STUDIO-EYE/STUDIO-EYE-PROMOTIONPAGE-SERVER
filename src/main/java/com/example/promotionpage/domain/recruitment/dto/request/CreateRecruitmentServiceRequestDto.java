@@ -6,16 +6,20 @@ import java.util.Date;
 
 public record CreateRecruitmentServiceRequestDto(
         String title,
-        String period,
+        Date startDate,
+        Date deadline,
         String qualifications,
-        String preferential
+        String preferential,
+        String link
 ) {
     public Recruitment toEntity(Date date) {
         return Recruitment.builder()
                 .title(title)
-                .period(period)
+                .startDate(startDate)
+                .deadline(deadline)
                 .qualifications(qualifications)
                 .preferential(preferential)
+                .link(link)
                 .createdAt(date)
                 .build();
     }

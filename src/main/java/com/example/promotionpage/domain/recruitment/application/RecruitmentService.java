@@ -64,7 +64,7 @@ public class RecruitmentService {
             return ApiResponse.withError(ErrorCode.INVALID_RECRUITMENT_ID);
         }
         Recruitment recruitment = optionalRecruitment.get();
-        recruitment.update(dto);
+        recruitment.update(dto, true);
         Recruitment savedRecruitment = recruitmentRepository.save(recruitment);
         return ApiResponse.ok("채용공고 게시물을 성공적으로 수정했습니다.", savedRecruitment);
     }
