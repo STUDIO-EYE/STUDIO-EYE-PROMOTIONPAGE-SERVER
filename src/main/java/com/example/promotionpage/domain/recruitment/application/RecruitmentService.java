@@ -11,10 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -82,5 +84,14 @@ public class RecruitmentService {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         Date now = new Date();
         return now.compareTo(startDate) >= 0 && now.compareTo(deadline) <= 0;
+    }
+
+    @Scheduled(cron = "00 36 20 * * *")
+    public void autoUpdate() {
+        List<Recruitment> recruitmentList = recruitmentRepository.findByStatusTrue();
+        for(Recruitment recruitment : recruitmentList) {
+            recruitment.setStatus(calculateStatus(recruitment.getStartDate(), recruitment.getDeadline()));
+            recruitmentRepository.save(recruitment);
+        }
     }
 }
