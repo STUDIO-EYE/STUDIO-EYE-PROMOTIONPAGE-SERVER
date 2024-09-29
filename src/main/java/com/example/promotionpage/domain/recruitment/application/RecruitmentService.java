@@ -86,7 +86,7 @@ public class RecruitmentService {
         return now.compareTo(startDate) >= 0 && now.compareTo(deadline) <= 0;
     }
 
-    @Scheduled(cron = "00 36 20 * * *")
+    @Scheduled(cron = "0 0 0 * * *") // 자정
     public void autoUpdate() {
         List<Recruitment> recruitmentList = recruitmentRepository.findByStatusTrue();
         for(Recruitment recruitment : recruitmentList) {
