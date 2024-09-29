@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,5 +25,11 @@ public class Menu {
     public void update(UpdateMenuServiceRequestDto dto) {
         title = dto.title();
         visibility = dto.visibility();
+    }
+
+    @Builder
+    public Menu(String title, Boolean visibility) {
+        this.title = title;
+        this.visibility = visibility;
     }
 }

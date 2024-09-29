@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.menu.api;
 
 import com.example.promotionpage.domain.menu.application.MenuService;
 import com.example.promotionpage.domain.menu.domain.Menu;
+import com.example.promotionpage.domain.menu.dto.request.CreateMenuRequestDto;
 import com.example.promotionpage.domain.menu.dto.request.UpdateMenuRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuController {
     private final MenuService menuService;
+
+    @Operation(summary = "PA용 메뉴 생성 API")
+    @PostMapping("/menu")
+    public ApiResponse<Menu> createMenu(@RequestBody CreateMenuRequestDto dto) {
+        return menuService.createMenu(dto.toServiceRequest());
+    }
 
     @Operation(summary = "PA용 메뉴 전체 조회 API")
     @GetMapping("/menu/all")

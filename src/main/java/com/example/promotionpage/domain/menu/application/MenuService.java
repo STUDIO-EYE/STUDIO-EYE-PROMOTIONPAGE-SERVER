@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.menu.application;
 
 import com.example.promotionpage.domain.menu.dao.MenuRepository;
 import com.example.promotionpage.domain.menu.domain.Menu;
+import com.example.promotionpage.domain.menu.dto.request.CreateMenuServiceRequestDto;
 import com.example.promotionpage.domain.menu.dto.request.UpdateMenuServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -17,6 +18,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MenuService {
     private final MenuRepository menuRepository;
+
+    public ApiResponse<Menu> createMenu(CreateMenuServiceRequestDto dto) {
+        Menu menu = dto.toEntity();
+        Menu savedMenu = menuRepository.save(menu);
+        return ApiResponse.ok("메뉴를 성공적으로 등록하였습니다.", savedMenu);
+    }
     public ApiResponse<List<Menu>> retrieveAllMenu() {
         List<Menu> menuList = menuRepository.findAll();
         if(menuList.isEmpty()) {
