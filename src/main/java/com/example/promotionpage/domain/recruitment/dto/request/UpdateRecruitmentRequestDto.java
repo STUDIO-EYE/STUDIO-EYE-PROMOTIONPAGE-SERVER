@@ -20,7 +20,7 @@ public record UpdateRecruitmentRequestDto(
 
         @Schema(description = "마감일, 빈 값/공백/null 을 허용하지 않습니다.")
         @NotBlank(message = "마감일은 필수 값입니다.")
-        Date deadlind,
+        Date deadline,
 
         @Schema(description = "자격요건, 빈 값/공백/null 을 허용하지 않습니다.")
         @NotBlank(message = "자격요건은 필수 값입니다.")
@@ -36,6 +36,6 @@ public record UpdateRecruitmentRequestDto(
 ) {
     public UpdateRecruitmentServiceRequestDto toServiceRequest() {
         return new UpdateRecruitmentServiceRequestDto(
-                id, title, startDate, deadlind, qualifications, preferential, link);
+                id, title, startDate, deadline, link);
     }
 }

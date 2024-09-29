@@ -7,8 +7,6 @@ public record UpdateRecruitmentServiceRequestDto(
         String title,
         Date startDate,
         Date deadline,
-        String qualifications,
-        String preferential,
         String link
 ) {
 }

@@ -8,8 +8,6 @@ public record CreateRecruitmentServiceRequestDto(
         String title,
         Date startDate,
         Date deadline,
-        String qualifications,
-        String preferential,
         String link
 ) {
     public Recruitment toEntity(Date date, Boolean status) {
@@ -17,8 +15,6 @@ public record CreateRecruitmentServiceRequestDto(
                 .title(title)
                 .startDate(startDate)
                 .deadline(deadline)
-                .qualifications(qualifications)
-                .preferential(preferential)
                 .link(link)
                 .createdAt(date)
                 .status(status)

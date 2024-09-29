@@ -17,15 +17,7 @@ public record CreateRecruitmentRequestDto(
 
         @Schema(description = "마감일, 빈 값/공백/null 을 허용하지 않습니다.")
         @NotBlank(message = "마감일은 필수 값입니다.")
-        Date deadlind,
-
-        @Schema(description = "자격요건, 빈 값/공백/null 을 허용하지 않습니다.")
-        @NotBlank(message = "자격요건은 필수 값입니다.")
-        String qualifications,
-
-        @Schema(description = "우대요건, 빈 값/공백/null 을 허용하지 않습니다.")
-        @NotBlank(message = "우대요건은 필수 값입니다.")
-        String preferential,
+        Date deadline,
 
         @Schema(description = "타사이트 링크, 빈 값/공백/null 을 허용하지 않습니다.")
         @NotBlank(message = "타사이트 링크는 필수 값입니다.")
@@ -34,6 +26,6 @@ public record CreateRecruitmentRequestDto(
 ) {
     public CreateRecruitmentServiceRequestDto toServiceRequest() {
         return new CreateRecruitmentServiceRequestDto(
-                title, startDate, deadlind, qualifications, preferential, link);
+                title, startDate, deadline, link);
     }
 }
