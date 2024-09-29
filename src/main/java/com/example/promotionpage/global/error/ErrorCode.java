@@ -82,7 +82,11 @@ public enum ErrorCode {
 	NEWS_IS_EMPTY(HttpStatus.BAD_REQUEST, "입력된 내용이 없습니다" ),
 	INVALID_NEWS_ID(HttpStatus.BAD_REQUEST,"유효하지 않은 news 식별자입니다." ),
 
-	INVALID_BENEFIT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 benefit 식별자입니다.");
+	// benefit
+	INVALID_BENEFIT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 benefit 식별자입니다."),
+
+	// menu
+	INVALID_MENU_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 menu 식별자입니다.");
 
 	private final HttpStatus status;
 	private final String message;
