@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.benefit.application;
 import com.example.promotionpage.domain.benefit.dao.BenefitRepository;
 import com.example.promotionpage.domain.benefit.domain.Benefit;
 import com.example.promotionpage.domain.benefit.dto.request.CreateBenefitServiceRequestDto;
+import com.example.promotionpage.domain.benefit.dto.request.UpdateBenefitServiceRequestDto;
 import com.example.promotionpage.global.adapter.S3Adapter;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -43,6 +44,27 @@ public class BenefitService {
             return ApiResponse.ok("혜택 정보가 존재하지 않습니다.");
         }
         return ApiResponse.ok("혜택 정보를 성공적으로 조회했습니다.", benefits);
+    }
+
+    public ApiResponse<Benefit> updateBenefit(UpdateBenefitServiceRequestDto dto, MultipartFile file) throws IOException {
+        Optional<Benefit> optionalBenefit = benefitRepository.findById(dto.id());
+        if(optionalBenefit.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_BENEFIT_ID);
+        }
+        Benefit benefit = optionalBenefit.get();
+        if(!file.isEmpty()) {
+            s3Adapter.deleteFile(benefit.getImageFileName());
+            ApiResponse<String> updateFileResponse = s3Adapter.uploadFile(file);
+            if (updateFileResponse.getStatus().is5xxServerError()) {
+                return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            }
+            benefit.setImageUrl(updateFileResponse.getData());
+            benefit.setImageFileName(file.getOriginalFilename());
+        }
+        benefit.setTitle(dto.title());
+        benefit.setContent(dto.content());
+        Benefit savedBenefit = benefitRepository.save(benefit);
+        return ApiResponse.ok("혜택 정보를 성공적으로 수정했습니다.", savedBenefit);
     }
 
     public ApiResponse<String> deleteBenefit(Long benefitId) {

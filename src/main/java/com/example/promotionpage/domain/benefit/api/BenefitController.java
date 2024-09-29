@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.benefit.api;
 import com.example.promotionpage.domain.benefit.application.BenefitService;
 import com.example.promotionpage.domain.benefit.domain.Benefit;
 import com.example.promotionpage.domain.benefit.dto.request.CreateBenefitRequestDto;
+import com.example.promotionpage.domain.benefit.dto.request.UpdateBenefitRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +33,13 @@ public class BenefitController {
     @GetMapping("/benefit")
     public ApiResponse<List<Benefit>> retrieveBenefit() {
         return benefitService.retrieveBenefit();
+    }
+
+    @Operation(summary = "혜택 정보 수정 API")
+    @PutMapping("/benefit")
+    public ApiResponse<Benefit> updateBenefit(@Valid @RequestPart("request") UpdateBenefitRequestDto dto,
+                                              @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        return benefitService.updateBenefit(dto.toServiceRequest(), file);
     }
 
     @Operation(summary = "혜택 정보 삭제 API")
