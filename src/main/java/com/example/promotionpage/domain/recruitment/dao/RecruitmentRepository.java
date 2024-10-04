@@ -16,6 +16,6 @@ public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> 
 
     Optional<Recruitment> findTopByOrderByCreatedAtDesc();
 
-    @Query("SELECT r FROM Recruitment r WHERE r.status = true")
-    List<Recruitment> findByStatusTrue();
+    @Query("SELECT r FROM Recruitment r WHERE r.status = 'PREPARING' OR r.status = 'OPEN'")
+    List<Recruitment> findByStatusNotClose();
 }

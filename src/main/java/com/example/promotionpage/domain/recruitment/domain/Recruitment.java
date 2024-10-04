@@ -28,8 +28,11 @@ public class Recruitment {
     @NotNull
     private Date deadline;
 
-    @NotNull
-    private Boolean status;
+//    @NotNull
+//    private Boolean status;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -38,7 +41,7 @@ public class Recruitment {
     private String link;
 
     @Builder
-    public Recruitment(String title, Date startDate, Date deadline, String link, Date createdAt, Boolean status) {
+    public Recruitment(String title, Date startDate, Date deadline, String link, Date createdAt, Status status) {
         this.title = title;
         this.startDate = startDate;
         this.deadline = deadline;
@@ -47,10 +50,10 @@ public class Recruitment {
         this.status = status;
     }
 
-    public void update(UpdateRecruitmentServiceRequestDto dto, Boolean status) {
+    public void update(UpdateRecruitmentServiceRequestDto dto, Status status) {
         this.title = dto.title();
-        this.startDate = dto.startDate();;
-        this.deadline = dto.deadline();;
+        this.startDate = dto.startDate();
+        this.deadline = dto.deadline();
         this.link = dto.link();
         this.status = status;
     }
