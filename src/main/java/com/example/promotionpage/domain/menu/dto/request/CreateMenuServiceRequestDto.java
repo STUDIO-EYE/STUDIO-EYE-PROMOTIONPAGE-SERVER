@@ -1,15 +1,17 @@
 package com.example.promotionpage.domain.menu.dto.request;
 
 import com.example.promotionpage.domain.menu.domain.Menu;
+import com.example.promotionpage.domain.menu.domain.MenuTitle;
 
 public record CreateMenuServiceRequestDto(
-        String title,
+        MenuTitle menuTitle,
         Boolean visibility
 ) {
-    public Menu toEntity() {
+    public Menu toEntity(int totalCount) {
         return Menu.builder()
-                .title(title)
+                .menuTitle(menuTitle)
                 .visibility(visibility)
+                .sequence(totalCount)
                 .build();
     }
 }
