@@ -2,10 +2,10 @@ package com.example.promotionpage.domain.menu.dto.request;
 
 public record UpdateMenuRequestDto(
         Long id,
-        String title,
-        Boolean visibility
+        Boolean visibility,
+        Integer sequence
 ) {
-    public UpdateMenuServiceRequestDto toServiceRequest() {
-        return new UpdateMenuServiceRequestDto(id, title, visibility);
-    }
+//    public UpdateMenuServiceRequestDto toServiceRequest() {
+//        return new UpdateMenuServiceRequestDto(id, visibility, order);
+//    }
 }
