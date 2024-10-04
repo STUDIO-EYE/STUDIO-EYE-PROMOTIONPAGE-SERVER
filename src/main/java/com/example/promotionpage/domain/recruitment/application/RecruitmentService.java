@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.recruitment.application;
 import com.example.promotionpage.domain.recruitment.dao.RecruitmentRepository;
 import com.example.promotionpage.domain.recruitment.dao.RecruitmentTitle;
 import com.example.promotionpage.domain.recruitment.domain.Recruitment;
+import com.example.promotionpage.domain.recruitment.domain.Status;
 import com.example.promotionpage.domain.recruitment.dto.request.CreateRecruitmentServiceRequestDto;
 import com.example.promotionpage.domain.recruitment.dto.request.UpdateRecruitmentServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
@@ -80,15 +81,18 @@ public class RecruitmentService {
         return ApiResponse.ok("채용공고를 성공적으로 삭제하였습니다.");
     }
 
-    private Boolean calculateStatus(Date startDate, Date deadline) {
+    private Status calculateStatus(Date startDate, Date deadline) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         Date now = new Date();
-        return now.compareTo(startDate) >= 0 && now.compareTo(deadline) <= 0;
+//        return now.compareTo(startDate) >= 0 && now.compareTo(deadline) <= 0;
+        if(now.compareTo(startDate) < 0) return Status.PREPARING;
+        if(now.compareTo(startDate) >= 0 && now.compareTo(deadline) <= 0) return Status.OPEN;
+        return Status.CLOSE;
     }
 
     @Scheduled(cron = "0 0 0 * * *") // 자정
     public void autoUpdate() {
-        List<Recruitment> recruitmentList = recruitmentRepository.findByStatusTrue();
+        List<Recruitment> recruitmentList = recruitmentRepository.findByStatusNotClose();
         for(Recruitment recruitment : recruitmentList) {
             recruitment.setStatus(calculateStatus(recruitment.getStartDate(), recruitment.getDeadline()));
             recruitmentRepository.save(recruitment);
