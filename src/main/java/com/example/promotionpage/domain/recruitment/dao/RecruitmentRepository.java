@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> {
 
-    @Query("SELECT r.id AS id, r.title AS title, r.status AS status FROM Recruitment r")
+    @Query("SELECT r.id AS id, r.title AS title, r.status AS status FROM Recruitment r  ORDER BY r.deadline ASC")
     Page<RecruitmentTitle> findAllRecruitments(Pageable pageable);
 
     Optional<Recruitment> findTopByOrderByCreatedAtDesc();
