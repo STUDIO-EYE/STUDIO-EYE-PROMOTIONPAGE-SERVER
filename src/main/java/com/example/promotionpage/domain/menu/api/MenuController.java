@@ -2,6 +2,7 @@ package com.example.promotionpage.domain.menu.api;
 
 import com.example.promotionpage.domain.menu.application.MenuService;
 import com.example.promotionpage.domain.menu.domain.Menu;
+import com.example.promotionpage.domain.menu.domain.MenuTitle;
 import com.example.promotionpage.domain.menu.dto.request.CreateMenuRequestDto;
 import com.example.promotionpage.domain.menu.dto.request.UpdateMenuRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
@@ -19,7 +20,7 @@ import java.util.List;
 public class MenuController {
     private final MenuService menuService;
 
-    @Operation(summary = "PA용 메뉴 생성 API")
+    @Operation(summary = "PA용 메뉴 생성 API", description = "menuTitle은 MAIN, ABOUT, ARTWORK, FAQ, CONTACT, NEWS, RECRUITMENT 중에서 입력")
     @PostMapping("/menu")
     public ApiResponse<Menu> createMenu(@RequestBody CreateMenuRequestDto dto) {
         return menuService.createMenu(dto.toServiceRequest());
@@ -33,14 +34,20 @@ public class MenuController {
 
     @Operation(summary = "PP용 메뉴 제목 목록 조회 API")
     @GetMapping("/menu")
-    public ApiResponse<List<String>> retrieveMenu() {
+    public ApiResponse<List<MenuTitle>> retrieveMenu() {
         return menuService.retrieveMenu();
     }
 
+//    @Operation(summary = "PA용 메뉴 수정 API")
+//    @PutMapping("/menu")
+//    public ApiResponse<Menu> updateMenu(@RequestBody UpdateMenuRequestDto dto) {
+//        return menuService.updateMenu(dto.toServiceRequest());
+//    }
+
     @Operation(summary = "PA용 메뉴 수정 API")
     @PutMapping("/menu")
-    public ApiResponse<Menu> updateMenu(@RequestBody UpdateMenuRequestDto dto) {
-        return menuService.updateMenu(dto.toServiceRequest());
+    public ApiResponse<List<Menu>> updateMenu(@RequestBody List<UpdateMenuRequestDto> dtos) {
+        return menuService.updateMenu(dtos);
     }
 
     @Operation(summary = "PA용 메뉴 삭제 API")
