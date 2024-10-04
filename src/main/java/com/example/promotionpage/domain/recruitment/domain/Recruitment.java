@@ -23,9 +23,11 @@ public class Recruitment {
     private String title;
 
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
 
 //    @NotNull
