@@ -39,4 +39,15 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
                                                                         @Param("startMonth") Integer startMonth,
                                                                         @Param("endYear") Integer endYear,
                                                                         @Param("endMonth") Integer endMonth);
+    // 기간 중 state별 request 수
+    @Query("SELECT r.year AS year, r.month AS month, r.state AS state, COUNT(r) AS requestCount " +
+            "FROM Request r " +
+            "WHERE (r.year > :startYear OR (r.year = :startYear AND r.month >= :startMonth)) " +
+            "AND (r.year < :endYear OR (r.year = :endYear AND r.month <= :endMonth)) " +
+            "GROUP BY r.year, r.month, r.state")
+    List<RequestStateCount> findStateReqNumByYearAndMonthBetween(@Param("startYear") Integer startYear,
+                                                                 @Param("startMonth") Integer startMonth,
+                                                                 @Param("endYear") Integer endYear,
+                                                                 @Param("endMonth") Integer endMonth);
+
 }
