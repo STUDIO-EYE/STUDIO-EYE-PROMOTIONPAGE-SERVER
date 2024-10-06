@@ -67,6 +67,18 @@ public class BenefitService {
         return ApiResponse.ok("혜택 정보를 성공적으로 수정했습니다.", savedBenefit);
     }
 
+    public ApiResponse<Benefit> updateBenefitText(UpdateBenefitServiceRequestDto dto) {
+        Optional<Benefit> optionalBenefit = benefitRepository.findById(dto.id());
+        if(optionalBenefit.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.INVALID_BENEFIT_ID);
+        }
+        Benefit benefit = optionalBenefit.get();
+        benefit.setTitle(dto.title());
+        benefit.setContent(dto.content());
+        Benefit savedBenefit = benefitRepository.save(benefit);
+        return ApiResponse.ok("혜택 텍스트 정보를 성공적으로 수정했습니다.", savedBenefit);
+    }
+
     public ApiResponse<String> deleteBenefit(Long benefitId) {
         Optional<Benefit> optionalBenefit = benefitRepository.findById(benefitId);
         if(optionalBenefit.isEmpty()) {

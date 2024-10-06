@@ -45,7 +45,7 @@ public class CeoController {
         return ceoService.updateCeoTextInformation(dto.toServiceRequest());
     }
 
-    @Operation(summary = "CEO 텍스트(이미지 제외) 정보 수정 API")
+    @Operation(summary = "CEO 이미지 정보 수정 API")
     @PutMapping("/ceo/image")
     public ApiResponse<Ceo> updateCeoImageInformation(@RequestPart(value = "file", required = false) MultipartFile file) {
         return ceoService.updateCeoImageInformation(file);
