@@ -54,7 +54,7 @@ public class ViewsService {
             return ApiResponse.withError(ErrorCode.INVALID_PERIOD_FORMAT);
         }
         // 2~12달로 제한 걸기
-        Integer months = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
+        int months = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
         if(months < 2 || months > 12) {
             return ApiResponse.withError(ErrorCode.INVALID_VIEWS_PERIOD);
         }
