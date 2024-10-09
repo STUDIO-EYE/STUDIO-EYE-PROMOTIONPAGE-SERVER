@@ -37,14 +37,6 @@ public class Views {
 	private Date createdAt;
 
 	@Builder
-	public Views(Integer year, Integer month, Long views, Date createdAt) {
-		this.year = year;
-		this.month = month;
-		this.views = views;
-		this.createdAt = createdAt;
-	}
-
-	@Builder
 	public Views(Integer year, Integer month, Long views, MenuTitle menu, ArtworkCategory category, Date createdAt) {
 		this.year = year;
 		this.month = month;
@@ -53,6 +45,14 @@ public class Views {
 		this.category = category;
 		this.createdAt = createdAt;
 	}
+
+//	@Builder
+//	public Views(Integer year, Integer month, Long views, Date createdAt) {
+//		this.year = year;
+//		this.month = month;
+//		this.views = views;
+//		this.createdAt = createdAt;
+//	}
 
 	public void updateViews(Long views) {
 		this.views = views;

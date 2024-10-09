@@ -1,5 +1,7 @@
 package com.example.promotionpage.domain.views.application;
 
+import com.example.promotionpage.domain.menu.domain.MenuTitle;
+import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import com.example.promotionpage.domain.views.dao.ViewsRepository;
 import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceDto;
@@ -84,8 +86,17 @@ public class ViewsService {
 
                 // 해당 연도와 월에 대한 데이터가 존재하지 않는 경우, 0으로 데이터 추가
                 if (!found) {
+                    //TODO 수정 필요
                     // 데이터를 삽입한 후에는 인덱스를 증가시킴
-                    viewsList.add(index, new Views(year, month, 0L, new Date()));
+//                    viewsList.add(index, new Views(year, month, 0L, new Date()));
+                    viewsList.add(index, Views.builder()
+                                    .year(year)
+                                    .month(month)
+                                    .views(0L)
+                                    .menu(MenuTitle.ABOUT)
+                                    .category(ArtworkCategory.NULL)
+                                    .createdAt(new Date())
+                            .build());
                 }
             }
         }
@@ -133,7 +144,9 @@ public class ViewsService {
         Optional<Views> optionalViews = viewsRepository.findByYearAndMonth(year, month);
         if(optionalViews.isEmpty()){
             // 생성 코드 필요?
-            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1));
+            //TODO 수정 필요
+//            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1));
+            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1, MenuTitle.ABOUT, ArtworkCategory.NULL));
         }
         Views views = optionalViews.get();
         views.updateViews(views.getViews()+num1);
