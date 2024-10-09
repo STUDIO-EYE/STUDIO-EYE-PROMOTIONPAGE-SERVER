@@ -9,11 +9,6 @@ public record CreateViewsServiceDto(
         Integer month,
         Long views
 ) {
-    public CreateViewsServiceDto(Integer year, Integer month, Long views) {
-        this.year = year;
-        this.month = month;
-        this.views = views;
-    }
     public Views toEntity(Date date) {
         return Views.builder()
                 .year(year)
