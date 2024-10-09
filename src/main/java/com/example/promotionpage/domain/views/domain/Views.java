@@ -1,5 +1,7 @@
 package com.example.promotionpage.domain.views.domain;
 
+import com.example.promotionpage.domain.menu.domain.MenuTitle;
+import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,6 +26,12 @@ public class Views {
 	private Integer month;
 
 	private Long views;
+
+	@Enumerated(EnumType.STRING)
+	private MenuTitle menu;
+
+	@Enumerated(EnumType.STRING)
+	private ArtworkCategory category;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
