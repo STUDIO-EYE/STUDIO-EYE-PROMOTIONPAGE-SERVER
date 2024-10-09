@@ -1,6 +1,7 @@
 package com.example.promotionpage.domain.project.domain;
 
 public enum ArtworkCategory {
+    NULL,
     ENTERTAINMENT,
     DRAMA,
     DOCUMENTARY,
