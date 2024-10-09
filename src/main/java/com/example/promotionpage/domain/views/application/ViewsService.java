@@ -22,7 +22,7 @@ public class ViewsService {
     private static final Long num1 = 1L;
 
     public ApiResponse<Views> createViews(CreateViewsServiceDto dto) {
-        if(!checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
+        if(checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         Optional<Views> optionalViews = viewsRepository.findByYearAndMonth(dto.year(), dto.month());
         if(optionalViews.isPresent()) {
             return ApiResponse.withError(ErrorCode.ALREADY_EXISTED_DATA);
@@ -31,7 +31,7 @@ public class ViewsService {
     }
 
     private ApiResponse<Views> justCreateViews(CreateViewsServiceDto dto) {
-        if(!checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
+        if(checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         Views views = dto.toEntity(new Date());
         Views savedViews = viewsRepository.save(views);
@@ -48,7 +48,7 @@ public class ViewsService {
 
     public ApiResponse<List<Views>> retrieveViewsByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
         // 월 형식 검사
-        if(!checkMonth(startMonth) || !checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
+        if(checkMonth(startMonth) || checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         // 종료점이 시작점보다 앞에 있을 경우 제한 걸기
         if(startYear > endYear || (startYear.equals(endYear) && startMonth > endMonth)) {
             return ApiResponse.withError(ErrorCode.INVALID_PERIOD_FORMAT);
@@ -156,7 +156,7 @@ public class ViewsService {
 
     private boolean checkMonth(int month) {
         // 월 형식 검사
-        return month >= 1 && month <= 12;
+        return month < 1 || month > 12;
     }
 
 }
