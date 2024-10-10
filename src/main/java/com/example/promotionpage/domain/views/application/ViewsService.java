@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.views.application;
 import com.example.promotionpage.domain.menu.domain.MenuTitle;
 import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import com.example.promotionpage.domain.views.dao.ViewsRepository;
+import com.example.promotionpage.domain.views.dao.ViewsSummary;
 import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceRequestDto;
 import com.example.promotionpage.domain.views.dto.request.UpdateViewsServiceRequestDto;
@@ -49,7 +50,7 @@ public class ViewsService {
         return ApiResponse.ok("조회수 목록을 성공적으로 조회했습니다.", viewsList);
     }
 
-    public ApiResponse<List<Views>> retrieveViewsByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
+    public ApiResponse<List<ViewsSummary>> retrieveViewsByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth) {
         // 월 형식 검사
         if(checkMonth(startMonth) || checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         // 종료점이 시작점보다 앞에 있을 경우 제한 걸기
@@ -61,7 +62,7 @@ public class ViewsService {
         if(months < 2 || months > 12) {
             return ApiResponse.withError(ErrorCode.INVALID_VIEWS_PERIOD);
         }
-        List<Views> viewsList = viewsRepository.findByYearAndMonthBetween(startYear, startMonth, endYear, endMonth);
+        List<ViewsSummary> viewsList = viewsRepository.findByYearAndMonthBetween(startYear, startMonth, endYear, endMonth);
 
         for (int year = startYear; year <= endYear; year++) {
             int monthStart = (year == startYear) ? startMonth : 1;
@@ -72,7 +73,7 @@ public class ViewsService {
 
                 // 현재 조회할 연도와 월에 해당하는 인덱스 찾기
                 int index = 0;
-                for (Views view : viewsList) {
+                for (ViewsSummary view : viewsList) {
                     // 이미 해당 연도와 월에 대한 데이터가 존재하는 경우
                     if (view.getYear() == year && view.getMonth() == month) {
                         found = true;
@@ -89,15 +90,24 @@ public class ViewsService {
                 if (!found) {
                     //TODO 수정 필요
                     // 데이터를 삽입한 후에는 인덱스를 증가시킴
-//                    viewsList.add(index, new Views(year, month, 0L, new Date()));
-                    viewsList.add(index, Views.builder()
-                                    .year(year)
-                                    .month(month)
-                                    .views(0L)
-                                    .menu(MenuTitle.ABOUT)
-                                    .category(ArtworkCategory.NULL)
-                                    .createdAt(new Date())
-                            .build());
+                    int finalMonth = month;
+                    int finalYear = year;
+                    viewsList.add(index, new ViewsSummary() {
+                        @Override
+                        public Integer getYear() {
+                            return finalYear;
+                        }
+
+                        @Override
+                        public Integer getMonth() {
+                            return finalMonth;
+                        }
+
+                        @Override
+                        public Long getViews() {
+                            return 0L;
+                        }
+                    });
                 }
             }
         }
