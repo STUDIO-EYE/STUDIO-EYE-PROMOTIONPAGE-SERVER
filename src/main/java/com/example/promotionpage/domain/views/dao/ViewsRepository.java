@@ -20,4 +20,12 @@ public interface ViewsRepository extends JpaRepository<Views, Long> {
                                           @Param("startMonth") Integer startMonth,
                                           @Param("endYear") Integer endYear,
                                           @Param("endMonth") Integer endMonth);
+
+    @Query("SELECT v.year AS year, v.month AS month, SUM(v.views) AS views FROM Views v WHERE (v.year > :startYear OR (v.year = :startYear AND v.month >= :startMonth)) " +
+            "AND (v.year < :endYear OR (v.year = :endYear AND v.month <= :endMonth)) AND v.menu = :menu GROUP BY v.year, v.month, v.menu")
+    List<ViewsSummary> findByYearAndMonthBetweenAndMenu(@Param("startYear") Integer startYear,
+                                                        @Param("startMonth") Integer startMonth,
+                                                        @Param("endYear") Integer endYear,
+                                                        @Param("endMonth") Integer endMonth,
+                                                        MenuTitle menu);
 }
