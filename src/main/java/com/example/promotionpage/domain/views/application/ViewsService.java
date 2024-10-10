@@ -152,10 +152,23 @@ public class ViewsService {
         return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
     }
 
-    public ApiResponse<Views> updateThisMonthViews(String cookieValue, UpdateViewsServiceRequestDto dto) {
+    public ApiResponse<Views> updateThisMonthViews(String mainViewedCookie, String aboutViewedCookie,
+                                                   String faqViewedCookie, String contactViewedCookie,
+                                                   String newsViewedCookie, String recruitmentViewedCookie,
+                                                   String artworkEntertainmentViewedCookie, String artworkDramaViewedCookie,
+                                                   String artworkDocumentaryViewedCookie, String artworkChannelOperatingViewedCookie,
+                                                   String artworkBrandedViewedCookie, String artworkMotionGraphicViewedCookie,
+                                                   String artworkAnimationViewedCookie, String artworkLiveCommerceViewedCookie,
+                                                   UpdateViewsServiceRequestDto dto) {
+
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 
-        if(cookieValue != null) {
+        if(mainViewedCookie != null || aboutViewedCookie != null || faqViewedCookie != null
+                || contactViewedCookie != null || newsViewedCookie != null || recruitmentViewedCookie != null
+                || artworkEntertainmentViewedCookie != null || artworkDramaViewedCookie != null
+                || artworkDocumentaryViewedCookie != null ||artworkChannelOperatingViewedCookie != null
+                || artworkBrandedViewedCookie != null || artworkMotionGraphicViewedCookie != null
+                || artworkAnimationViewedCookie != null || artworkLiveCommerceViewedCookie != null) {
             return ApiResponse.ok("이미 방문한 사용자입니다.");
         }
 
