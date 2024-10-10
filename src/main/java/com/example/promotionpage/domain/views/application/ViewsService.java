@@ -142,9 +142,10 @@ public class ViewsService {
     }
 
     public ApiResponse<Views> updateViewsByYearMonth(Integer year, Integer month, UpdateViewsServiceRequestDto dto) {
-        Optional<Views> optionalViews = viewsRepository.findByYearAndMonthAndMenuAndCategory(year, month, dto.menu(), dto.artworkCategory());
+        System.out.println(dto.category());
+        Optional<Views> optionalViews = viewsRepository.findByYearAndMonthAndMenuAndCategory(year, month, dto.menu(), dto.category());
         if(optionalViews.isEmpty()){
-            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1, dto.menu(), dto.artworkCategory()));
+            return this.justCreateViews(new CreateViewsServiceRequestDto(year, month, num1, dto.menu(), dto.category()));
         }
         Views views = optionalViews.get();
         views.updateViews(views.getViews()+num1);

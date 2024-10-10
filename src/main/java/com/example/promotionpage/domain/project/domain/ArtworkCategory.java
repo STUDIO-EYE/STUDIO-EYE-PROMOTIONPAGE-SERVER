@@ -1,5 +1,8 @@
 package com.example.promotionpage.domain.project.domain;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum ArtworkCategory {
     NULL,
     ENTERTAINMENT,

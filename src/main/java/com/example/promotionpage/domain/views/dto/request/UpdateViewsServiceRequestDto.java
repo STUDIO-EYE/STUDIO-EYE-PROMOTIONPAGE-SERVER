@@ -5,6 +5,6 @@ import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 
 public record UpdateViewsServiceRequestDto(
         MenuTitle menu,
-        ArtworkCategory artworkCategory
+        ArtworkCategory category
 ) {
 }
