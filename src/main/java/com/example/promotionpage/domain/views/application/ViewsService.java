@@ -141,28 +141,9 @@ public class ViewsService {
         return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
     }
 
-    // TODO 기존꺼
-    public ApiResponse<Views> updateViewsByYearMonth(Integer year, Integer month) {
-        Optional<Views> optionalViews = viewsRepository.findByYearAndMonth(year, month);
-        if(optionalViews.isEmpty()){
-            // 생성 코드 필요?
-            //TODO 수정 필요
-//            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1));
-            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1, MenuTitle.ABOUT, ArtworkCategory.NULL));
-        }
-        Views views = optionalViews.get();
-        views.updateViews(views.getViews()+num1);
-        Views updatedViews = viewsRepository.save(views);
-        return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
-    }
-
-
     public ApiResponse<Views> updateViewsByYearMonth(Integer year, Integer month, UpdateViewsServiceRequestDto dto) {
         Optional<Views> optionalViews = viewsRepository.findByYearAndMonthAndMenuAndCategory(year, month, dto.menu(), dto.artworkCategory());
         if(optionalViews.isEmpty()){
-            // 생성 코드 필요?
-            //TODO 수정 필요
-//            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1));
             return this.justCreateViews(new CreateViewsServiceDto(year, month, num1, dto.menu(), dto.artworkCategory()));
         }
         Views views = optionalViews.get();
