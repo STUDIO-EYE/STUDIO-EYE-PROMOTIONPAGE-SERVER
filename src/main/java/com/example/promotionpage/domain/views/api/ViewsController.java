@@ -2,7 +2,7 @@ package com.example.promotionpage.domain.views.api;
 
 import com.example.promotionpage.domain.views.application.ViewsService;
 import com.example.promotionpage.domain.views.domain.Views;
-import com.example.promotionpage.domain.views.dto.request.CreateViewsRequestDto;
+import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
