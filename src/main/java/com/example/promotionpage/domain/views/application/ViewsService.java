@@ -4,7 +4,7 @@ import com.example.promotionpage.domain.menu.domain.MenuTitle;
 import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import com.example.promotionpage.domain.views.dao.ViewsRepository;
 import com.example.promotionpage.domain.views.domain.Views;
-import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceDto;
+import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceRequestDto;
 import com.example.promotionpage.domain.views.dto.request.UpdateViewsServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
@@ -24,7 +24,7 @@ public class ViewsService {
     // for initial views data / for adding views
     private static final Long num1 = 1L;
 
-    public ApiResponse<Views> createViews(CreateViewsServiceDto dto) {
+    public ApiResponse<Views> createViews(CreateViewsServiceRequestDto dto) {
         if(checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         Optional<Views> optionalViews = viewsRepository.findByYearAndMonth(dto.year(), dto.month());
         if(optionalViews.isPresent()) {
@@ -33,7 +33,7 @@ public class ViewsService {
         return this.justCreateViews(dto);
     }
 
-    private ApiResponse<Views> justCreateViews(CreateViewsServiceDto dto) {
+    private ApiResponse<Views> justCreateViews(CreateViewsServiceRequestDto dto) {
         if(checkMonth(dto.month())) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         Views views = dto.toEntity(new Date());
