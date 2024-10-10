@@ -53,9 +53,10 @@ public class ViewsController {
 
     @Operation(summary = "기간(시작점(연도,월), 종료점(연도,월))으로 전체 조회수 조회 API")
     @GetMapping("/views/{startYear}/{startMonth}/{endYear}/{endMonth}")
-    public ApiResponse<List<ViewsSummary>> retrieveViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+    public ApiResponse<List<ViewsSummary>> retrieveAllViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
                                                                  @PathVariable Integer endYear, @PathVariable Integer endMonth){
-        return viewsService.retrieveViewsByPeriod(startYear, startMonth, endYear, endMonth);
+        return viewsService.retrieveAllViewsByPeriod(startYear, startMonth, endYear, endMonth);
+    }
     }
 
     @Operation(summary = "id로 특정 월 조회수 1 상승 API")
