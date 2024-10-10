@@ -64,8 +64,6 @@ public class ViewsService {
         }
         List<ViewsSummary> viewsList = viewsRepository.findByYearAndMonthBetween(startYear, startMonth, endYear, endMonth);
 
-        List<ViewsSummary> resultList = new ArrayList<>();
-
         for (int year = startYear; year <= endYear; year++) {
             int monthStart = (year == startYear) ? startMonth : 1;
             int monthEnd = (year == endYear) ? endMonth : 12;
@@ -110,15 +108,6 @@ public class ViewsService {
                             return 0L;
                         }
                     });
-//                    viewsList.add(index, new Views(year, month, 0L, new Date()));
-//                    viewsList.add(index, Views.builder()
-//                                    .year(year)
-//                                    .month(month)
-//                                    .views(0L)
-//                                    .menu(MenuTitle.ABOUT)
-//                                    .category(ArtworkCategory.NULL)
-//                                    .createdAt(new Date())
-//                            .build());
                 }
             }
         }
