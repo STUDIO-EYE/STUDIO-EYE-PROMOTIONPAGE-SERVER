@@ -1,5 +1,7 @@
 package com.example.promotionpage.domain.views.dto.request;
 
+import com.example.promotionpage.domain.menu.domain.MenuTitle;
+import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import com.example.promotionpage.domain.views.domain.Views;
 
 import java.util.Date;
@@ -7,18 +9,17 @@ import java.util.Date;
 public record CreateViewsServiceDto(
         Integer year,
         Integer month,
-        Long views
+        Long views,
+        MenuTitle menu,
+        ArtworkCategory category
 ) {
-    public CreateViewsServiceDto(Integer year, Integer month, Long views) {
-        this.year = year;
-        this.month = month;
-        this.views = views;
-    }
     public Views toEntity(Date date) {
         return Views.builder()
                 .year(year)
                 .month(month)
                 .views(views)
+                .menu(menu)
+                .category(category)
                 .createdAt(date)
                 .build();
     }
