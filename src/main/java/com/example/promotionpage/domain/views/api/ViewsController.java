@@ -1,5 +1,7 @@
 package com.example.promotionpage.domain.views.api;
 
+import com.example.promotionpage.domain.menu.domain.MenuTitle;
+import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import com.example.promotionpage.domain.views.application.ViewsService;
 import com.example.promotionpage.domain.views.dao.ViewsSummary;
 import com.example.promotionpage.domain.views.domain.Views;
@@ -57,6 +59,21 @@ public class ViewsController {
                                                                  @PathVariable Integer endYear, @PathVariable Integer endMonth){
         return viewsService.retrieveAllViewsByPeriod(startYear, startMonth, endYear, endMonth);
     }
+
+    @Operation(summary = "기간(시작점(연도,월), 종료점(연도,월))으로 메뉴별 전체 조회수 조회 API")
+    @GetMapping("/views/{startYear}/{startMonth}/{endYear}/{endMonth}/{menu}")
+    public ApiResponse<List<ViewsSummary>> retrieveAllMenuViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+                                                                 @PathVariable Integer endYear, @PathVariable Integer endMonth,
+                                                                 @PathVariable MenuTitle menu){
+        return viewsService.retrieveAllMenuViewsByPeriod(startYear, startMonth, endYear, endMonth, menu);
+    }
+
+    @Operation(summary = "메뉴가 아트워크일 경우, 기간(시작점(연도,월), 종료점(연도,월))으로 카테고리별 전체 조회수 조회 API")
+    @GetMapping("/views/{startYear}/{startMonth}/{endYear}/{endMonth}/ARTWORK/{category}")
+    public ApiResponse<List<ViewsSummary>> retrieveAllCategoryViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+                                                                                @PathVariable Integer endYear, @PathVariable Integer endMonth,
+                                                                                @PathVariable ArtworkCategory category){
+        return viewsService.retrieveAllCategoryViewsByPeriod(startYear, startMonth, endYear, endMonth, category);
     }
 
     @Operation(summary = "id로 특정 월 조회수 1 상승 API")
