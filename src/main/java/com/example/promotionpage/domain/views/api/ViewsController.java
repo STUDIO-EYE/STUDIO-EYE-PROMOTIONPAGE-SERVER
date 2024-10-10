@@ -1,6 +1,7 @@
 package com.example.promotionpage.domain.views.api;
 
 import com.example.promotionpage.domain.views.application.ViewsService;
+import com.example.promotionpage.domain.views.dao.ViewsSummary;
 import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.domain.views.dto.request.CreateViewsRequestDto;
 import com.example.promotionpage.domain.views.dto.request.UpdateViewsRequestDto;
@@ -50,10 +51,10 @@ public class ViewsController {
         return viewsService.retrieveViewsByYearMonth(year, month);
     }
 
-    @Operation(summary = "기간(시작점(연도,월), 종료점(연도,월))으로 조회수 조회 API")
+    @Operation(summary = "기간(시작점(연도,월), 종료점(연도,월))으로 전체 조회수 조회 API")
     @GetMapping("/views/{startYear}/{startMonth}/{endYear}/{endMonth}")
-    public ApiResponse<List<Views>> retrieveViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
-                                             @PathVariable Integer endYear, @PathVariable Integer endMonth){
+    public ApiResponse<List<ViewsSummary>> retrieveViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+                                                                 @PathVariable Integer endYear, @PathVariable Integer endMonth){
         return viewsService.retrieveViewsByPeriod(startYear, startMonth, endYear, endMonth);
     }
 
