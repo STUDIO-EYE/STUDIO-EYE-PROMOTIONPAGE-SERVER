@@ -4,10 +4,10 @@ import com.example.promotionpage.domain.menu.domain.MenuTitle;
 import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 
 public record UpdateViewsRequestDto(
-        MenuTitle title,
+        MenuTitle menu,
         ArtworkCategory artworkCategory
 ) {
     public UpdateViewsServiceRequestDto toServiceRequest() {
-        return new UpdateViewsServiceRequestDto(title, artworkCategory);
+        return new UpdateViewsServiceRequestDto(menu, artworkCategory);
     }
 }

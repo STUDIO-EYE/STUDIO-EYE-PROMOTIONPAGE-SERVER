@@ -4,7 +4,7 @@ import com.example.promotionpage.domain.menu.domain.MenuTitle;
 import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 
 public record UpdateViewsServiceRequestDto(
-        MenuTitle title,
+        MenuTitle menu,
         ArtworkCategory artworkCategory
 ) {
 }
