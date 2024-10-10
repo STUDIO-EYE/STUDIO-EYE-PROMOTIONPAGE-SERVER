@@ -2,7 +2,7 @@ package com.example.promotionpage.domain.views.api;
 
 import com.example.promotionpage.domain.views.application.ViewsService;
 import com.example.promotionpage.domain.views.domain.Views;
-import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceRequestDto;
+import com.example.promotionpage.domain.views.dto.request.CreateViewsRequestDto;
 import com.example.promotionpage.domain.views.dto.request.UpdateViewsRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ public class ViewsController {
 
     @Operation(summary = "조회수 등록 API")
     @PostMapping("/views")
-    public ApiResponse<Views> createViews(@Valid @RequestBody CreateViewsServiceRequestDto dto) {
+    public ApiResponse<Views> createViews(@Valid @RequestBody CreateViewsRequestDto dto) {
         return viewsService.createViews(dto.toServiceViews());
     }
 
