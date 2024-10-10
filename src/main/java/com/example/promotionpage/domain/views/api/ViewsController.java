@@ -3,6 +3,7 @@ package com.example.promotionpage.domain.views.api;
 import com.example.promotionpage.domain.views.application.ViewsService;
 import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceRequestDto;
+import com.example.promotionpage.domain.views.dto.request.UpdateViewsRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,15 +63,17 @@ public class ViewsController {
         return viewsService.updateViewsById(viewsId);
     }
 
-    @Operation(summary = "연도, 월로 특정 월 조회수 1 상승 API")
+    @Operation(summary = "연도, 월, 메뉴, 카테고리로 특정 월 조회수 1 상승 API")
     @PutMapping("/views/increase/{year}/{month}")
-    public ApiResponse<Views> updateViewsByYearMonth(@PathVariable Integer year, @PathVariable Integer month){
-        return viewsService.updateViewsByYearMonth(year, month);
+    public ApiResponse<Views> updateViewsByYearMonth(@PathVariable Integer year, @PathVariable Integer month,
+                                                     @RequestBody UpdateViewsRequestDto dto){
+        return viewsService.updateViewsByYearMonth(year, month, dto.toServiceRequest());
     }
 
     @Operation(summary = "이번 월 조회수 1 상승 API (해당 월이 존재하지 않을 경우에는 생성)")
     @PutMapping("/views/increase")
-    public ApiResponse<Views> updateThisMonthViews(@CookieValue(name = "viewed_cookie", required = false) String cookieValue) {
-        return viewsService.updateThisMonthViews(cookieValue);
+    public ApiResponse<Views> updateThisMonthViews(@CookieValue(name = "viewed_cookie", required = false) String cookieValue,
+                                                   @RequestBody UpdateViewsRequestDto dto) {
+        return viewsService.updateThisMonthViews(cookieValue, dto.toServiceRequest());
     }
 }

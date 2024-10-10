@@ -5,6 +5,7 @@ import com.example.promotionpage.domain.project.domain.ArtworkCategory;
 import com.example.promotionpage.domain.views.dao.ViewsRepository;
 import com.example.promotionpage.domain.views.domain.Views;
 import com.example.promotionpage.domain.views.dto.request.CreateViewsServiceDto;
+import com.example.promotionpage.domain.views.dto.request.UpdateViewsServiceRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
 import com.example.promotionpage.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -140,6 +141,7 @@ public class ViewsService {
         return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
     }
 
+    // TODO 기존꺼
     public ApiResponse<Views> updateViewsByYearMonth(Integer year, Integer month) {
         Optional<Views> optionalViews = viewsRepository.findByYearAndMonth(year, month);
         if(optionalViews.isEmpty()){
@@ -154,7 +156,22 @@ public class ViewsService {
         return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
     }
 
-    public ApiResponse<Views> updateThisMonthViews(String cookieValue) {
+
+    public ApiResponse<Views> updateViewsByYearMonth(Integer year, Integer month, UpdateViewsServiceRequestDto dto) {
+        Optional<Views> optionalViews = viewsRepository.findByYearAndMonthAndMenuAndCategory(year, month, dto.menu(), dto.artworkCategory());
+        if(optionalViews.isEmpty()){
+            // 생성 코드 필요?
+            //TODO 수정 필요
+//            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1));
+            return this.justCreateViews(new CreateViewsServiceDto(year, month, num1, dto.menu(), dto.artworkCategory()));
+        }
+        Views views = optionalViews.get();
+        views.updateViews(views.getViews()+num1);
+        Views updatedViews = viewsRepository.save(views);
+        return ApiResponse.ok("조회수를 성공적으로 수정했습니다.", updatedViews);
+    }
+
+    public ApiResponse<Views> updateThisMonthViews(String cookieValue, UpdateViewsServiceRequestDto dto) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 
         if(cookieValue != null) {
@@ -163,7 +180,8 @@ public class ViewsService {
 
         return this.updateViewsByYearMonth(
                 Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date().getTime())),
-                Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime()))
+                Integer.parseInt(new SimpleDateFormat("MM").format(new Date().getTime())),
+                dto
         );
     }
 
