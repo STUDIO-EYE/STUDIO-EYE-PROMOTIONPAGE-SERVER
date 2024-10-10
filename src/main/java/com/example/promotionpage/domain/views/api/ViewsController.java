@@ -21,7 +21,7 @@ public class ViewsController {
 
     @Operation(summary = "조회수 등록 API")
     @PostMapping("/views")
-    public ApiResponse<Views> createViews(@Valid @RequestBody CreateViewsRequestDto dto) {
+    public ApiResponse<Views> createViews(@Valid @RequestBody CreateViewsServiceRequestDto dto) {
         return viewsService.createViews(dto.toServiceViews());
     }
 
