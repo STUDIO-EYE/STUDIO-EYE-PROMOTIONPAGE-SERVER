@@ -76,6 +76,14 @@ public class ViewsController {
         return viewsService.retrieveAllCategoryViewsByPeriod(startYear, startMonth, endYear, endMonth, category);
     }
 
+    @Operation(summary = "기간(시작점(연도,월), 종료점(연도,월))으로 카테고리별, 메뉴별 전체 조회수 조회 API")
+    @GetMapping("/views/{startYear}/{startMonth}/{endYear}/{endMonth}/{menu}/{category}")
+    public ApiResponse<List<ViewsSummary>> retrieveAllMenuCategoryViewsByPeriod(@PathVariable Integer startYear, @PathVariable Integer startMonth,
+                                                                                @PathVariable Integer endYear, @PathVariable Integer endMonth,
+                                                                                @PathVariable MenuTitle menu, @PathVariable ArtworkCategory category){
+        return viewsService.retrieveAllMenuCategoryViewsByPeriod(startYear, startMonth, endYear, endMonth, menu, category);
+    }
+
     @Operation(summary = "id로 특정 월 조회수 1 상승 API")
     @PutMapping("/views/increase/{viewsId}")
     public ApiResponse<Views> updateViewsById(@PathVariable Long viewsId){
