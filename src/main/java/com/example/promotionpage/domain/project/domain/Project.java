@@ -1,13 +1,12 @@
 package com.example.promotionpage.domain.project.domain;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.example.promotionpage.domain.project.dto.request.UpdateProjectServiceRequestDto;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Getter

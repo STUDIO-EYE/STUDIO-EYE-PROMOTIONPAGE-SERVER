@@ -1,19 +1,17 @@
 package com.example.promotionpage.domain.partner_information.api;
 
-import com.example.promotionpage.domain.partner_information.domain.PartnerInformation;
-import com.example.promotionpage.domain.partner_information.dto.request.UpdatePartnerInfoRequestDto;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.promotionpage.domain.partner_information.application.PartnerInformationService;
+import com.example.promotionpage.domain.partner_information.domain.PartnerInformation;
 import com.example.promotionpage.domain.partner_information.dto.request.CreatePartnerInfoRequestDto;
+import com.example.promotionpage.domain.partner_information.dto.request.UpdatePartnerInfoRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;

@@ -1,13 +1,14 @@
 package com.example.promotionpage.domain.project.application;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
+import com.example.promotionpage.domain.project.dao.ProjectRepository;
+import com.example.promotionpage.domain.project.domain.Project;
 import com.example.promotionpage.domain.project.domain.ProjectImage;
 import com.example.promotionpage.domain.project.dto.request.*;
 import com.example.promotionpage.domain.views.application.ViewsService;
+import com.example.promotionpage.global.adapter.S3Adapter;
+import com.example.promotionpage.global.common.response.ApiResponse;
+import com.example.promotionpage.global.error.ErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.promotionpage.domain.project.dao.ProjectRepository;
-import com.example.promotionpage.domain.project.domain.Project;
-import com.example.promotionpage.global.adapter.S3Adapter;
-import com.example.promotionpage.global.common.response.ApiResponse;
-import com.example.promotionpage.global.error.ErrorCode;
-
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional

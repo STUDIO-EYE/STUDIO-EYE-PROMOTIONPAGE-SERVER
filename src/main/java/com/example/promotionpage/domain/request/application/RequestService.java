@@ -2,12 +2,13 @@ package com.example.promotionpage.domain.request.application;
 
 import com.example.promotionpage.domain.email.service.EmailService;
 import com.example.promotionpage.domain.notification.application.NotificationService;
-import com.example.promotionpage.domain.request.dao.*;
+import com.example.promotionpage.domain.request.dao.AnswerRepository;
+import com.example.promotionpage.domain.request.dao.RequestCount;
+import com.example.promotionpage.domain.request.dao.RequestRepository;
 import com.example.promotionpage.domain.request.domain.Answer;
 import com.example.promotionpage.domain.request.domain.Request;
 import com.example.promotionpage.domain.request.domain.State;
 import com.example.promotionpage.domain.request.dto.request.CreateRequestServiceDto;
-import com.example.promotionpage.domain.request.dto.request.RetrieveRequestCountDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentServiceDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestStateServiceDto;
 import com.example.promotionpage.global.adapter.S3Adapter;

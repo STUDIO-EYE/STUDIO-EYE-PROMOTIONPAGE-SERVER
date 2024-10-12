@@ -1,12 +1,10 @@
 package com.example.promotionpage.global.common.response;
 
-import org.springframework.http.HttpStatus;
-
 import com.example.promotionpage.global.error.ErrorCode;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

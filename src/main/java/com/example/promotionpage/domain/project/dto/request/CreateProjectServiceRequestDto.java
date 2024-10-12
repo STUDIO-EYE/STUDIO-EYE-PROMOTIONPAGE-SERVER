@@ -1,9 +1,9 @@
 package com.example.promotionpage.domain.project.dto.request;
 
-import java.util.List;
-
 import com.example.promotionpage.domain.project.domain.Project;
 import com.example.promotionpage.domain.project.domain.ProjectImage;
+
+import java.util.List;
 
 public record CreateProjectServiceRequestDto(
 	String department,

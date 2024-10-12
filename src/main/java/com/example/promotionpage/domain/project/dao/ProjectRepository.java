@@ -1,10 +1,9 @@
 package com.example.promotionpage.domain.project.dao;
 
+import com.example.promotionpage.domain.project.domain.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.example.promotionpage.domain.project.domain.Project;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
