@@ -1,27 +1,22 @@
 package com.example.promotionpage.domain.request.api;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import com.example.promotionpage.domain.request.dao.RequestCount;
+import com.example.promotionpage.domain.request.application.RequestService;
 import com.example.promotionpage.domain.request.domain.Request;
-import com.example.promotionpage.domain.request.domain.State;
-import com.example.promotionpage.domain.request.dto.request.RetrieveRequestCountDto;
+import com.example.promotionpage.domain.request.dto.request.CreateRequestDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestCommentDto;
 import com.example.promotionpage.domain.request.dto.request.UpdateRequestStateDto;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.promotionpage.domain.request.application.RequestService;
-import com.example.promotionpage.domain.request.dto.request.CreateRequestDto;
 import com.example.promotionpage.global.common.response.ApiResponse;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "문의 API", description = "문의 등록 / 수정 / 삭제 / 조회")
 @RestController

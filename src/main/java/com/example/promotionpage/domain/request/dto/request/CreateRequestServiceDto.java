@@ -1,11 +1,11 @@
 package com.example.promotionpage.domain.request.dto.request;
 
-import java.util.Date;
-import java.util.List;
-
 import com.example.promotionpage.domain.request.domain.Answer;
 import com.example.promotionpage.domain.request.domain.Request;
 import com.example.promotionpage.domain.request.domain.State;
+
+import java.util.Date;
+import java.util.List;
 
 public record CreateRequestServiceDto(
 	 String category,

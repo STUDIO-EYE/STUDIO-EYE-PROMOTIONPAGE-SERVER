@@ -1,6 +1,9 @@
 package com.example.promotionpage.domain.user_notification.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.*;
 
 @Entity

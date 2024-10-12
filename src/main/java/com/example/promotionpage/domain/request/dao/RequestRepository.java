@@ -1,11 +1,10 @@
 package com.example.promotionpage.domain.request.dao;
 
+import com.example.promotionpage.domain.request.domain.Request;
 import com.example.promotionpage.domain.request.domain.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.example.promotionpage.domain.request.domain.Request;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
