@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ArtworkCategory {
-    NULL,
+    ALL,
     ENTERTAINMENT,
     DRAMA,
     DOCUMENTARY,
