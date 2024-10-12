@@ -141,12 +141,10 @@ public class RequestService {
 	}
 
 	public ApiResponse<List<Map<String, Object>>> retrieveRequestCountByCategoryAndState(String category, String state,
-																						 RetrieveRequestCountDto dto) {
-		Integer startMonth = dto.startMonth();
-		Integer endMonth = dto.endMonth();
-		Integer startYear = dto.startYear();
-		Integer endYear = dto.endYear();
-
+																						 Integer startYear,
+																						 Integer startMonth,
+																						 Integer endYear,
+																						 Integer endMonth) {
 		// State enum으로 변환
 		State stateEnum;
 		try {
