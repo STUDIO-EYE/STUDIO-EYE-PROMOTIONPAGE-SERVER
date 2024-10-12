@@ -48,6 +48,7 @@ public enum ErrorCode {
 	ALREADY_EXISTED_DATA(HttpStatus.BAD_REQUEST, "이미 존재하는 데이터입니다."),
 	INVALID_VIEWS_PERIOD(HttpStatus.BAD_REQUEST, "기간은 2~12달이어야 합니다."),
 	INVALID_PERIOD_FORMAT(HttpStatus.BAD_REQUEST, "종료점은 시작점보다 뒤에 있어야 합니다."),
+	INVALID_VIEWS_CATEGORY(HttpStatus.BAD_REQUEST, "ARTWORK를 제외한 다른 메뉴들의 category는 ALL이어야 합니다."),
 
 	// notification
 	USER_IS_EMPTY(HttpStatus.BAD_REQUEST, "User가 존재하지 않습니다."),

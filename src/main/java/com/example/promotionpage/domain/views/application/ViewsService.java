@@ -243,6 +243,11 @@ public class ViewsService {
     }
 
     public ApiResponse<List<ViewsSummary>> retrieveAllMenuCategoryViewsByPeriod(Integer startYear, Integer startMonth, Integer endYear, Integer endMonth, MenuTitle menu, ArtworkCategory category) {
+        // ARTWORK를 제외한 다른 메뉴들은 ARTWORK의 category를 사용하지 못하도록 제한
+        if(!menu.equals(MenuTitle.ARTWORK) && !category.equals(ArtworkCategory.ALL)) {
+            return ApiResponse.withError(ErrorCode.INVALID_VIEWS_CATEGORY);
+        }
+
         // 월 형식 검사
         if(checkMonth(startMonth) || checkMonth(endMonth)) return ApiResponse.withError(ErrorCode.INVALID_VIEWS_MONTH);
         // 종료점이 시작점보다 앞에 있을 경우 제한 걸기
