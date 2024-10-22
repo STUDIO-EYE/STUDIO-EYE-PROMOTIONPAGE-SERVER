@@ -36,10 +36,16 @@ public class CompanyInformation {
     private String addressEnglish;
 
     @NotNull
-    private String logoImageFileName;
+    private String lightLogoImageFileName;
 
     @NotNull
-    private String logoImageUrl;
+    private String lightLogoImageUrl;
+
+    @NotNull
+    private String darkLogoImageFileName;
+
+    @NotNull
+    private String darkLogoImageUrl;
 
     @NotNull
     private String phone;
@@ -65,7 +71,8 @@ public class CompanyInformation {
     public CompanyInformation(String mainOverview, String commitment,
                               String address,
                               String addressEnglish,
-                              String logoImageFileName, String logoImageUrl,
+                              String lightLogoImageFileName, String lightLogoImageUrl,
+                              String darkLogoImageFileName, String darkLogoImageUrl,
                               String phone,
                               String fax,
                               String introduction,
@@ -75,8 +82,10 @@ public class CompanyInformation {
         this.commitment = commitment;
         this.address = address;
         this.addressEnglish = addressEnglish;
-        this.logoImageFileName = logoImageFileName;
-        this.logoImageUrl = logoImageUrl;
+        this.darkLogoImageFileName = darkLogoImageFileName;
+        this.darkLogoImageUrl = darkLogoImageUrl;
+        this.lightLogoImageFileName = lightLogoImageFileName;
+        this.lightLogoImageUrl = lightLogoImageUrl;
         this.phone = phone;
         this.fax = fax;
         this.introduction = introduction;
