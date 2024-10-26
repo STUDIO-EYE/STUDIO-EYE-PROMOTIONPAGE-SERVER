@@ -322,8 +322,10 @@ public class CompanyInformationService {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
         }
         for (CompanyInformation companyInformation : companyInformations) {
-            String logoFileName = companyInformation.getLogoImageFileName();
-            s3Adapter.deleteFile(logoFileName);
+            String lightLogoImageFileName = companyInformation.getLightLogoImageFileName();
+            s3Adapter.deleteFile(lightLogoImageFileName);
+            String darkLogoImageFileName = companyInformation.getDarkLogoImageFileName();
+            s3Adapter.deleteFile(darkLogoImageFileName);
             String sloganFileName = companyInformation.getSloganImageFileName();
             s3Adapter.deleteFile(sloganFileName);
             companyInformationRepository.delete(companyInformation);
@@ -337,8 +339,10 @@ public class CompanyInformationService {
             ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
         }
         for (CompanyInformation companyInformation : companyInformations) {
-            String fileName = companyInformation.getLogoImageFileName();
-            s3Adapter.deleteFile(fileName);
+            String lightLogoImageFileName = companyInformation.getLightLogoImageFileName();
+            s3Adapter.deleteFile(lightLogoImageFileName);
+            String darkLogoImageFileName = companyInformation.getDarkLogoImageFileName();
+            s3Adapter.deleteFile(darkLogoImageFileName);
             companyInformation.deleteLogoImage();
             companyInformationRepository.save(companyInformation);
         }
