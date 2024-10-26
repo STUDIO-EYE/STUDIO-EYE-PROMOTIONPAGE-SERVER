@@ -28,25 +28,35 @@ public class CompanyInformationService {
 
 
     public ApiResponse<CompanyInformation> createCompanyInformation(CreateCompanyInformationServiceRequestDto dto,
-                                                MultipartFile logoImage,
+                                                MultipartFile lightLogoImage, MultipartFile darkLogoImage,
                                                 MultipartFile sloganImage) throws IOException {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if(!companyInformations.isEmpty()) {
-            return updateAllCompanyInformation(dto.toUpdateServiceRequest(), logoImage, sloganImage);
+            return updateAllCompanyInformation(dto.toUpdateServiceRequest(), lightLogoImage, darkLogoImage, sloganImage);
         }
-        String logoImageFileName = null;
-        String logoImageUrl = null;
+        String lightLogoImageFileName = null;
+        String lightLogoImageUrl = null;
+        String darkLogoImageFileName = null;
+        String darkLogoImageUrl = null;
         String sloganImageFileName = null;
         String sloganImageUrl = null;
-        if(logoImage != null) {
-            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
+        if(lightLogoImage != null && !lightLogoImage.isEmpty()) {
+            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(lightLogoImage);
             if (updateLogoFileResponse.getStatus().is5xxServerError()) {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
             }
-            logoImageUrl = updateLogoFileResponse.getData();
-            logoImageFileName = logoImage.getOriginalFilename();
+            lightLogoImageUrl = updateLogoFileResponse.getData();
+            lightLogoImageFileName = lightLogoImage.getOriginalFilename();
         }
-        if(sloganImage != null) {
+        if(darkLogoImage != null && !darkLogoImage.isEmpty()) {
+            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(darkLogoImage);
+            if (updateLogoFileResponse.getStatus().is5xxServerError()) {
+                return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            }
+            darkLogoImageUrl = updateLogoFileResponse.getData();
+            darkLogoImageFileName = lightLogoImage.getOriginalFilename();
+        }
+        if(sloganImage != null && !sloganImage.isEmpty()) {
             ApiResponse<String> updateSloganFileResponse = s3Adapter.uploadFile(sloganImage);
 
             if (updateSloganFileResponse.getStatus().is5xxServerError()) {
@@ -55,7 +65,7 @@ public class CompanyInformationService {
             sloganImageUrl = updateSloganFileResponse.getData();
             sloganImageFileName = sloganImage.getOriginalFilename();
         }
-        CompanyInformation companyInformation = dto.toEntity(logoImageFileName, logoImageUrl, sloganImageFileName, sloganImageUrl);
+        CompanyInformation companyInformation = dto.toEntity(lightLogoImageFileName, lightLogoImageUrl, darkLogoImageFileName, darkLogoImageUrl, sloganImageFileName, sloganImageUrl);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("회사 정보를 성공적으로 등록하였습니다.", savedCompanyInformation);
     }

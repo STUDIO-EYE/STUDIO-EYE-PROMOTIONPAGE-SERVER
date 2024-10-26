@@ -28,9 +28,10 @@ public class CompanyInformationController {
     @Operation(summary = "회사 정보 등록 API")
     @PostMapping("/company/information")
     public ApiResponse<CompanyInformation> createCompanyInformation(@Valid @RequestPart("request") CreateCompanyInformationRequestDto dto,
-                                                                    @RequestPart(value = "logoImageUrl", required = false) MultipartFile logoImageUrl,
-                                                                    @RequestPart(value = "sloganImageUrl", required = false) MultipartFile sloganImageUrl) throws IOException {
-        return companyInformationService.createCompanyInformation(dto.toServiceRequest(), logoImageUrl, sloganImageUrl);
+                                                    @RequestPart(value = "lightLogoImage", required = false) MultipartFile lightLogoImage,
+                                                    @RequestPart(value = "darkLogoImage", required = false) MultipartFile darkLogoImage,
+                                                    @RequestPart(value = "sloganImage", required = false) MultipartFile sloganImage) throws IOException {
+        return companyInformationService.createCompanyInformation(dto.toServiceRequest(), lightLogoImage, darkLogoImage, sloganImage);
     }
 
     @Operation(summary = "회사 전체 정보 조회 API")
