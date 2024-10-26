@@ -98,8 +98,10 @@ public class CompanyInformation {
     }
 
     public void deleteLogoImage() {
-        this.logoImageFileName = null;
-        this.logoImageUrl = null;
+        this.lightLogoImageFileName = null;
+        this.lightLogoImageUrl = null;
+        this.darkLogoImageFileName = null;
+        this.darkLogoImageUrl = null;
     }
 
     public void deleteCompanyBasicInformation() {
@@ -121,9 +123,11 @@ public class CompanyInformation {
         this.sloganImageUrl = null;
     }
 
-    public void updateCompanyLogo(String logoImageFileName, String logoImageUrl) {
-        this.logoImageFileName = logoImageFileName;
-        this.logoImageUrl = logoImageUrl;
+    public void updateCompanyLogo(String lightLogoImageFileName, String lightLogoImageUrl, String darkLogoImageFileName, String darkLogoImageUrl) {
+        this.lightLogoImageFileName = lightLogoImageFileName;
+        this.lightLogoImageUrl = lightLogoImageUrl;
+        this.darkLogoImageFileName = darkLogoImageFileName;
+        this.darkLogoImageUrl = darkLogoImageUrl;
     }
 
     public void updateCompanySlogan(String sloganImageFileName, String sloganImageUrl) {
@@ -131,14 +135,18 @@ public class CompanyInformation {
         this.sloganImageUrl = sloganImageUrl;
     }
 
-    public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto, String logoImageFileName,
-                                            String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+    public void updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto,
+                                            String lightLogoImageFileName, String lightLogoImageUrl,
+                                            String darkLogoImageFileName, String darkLogoImageUrl,
+                                            String sloganImageFileName, String sloganImageUrl) {
         this.mainOverview = dto.mainOverview();
         this.commitment = dto.commitment();
         this.address = dto.address();
         this.addressEnglish = dto.addressEnglish();
-        this.logoImageFileName = logoImageFileName;
-        this.logoImageUrl = logoImageUrl;
+        this.lightLogoImageFileName = lightLogoImageFileName;
+        this.lightLogoImageUrl = lightLogoImageUrl;
+        this.darkLogoImageFileName = darkLogoImageFileName;
+        this.darkLogoImageUrl = darkLogoImageUrl;
         this.phone = dto.phone();
         this.fax = dto.fax();
         this.introduction = dto.introduction();
@@ -175,9 +183,11 @@ public class CompanyInformation {
         this.introduction = dto.introduction();
     }
 
-    public void updateCompanyLogoAndSlogan(String logoImageFileName, String logoImageUrl, String sloganImageFileName, String sloganImageUrl) {
-        this.logoImageFileName = logoImageFileName;
-        this.logoImageUrl = logoImageUrl;
+    public void updateCompanyLogoAndSlogan(String lightLogoImageFileName, String lightLogoImageUrl, String darkLogoImageFileName, String darkLogoImageUrl, String sloganImageFileName, String sloganImageUrl) {
+        this.lightLogoImageFileName = lightLogoImageFileName;
+        this.lightLogoImageUrl = lightLogoImageUrl;
+        this.darkLogoImageFileName = darkLogoImageFileName;
+        this.darkLogoImageUrl = darkLogoImageUrl;
         this.sloganImageFileName = sloganImageFileName;
         this.sloganImageUrl = sloganImageUrl;
     }
