@@ -131,28 +131,40 @@ public class CompanyInformationService {
     }
 
     public ApiResponse<CompanyInformation> updateAllCompanyInformation(UpdateAllCompanyInformationServiceRequestDto dto,
-                                                   MultipartFile logoImage,
-                                                   MultipartFile sloganImage) throws IOException {
+                                                            MultipartFile lightLogoImage, MultipartFile darkLogoImage,
+                                                            MultipartFile sloganImage) throws IOException {
 
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             return ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
         }
 
-        String logoImageFileName = companyInformations.get(0).getLogoImageFileName();
-        String logoImageUrl = companyInformations.get(0).getLogoImageUrl();
+        String lightLogoImageFileName = companyInformations.get(0).getLightLogoImageFileName();
+        String lightLogoImageUrl = companyInformations.get(0).getLightLogoImageUrl();
+        String darkLogoImageFileName = companyInformations.get(0).getDarkLogoImageFileName();
+        String darkLogoImageUrl = companyInformations.get(0).getDarkLogoImageUrl();
         String sloganImageFileName = companyInformations.get(0).getSloganImageFileName();
         String sloganImageUrl = companyInformations.get(0).getSloganImageUrl();
 
-        if(logoImage != null && !logoImage.isEmpty()) {
-            if (logoImageFileName != null) s3Adapter.deleteFile(logoImageFileName);
+        if(lightLogoImage != null && !lightLogoImage.isEmpty()) {
+            if (lightLogoImageFileName != null) s3Adapter.deleteFile(lightLogoImageFileName);
 
-            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
+            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(lightLogoImage);
             if (updateLogoFileResponse.getStatus().is5xxServerError()) {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
             }
-            logoImageUrl = updateLogoFileResponse.getData();
-            logoImageFileName = logoImage.getOriginalFilename();
+            lightLogoImageUrl = updateLogoFileResponse.getData();
+            lightLogoImageFileName = lightLogoImage.getOriginalFilename();
+        }
+        if(darkLogoImage != null && !darkLogoImage.isEmpty()) {
+            if (darkLogoImageFileName != null) s3Adapter.deleteFile(darkLogoImageFileName);
+
+            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(darkLogoImage);
+            if (updateLogoFileResponse.getStatus().is5xxServerError()) {
+                return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            }
+            darkLogoImageUrl = updateLogoFileResponse.getData();
+            darkLogoImageFileName = darkLogoImage.getOriginalFilename();
         }
         if(sloganImage != null && !sloganImage.isEmpty()) {
             if (sloganImageFileName != null) s3Adapter.deleteFile(sloganImageFileName);
@@ -165,7 +177,7 @@ public class CompanyInformationService {
             sloganImageFileName = sloganImage.getOriginalFilename();
         }
         CompanyInformation companyInformation = companyInformations.get(0);
-        companyInformation.updateAllCompanyInformation(dto, logoImageFileName, logoImageUrl, sloganImageFileName, sloganImageUrl);
+        companyInformation.updateAllCompanyInformation(dto, lightLogoImageFileName, lightLogoImageUrl, darkLogoImageFileName, darkLogoImageUrl, sloganImageFileName, sloganImageUrl);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("전체 회사 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
@@ -189,22 +201,28 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 기본 정보를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse<CompanyInformation> updateCompanyLogoImage(MultipartFile logoImage) throws IOException  {
-        if(logoImage == null) {
+    public ApiResponse<CompanyInformation> updateCompanyLogoImage(MultipartFile lightLogoImage, MultipartFile darkLogoImage) throws IOException  {
+        if(lightLogoImage == null || darkLogoImage == null) {
             return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
         }
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (!companyInformations.isEmpty()) {
-            String fileName = companyInformations.get(0).getLogoImageFileName();
+            String fileName = companyInformations.get(0).getLightLogoImageFileName();
+            s3Adapter.deleteFile(fileName);
+            fileName = companyInformations.get(0).getDarkLogoImageFileName();
             s3Adapter.deleteFile(fileName);
         }
 
-        ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
-        if (updateLogoFileResponse.getStatus().is5xxServerError()) {
+        ApiResponse<String> updateLightLogoFileResponse = s3Adapter.uploadFile(lightLogoImage);
+        if (updateLightLogoFileResponse.getStatus().is5xxServerError()) {
+            return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+        }
+        ApiResponse<String> updateDarkLogoFileResponse = s3Adapter.uploadFile(lightLogoImage);
+        if (updateDarkLogoFileResponse.getStatus().is5xxServerError()) {
             return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
         }
         CompanyInformation companyInformation = companyInformations.get(0);
-        companyInformation.updateCompanyLogo(logoImage.getOriginalFilename(), updateLogoFileResponse.getData());
+        companyInformation.updateCompanyLogo(lightLogoImage.getOriginalFilename(), updateLightLogoFileResponse.getData(), darkLogoImage.getOriginalFilename(), updateDarkLogoFileResponse.getData());
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("회사 로고 이미지를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
@@ -229,26 +247,38 @@ public class CompanyInformationService {
         return ApiResponse.ok("회사 슬로건 이미지를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
 
-    public ApiResponse<CompanyInformation> updateCompanyLogoAndSlogan(MultipartFile logoImage, MultipartFile sloganImage) throws IOException {
+    public ApiResponse<CompanyInformation> updateCompanyLogoAndSlogan(MultipartFile lightLogoImage, MultipartFile darkLogoImage,MultipartFile sloganImage) throws IOException {
         List<CompanyInformation> companyInformations = companyInformationRepository.findAll();
         if (companyInformations.isEmpty()) {
             return ApiResponse.withError(ErrorCode.COMPANYINFORMATION_IS_EMPTY);
         }
 
-        String logoImageFileName = companyInformations.get(0).getLogoImageFileName();
-        String logoImageUrl = companyInformations.get(0).getLogoImageUrl();
+        String lightLogoImageFileName = companyInformations.get(0).getLightLogoImageFileName();
+        String lightLogoImageUrl = companyInformations.get(0).getLightLogoImageUrl();
+        String darkLogoImageFileName = companyInformations.get(0).getDarkLogoImageFileName();
+        String darkLogoImageUrl = companyInformations.get(0).getDarkLogoImageUrl();
         String sloganImageFileName = companyInformations.get(0).getSloganImageFileName();
         String sloganImageUrl = companyInformations.get(0).getSloganImageUrl();
 
-        if(logoImage != null && !logoImage.isEmpty()) {
-            if (logoImageFileName != null) s3Adapter.deleteFile(logoImageFileName);
+        if(lightLogoImage != null && !lightLogoImage.isEmpty()) {
+            if (lightLogoImageFileName != null) s3Adapter.deleteFile(lightLogoImageFileName);
 
-            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(logoImage);
+            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(lightLogoImage);
             if (updateLogoFileResponse.getStatus().is5xxServerError()) {
                 return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
             }
-            logoImageUrl = updateLogoFileResponse.getData();
-            logoImageFileName = logoImage.getOriginalFilename();
+            lightLogoImageUrl = updateLogoFileResponse.getData();
+            lightLogoImageFileName = lightLogoImage.getOriginalFilename();
+        }
+        if(darkLogoImage != null && !darkLogoImage.isEmpty()) {
+            if (darkLogoImageFileName != null) s3Adapter.deleteFile(darkLogoImageFileName);
+
+            ApiResponse<String> updateLogoFileResponse = s3Adapter.uploadFile(darkLogoImage);
+            if (updateLogoFileResponse.getStatus().is5xxServerError()) {
+                return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+            }
+            darkLogoImageUrl = updateLogoFileResponse.getData();
+            darkLogoImageFileName = darkLogoImage.getOriginalFilename();
         }
         if(sloganImage != null && !sloganImage.isEmpty()) {
             if (sloganImageFileName != null) s3Adapter.deleteFile(sloganImageFileName);
@@ -261,7 +291,7 @@ public class CompanyInformationService {
             sloganImageFileName = sloganImage.getOriginalFilename();
         }
         CompanyInformation companyInformation = companyInformations.get(0);
-        companyInformation.updateCompanyLogoAndSlogan(logoImageFileName, logoImageUrl, sloganImageFileName, sloganImageUrl);
+        companyInformation.updateCompanyLogoAndSlogan(lightLogoImageFileName, lightLogoImageUrl, darkLogoImageFileName, darkLogoImageUrl, sloganImageFileName, sloganImageUrl);
         CompanyInformation savedCompanyInformation = companyInformationRepository.save(companyInformation);
         return ApiResponse.ok("회사 로고 이미지와 슬로건 이미지를 성공적으로 수정했습니다.", savedCompanyInformation);
     }
