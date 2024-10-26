@@ -69,8 +69,14 @@ public class CompanyInformationService {
         return ApiResponse.ok("전체 회사 정보를 성공적으로 조회하였습니다.", companyInformation);
     }
 
-    public ApiResponse<String> retrieveCampanyLogoImage() {
-        List<String> logoImageUrls = companyInformationRepository.findLogoImageUrl();
+    public ApiResponse<String> retrieveCampanyLogoImage(Boolean isLight) {
+        List<String> logoImageUrls;
+        if(isLight) {
+            logoImageUrls = companyInformationRepository.findLightLogoImageUrl();
+        }
+        else {
+            logoImageUrls = companyInformationRepository.findDarkLogoImageUrl();
+        }
         if(logoImageUrls.isEmpty()) {
             return ApiResponse.ok("회사 로고 이미지가 존재하지 않습니다.");
         }

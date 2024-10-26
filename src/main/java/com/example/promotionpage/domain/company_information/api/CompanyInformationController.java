@@ -40,9 +40,9 @@ public class CompanyInformationController {
     }
 
     @Operation(summary = "회사 로고 이미지 조회 API")
-    @GetMapping("/company/logo")
-    public ApiResponse<String> retrieveCampanyLogoImage() {
-        return companyInformationService.retrieveCampanyLogoImage();
+    @GetMapping("/company/logo/{isLight}")
+    public ApiResponse<String> retrieveCampanyLogoImage(@PathVariable Boolean isLight) {
+        return companyInformationService.retrieveCampanyLogoImage(isLight);
     }
 
     @Operation(summary = "회사 기본 정보(주소, 영문주소, 유선번호, 팩스번호) 조회 API")
