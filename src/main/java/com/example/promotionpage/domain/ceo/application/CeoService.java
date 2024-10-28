@@ -75,10 +75,11 @@ public class CeoService {
 
     public ApiResponse<Ceo> updateCeoTextInformation(UpdateCeoServiceRequestDto dto) {
         List<Ceo> ceoList = ceoRepository.findAll();
-        if(!ceoList.isEmpty()) {
-            String ceoImageFileName = ceoList.get(0).getImageFileName();
-            if(ceoImageFileName != null) s3Adapter.deleteFile(ceoImageFileName);
+        if (ceoList.isEmpty()) {
+            return ApiResponse.withError(ErrorCode.CEO_IS_EMPTY);
         }
+        String ceoImageFileName = ceoList.get(0).getImageFileName();
+        if(ceoImageFileName != null) s3Adapter.deleteFile(ceoImageFileName);
         Ceo ceo = ceoList.get(0);
         ceo.updateCeoTextInformation(dto);
         Ceo savedCeo = ceoRepository.save(ceo);
@@ -108,11 +109,10 @@ public class CeoService {
         return ApiResponse.ok("CEO 이미지 정보를 성공적으로 수정했습니다.", savedCeo);
     }
 
-
     public ApiResponse<String> deleteCeoInformation() {
         List<Ceo> ceoList = ceoRepository.findAll();
         if(ceoList.isEmpty()) {
-            ApiResponse.withError(ErrorCode.CEO_IS_EMPTY);
+            return ApiResponse.withError(ErrorCode.CEO_IS_EMPTY);
         }
         Ceo ceo = ceoList.get(0);
         ceoRepository.delete(ceo);
