@@ -115,6 +115,9 @@ public class CeoService {
             return ApiResponse.withError(ErrorCode.CEO_IS_EMPTY);
         }
         Ceo ceo = ceoList.get(0);
+        String ceoImageFileName = ceoList.get(0).getImageFileName();
+        if(ceoImageFileName != null) s3Adapter.deleteFile(ceoImageFileName);
+
         ceoRepository.delete(ceo);
         return ApiResponse.ok("CEO 정보를 성공적으로 삭제했습니다.");
     }
