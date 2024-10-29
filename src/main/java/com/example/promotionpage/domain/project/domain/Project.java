@@ -68,7 +68,7 @@ public class Project {
 		this.mainSequence = mainSequence;
 	}
 
-	public Project update(UpdateProjectServiceRequestDto dto) {
+	public void update(UpdateProjectServiceRequestDto dto) {
 		this.department = dto.department();
 		this.category = dto.category();
 		this.name = dto.name();
@@ -78,7 +78,6 @@ public class Project {
 		this.overView = dto.overView();
 		this.projectType = dto.projectType();
 		this.isPosted = dto.isPosted();
-		return this;
 	}
 
 	public void updateSequence(Integer sequence) {
