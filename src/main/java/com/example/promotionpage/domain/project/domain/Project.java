@@ -39,7 +39,7 @@ public class Project {
 
 	private String mainImg;
 
-	private String responsiveMainImgFile;
+	private String responsiveMainImg;
 
 	private Integer sequence;
 
