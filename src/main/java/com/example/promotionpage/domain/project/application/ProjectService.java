@@ -34,7 +34,8 @@ public class ProjectService {
 	private static final String MAIN_PROJECT_TYPE = "main";
 	private static final String OTHERS_PROJECT_TYPE = "others";
 
-	public ApiResponse<Project> createProject(CreateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
+	public ApiResponse<Project> createProject(CreateProjectServiceRequestDto dto,
+											  MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 
@@ -100,7 +101,8 @@ public class ProjectService {
 		return ApiResponse.ok("프로젝트를 성공적으로 등록하였습니다.", savedProject);
 	}
 
-	public ApiResponse<Project> updateProject(UpdateProjectServiceRequestDto dto, MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
+	public ApiResponse<Project> updateProject(UpdateProjectServiceRequestDto dto,
+											  MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -119,7 +121,8 @@ public class ProjectService {
 				}
 				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
 				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
-					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					List<Project> findByMainSequenceGreaterThan
+							= projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
 					for (Project findMainProject : findByMainSequenceGreaterThan) {
 						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
 					}
@@ -143,7 +146,8 @@ public class ProjectService {
 			case OTHERS_PROJECT_TYPE:
 				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
 				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
-					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					List<Project> findByMainSequenceGreaterThan
+							= projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
 					for (Project findMainProject : findByMainSequenceGreaterThan) {
 						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
 					}
@@ -245,7 +249,8 @@ public class ProjectService {
 		projectRepository.delete(project);
 
 		List<Project> findBySequenceGreaterThan = projectRepository.findAllBySequenceGreaterThan(sequence);
-		List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(mainSequence, 999);
+		List<Project> findByMainSequenceGreaterThan
+				= projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(mainSequence, 999);
 		for (Project findArtworkProject : findBySequenceGreaterThan) {
 			findArtworkProject.updateSequence(findArtworkProject.getSequence() - 1);
 		}
@@ -329,7 +334,8 @@ public class ProjectService {
 				}
 				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
 				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
-					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					List<Project> findByMainSequenceGreaterThan
+							= projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
 					for (Project findMainProject : findByMainSequenceGreaterThan) {
 						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
 					}
@@ -356,7 +362,8 @@ public class ProjectService {
 			case OTHERS_PROJECT_TYPE:
 				// 기존의 프로젝트 타입이 main이었을 경우, 다른 main 프로젝트들의 mainSequence 수정
 				if (project.getProjectType().equals(MAIN_PROJECT_TYPE)) {
-					List<Project> findByMainSequenceGreaterThan = projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
+					List<Project> findByMainSequenceGreaterThan
+							= projectRepository.findAllByMainSequenceGreaterThanAndMainSequenceNot(project.getMainSequence(), 999);
 					for (Project findMainProject : findByMainSequenceGreaterThan) {
 						findMainProject.updateMainSequence(findMainProject.getMainSequence() - 1);
 					}
