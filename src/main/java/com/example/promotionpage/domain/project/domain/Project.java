@@ -39,6 +39,8 @@ public class Project {
 
 	private String mainImg;
 
+	private String responsiveMainImgFile;
+
 	private Integer sequence;
 
 	private Integer mainSequence;
