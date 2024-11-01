@@ -222,11 +222,11 @@ public class ProjectService {
 
 		// 기존 메인 이미지 삭제
 		String mainImgFileName = project.getMainImgFileName();
-		s3Adapter.deleteFile(mainImgFileName);
+		if(mainImgFileName != null) s3Adapter.deleteFile(mainImgFileName);
 
 		// 기존 반응형 메인이미지 삭제
 		String responsiveMainImgFileName = project.getMainImgFileName();
-		s3Adapter.deleteFile(responsiveMainImgFileName);
+		if(responsiveMainImgFileName != null) s3Adapter.deleteFile(responsiveMainImgFileName);
 
 		// 기존 이미지들 전체 삭제
 		List<ProjectImage> existingImages = project.getProjectImages();
