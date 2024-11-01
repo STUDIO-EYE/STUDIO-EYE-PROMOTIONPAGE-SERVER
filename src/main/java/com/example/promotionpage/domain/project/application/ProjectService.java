@@ -386,6 +386,25 @@ public class ProjectService {
 		Project project = optionalProject.get();
 		Integer sequence = project.getSequence();
 		Integer mainSequence = project.getMainSequence();
+
+		// 메인 이미지 삭제
+		String mainImgFileName = project.getMainImgFileName();
+		if(mainImgFileName != null) s3Adapter.deleteFile(mainImgFileName);
+
+		// 반응형 메인이미지 삭제
+		String responsiveMainImgFileName = project.getMainImgFileName();
+		if(responsiveMainImgFileName != null) s3Adapter.deleteFile(responsiveMainImgFileName);
+
+		// 이미지들 전체 삭제
+		List<ProjectImage> existingImages = project.getProjectImages();
+		// S3에서 이미지들 삭제
+		for (ProjectImage image : existingImages) {
+			String fileName = image.getFileName();
+			// S3Adapter의 deleteFile 메소드를 호출하여 이미지를 삭제
+			if(fileName != null) s3Adapter.deleteFile(fileName);
+		}
+		project.getProjectImages().clear();
+
 		projectRepository.delete(project);
 
 		List<Project> findBySequenceGreaterThan = projectRepository.findAllBySequenceGreaterThan(sequence);
