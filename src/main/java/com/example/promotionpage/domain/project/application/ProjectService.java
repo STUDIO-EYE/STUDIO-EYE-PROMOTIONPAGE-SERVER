@@ -216,6 +216,10 @@ public class ProjectService {
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 
+		// 기존 메인 이미지 삭제
+		String mainImgFileName = project.getMainImgFileName();
+		s3Adapter.deleteFile(mainImgFileName);
+
 		// 기존 이미지들 전체 삭제
 		List<ProjectImage> existingImages = project.getProjectImages();
 		// S3에서 기존 이미지들 삭제
