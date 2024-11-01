@@ -54,9 +54,9 @@ public class Project {
 	private List<ProjectImage> projectImages = new LinkedList<>();
 
 	@Builder
-	public Project(String department, String category, String name, String client, String date, String link,
-				   String overView, String mainImg, List<ProjectImage> projectImages, Integer sequence,
-				   Integer mainSequence, String projectType, Boolean isPosted) {
+	public Project(String department, String category, String name, String client, String date, String link, String overView,
+				   String mainImg, String mainImgFileName, String responsiveMainImg, String responsiveMainImgFileName,
+				   List<ProjectImage> projectImages, Integer sequence, Integer mainSequence, String projectType, Boolean isPosted) {
 		this.department = department;
 		this.category = category;
 		this.name = name;
@@ -65,6 +65,9 @@ public class Project {
 		this.link = link;
 		this.overView = overView;
 		this.mainImg = mainImg;
+		this.mainImgFileName = mainImgFileName;
+		this.responsiveMainImg = responsiveMainImg;
+		this.responsiveMainImgFileName = responsiveMainImgFileName;
 		this.projectImages = projectImages;
 		this.isPosted = isPosted;
 		this.projectType = projectType;
