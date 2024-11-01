@@ -157,6 +157,9 @@ public class ProjectService {
 	// UPDATE
 	public ApiResponse<Project> updateProject(UpdateProjectServiceRequestDto dto,
 											  MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
+		if(mainImgFile == null && mainImgFile.isEmpty()) {
+			return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
+		}
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
 		if(optionalProject.isEmpty()){
 			return ApiResponse.withError(ErrorCode.INVALID_PROJECT_ID);
@@ -227,6 +230,13 @@ public class ProjectService {
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
 		project.setMainImg(mainImg);
+		project.setMainImgFileName(mainImgFile.getOriginalFilename());
+
+		// 새로운 반응형 메인이미지 저장
+		String responsiveMainImg = getImgUrl(responsiveMainImgFile);
+		if (responsiveMainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		project.setResponsiveMainImg(responsiveMainImg);
+		project.setResponsiveMainImgFileName(responsiveMainImgFile.getOriginalFilename());
 
 		// 기존 이미지 + 새로운 이미지들 저장
 		List<ProjectImage> projectImages = new LinkedList<>();
