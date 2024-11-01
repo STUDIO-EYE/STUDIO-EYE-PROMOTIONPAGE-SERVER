@@ -156,8 +156,12 @@ public class ProjectService {
 
 	// UPDATE
 	public ApiResponse<Project> updateProject(UpdateProjectServiceRequestDto dto,
-											  MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
+											  MultipartFile mainImgFile, MultipartFile responsiveMainImgFile,
+											  List<MultipartFile> files) throws IOException {
 		if(mainImgFile == null && mainImgFile.isEmpty()) {
+			return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
+		}
+		if(responsiveMainImgFile == null && responsiveMainImgFile.isEmpty()) {
 			return ApiResponse.withError(ErrorCode.NOT_EXIST_IMAGE_FILE);
 		}
 		Optional<Project> optionalProject = projectRepository.findById(dto.projectId());
@@ -219,6 +223,10 @@ public class ProjectService {
 		// 기존 메인 이미지 삭제
 		String mainImgFileName = project.getMainImgFileName();
 		s3Adapter.deleteFile(mainImgFileName);
+
+		// 기존 반응형 메인이미지 삭제
+		String responsiveMainImgFileName = project.getMainImgFileName();
+		s3Adapter.deleteFile(responsiveMainImgFileName);
 
 		// 기존 이미지들 전체 삭제
 		List<ProjectImage> existingImages = project.getProjectImages();

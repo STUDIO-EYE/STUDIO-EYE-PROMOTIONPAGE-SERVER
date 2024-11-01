@@ -63,9 +63,10 @@ public class ProjectController {
 	@Operation(summary = "프로젝트 수정 API")
 	@PutMapping("/projects")
 	public ApiResponse<Project> updateProject(@Valid @RequestPart("request") UpdateProjectRequestDto dto,
-									 @RequestPart(value = "file", required = false) MultipartFile mainImgFile,
-									 @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
-		return projectService.updateProject(dto.toServiceRequest(), mainImgFile, files);
+											  @RequestPart(value = "file", required = false) MultipartFile mainImgFile,
+											  @RequestPart(value = "responsiveFile", required = false) MultipartFile responsiveMainImgFile,
+											  @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+		return projectService.updateProject(dto.toServiceRequest(), mainImgFile, responsiveMainImgFile, files);
 	}
 
 	@Operation(summary = "Artwork Page 프로젝트 순서 변경 API")
