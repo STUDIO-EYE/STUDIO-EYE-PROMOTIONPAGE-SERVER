@@ -36,9 +36,15 @@ public class ProjectService {
 
 	// CREATE
 	public ApiResponse<Project> createProject(CreateProjectServiceRequestDto dto,
-											  MultipartFile mainImgFile, List<MultipartFile> files) throws IOException {
+											  MultipartFile mainImgFile, MultipartFile responsiveMainImgFile,
+											  List<MultipartFile> files) throws IOException {
 		String mainImg = getImgUrl(mainImgFile);
 		if (mainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		String mainImgFileName = mainImgFile.getOriginalFilename();
+
+		String responsiveMainImg = getImgUrl(responsiveMainImgFile);
+		if (responsiveMainImg.isEmpty()) return ApiResponse.withError(ErrorCode.ERROR_S3_UPDATE_OBJECT);
+		String responsiveMainImgFileName = responsiveMainImgFile.getOriginalFilename();
 
 		List<ProjectImage> projectImages = new LinkedList<>();
 		if (files != null) {
@@ -91,7 +97,7 @@ public class ProjectService {
 				return ApiResponse.withError(ErrorCode.INVALID_PROJECT_TYPE);
 		}
 
-		Project project = dto.toEntity(mainImg, projectImages, projectCount, mainSequence);
+		Project project = dto.toEntity(mainImg, mainImgFileName, responsiveMainImg, responsiveMainImgFileName, projectImages, projectCount, mainSequence);
 
 		// ProjectImage의 project 필드 설정
 		for (ProjectImage projectImage : projectImages) {

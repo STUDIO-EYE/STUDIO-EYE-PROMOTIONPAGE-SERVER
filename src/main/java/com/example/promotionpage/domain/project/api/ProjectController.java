@@ -28,8 +28,9 @@ public class ProjectController {
 	@PostMapping("/projects")
 	public ApiResponse<Project> createProject(@Valid @RequestPart("request") CreateProjectRequestDto dto,
 											  @RequestPart(value = "file", required = false) MultipartFile mainImgFile,
-											  @RequestPart(value = "files", required = false) List<MultipartFile> files){
-		return projectService.createProject(dto.toServiceRequest(), mainImgFile, files);
+											  @RequestPart(value = "responsiveFile", required = false) MultipartFile responsiveMainImgFile,
+											  @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+		return projectService.createProject(dto.toServiceRequest(), mainImgFile, responsiveMainImgFile, files);
 	}
 
 	// GET
